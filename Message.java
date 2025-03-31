@@ -9,19 +9,39 @@ import java.time.ZonedDateTime;
  * @version March 30, 2025
  */
 
-public class Message {
+public class Message /* implements Writable */ {
 
     // Fields
+    private String senderID;
+    private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
 
     // Constructors
-    public Message(String contents) {
+    public Message(String senderID, String recipientID, String contents) {
+        this.senderID = senderID;
+        this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
     }
 
     // Getters & Setters
+    public String getSenderID() {
+        return this.senderID;
+    }
+
+    public void setSenderID(String senderID) {
+        this.senderID = senderID;
+    }
+
+    public String getRecipientID() {
+        return this.recipientID;
+    }
+
+    public void setRecipientID(String recipientID) {
+        this.recipientID = recipientID;
+    }
+
     public String getContents() {
         return this.contents;
     }
