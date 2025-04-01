@@ -1,5 +1,14 @@
 import java.io.Serializable;
 
+/**
+ * An item class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ *
+ * @author Zaid Al Awartani
+ * @version April 01, 2025
+ */
+
 public class Item implements Serializable /*, Writable */ {
     private String name;
     private double price;
