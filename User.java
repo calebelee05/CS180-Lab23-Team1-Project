@@ -1,3 +1,5 @@
+import java.io.*;
+
 /**
  * A User class
  *
@@ -7,17 +9,17 @@
  * @version March 31, 2025
  */
 
-public class User  /* implements Writiable */ {
+public class User implements Serializable /*, Writable */ {
 
-    private String id;
+    private String username;
     private String password;
     private double balance;
     // private Item[] itemsList;
     private Message[] messagesSent;
     private Message[] messagesReceived;
 
-    public User(String id, String password, double balance, /* Item[] itemsList, */ Message[] messagesSent, Message[] messageReceieved) {
-        this.id = id;
+    public User(String username, String password, double balance, /* Item[] itemsList, */ Message[] messagesSent, Message[] messageReceieved) {
+        this.username = username;
         this.password = password;
         this.balance = balance;
         // this.itemsList = itemsList;
@@ -25,8 +27,8 @@ public class User  /* implements Writiable */ {
         this.messagesReceived = messageReceieved;
     }
 
-    public String getID() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -49,8 +51,8 @@ public class User  /* implements Writiable */ {
         return messagesReceived;
     }
     
-    public void setID(String id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -72,5 +74,9 @@ public class User  /* implements Writiable */ {
 
     public void setMessagesReceived(Message[] messagesReceived) {
         this.messagesReceived = messagesReceived;
+    }
+
+    public String toString() {
+        return String.format("Username: %s\nPassword: %s\nBalance: %.2f\n", username, password, balance);
     }
 }
