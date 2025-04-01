@@ -76,6 +76,7 @@ public class User implements Serializable /*, Writable */ {
         this.messagesReceived = messagesReceived;
     }
 
+    @Override
     public String toString() {
         return String.format("Username: %s\nPassword: %s\nBalance: %.2f\n", username, password, balance);
     }
