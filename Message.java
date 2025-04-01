@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /**
@@ -9,7 +10,7 @@ import java.time.ZonedDateTime;
  * @version March 30, 2025
  */
 
-public class Message /* implements Writable */ {
+public class Message implements Serializable /*, Writable */ {
 
     // Fields
     private String senderID;
