@@ -1,10 +1,10 @@
 import java.io.Serializable;
 
 public class Item implements Serializable /*, Writable */ {
-    String name;
-    double price;
-    String description;
-    String itemID;
+    private String name;
+    private double price;
+    private String description;
+    private String itemID;
 
     public Item(String name, double price, String description, String itemID) {
         this.name = name;
