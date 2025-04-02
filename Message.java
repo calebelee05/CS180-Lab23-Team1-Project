@@ -17,6 +17,7 @@ public class Message implements Serializable /*, Writable */ {
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
+    private static ArrayList<Message> message = new ArrayList<>();
 
     // Constructors
     public Message(String senderID, String recipientID, String contents) {
@@ -24,6 +25,7 @@ public class Message implements Serializable /*, Writable */ {
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
+        Message.message.add(this);
     }
 
     // Getters & Setters
@@ -58,4 +60,9 @@ public class Message implements Serializable /*, Writable */ {
     public void setTimeStamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    public ArrayList<Message> getList() {
+        return this.message;
+    }
+
 }
