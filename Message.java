@@ -61,8 +61,8 @@ public class Message implements Serializable /*, Writable */ {
         this.timestamp = timestamp;
     }
 
-    public ArrayList<Message> getList() {
-        return this.message;
+    public static ArrayList<Message> getList() {
+        return new ArrayList<>(Message.message);
     }
 
 }
