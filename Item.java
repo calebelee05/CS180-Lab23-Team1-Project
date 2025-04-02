@@ -14,12 +14,14 @@ public class Item implements Serializable /*, Writable */ {
     private double price;
     private String description;
     private String itemID;
+    private static ArrayList<Item> item = new ArrayList<>();
 
     public Item(String name, double price, String description, String itemID) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.itemID = itemID;
+        Item.item.add(this);
     }
 
     public String getName() {
@@ -52,6 +54,10 @@ public class Item implements Serializable /*, Writable */ {
 
     public void setName(String itemName) {
         this.name = itemName;
+    }
+
+    public static ArrayList<Item> getList() {
+        return new ArrayList<>(Item.item);
     }
 
     @Override
