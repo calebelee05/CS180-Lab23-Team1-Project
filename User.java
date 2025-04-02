@@ -17,6 +17,7 @@ public class User implements Serializable /*, Writable */ {
     // private Item[] itemsList;
     private Message[] messagesSent;
     private Message[] messagesReceived;
+    private static ArrayList<User> user = new ArrayList<>();
 
     public User(String username, String password, double balance, /* Item[] itemsList, */ Message[] messagesSent, Message[] messageReceieved) {
         this.username = username;
@@ -25,6 +26,7 @@ public class User implements Serializable /*, Writable */ {
         // this.itemsList = itemsList;
         this.messagesSent = messagesSent;
         this.messagesReceived = messageReceieved;
+        User.user.add(this);
     }
 
     public String getUsername() {
@@ -74,6 +76,10 @@ public class User implements Serializable /*, Writable */ {
 
     public void setMessagesReceived(Message[] messagesReceived) {
         this.messagesReceived = messagesReceived;
+    }
+
+    public static ArrayList<User> getList() {
+        return new ArrayList<>(User.user);
     }
 
     @Override
