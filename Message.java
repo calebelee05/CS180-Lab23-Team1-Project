@@ -11,7 +11,7 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message implements Serializable /*, Writable */ {
+public class Message implements Serializable, Writable {
 
     // Fields
     private String senderID;

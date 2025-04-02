@@ -10,25 +10,30 @@ import java.util.*;
  * @version March 31, 2025
  */
 
-public class User implements Serializable /*, Writable */ {
+public class User implements Serializable, Writable<User> {
 
+    // Fields
     private String username;
     private String password;
     private double balance;
-    // private Item[] itemsList;
+    private Item[] itemsList;
     private Message[] messagesSent;
     private Message[] messagesReceived;
     private static ArrayList<User> user = new ArrayList<>();
 
-    public User(String username, String password, double balance, /* Item[] itemsList, */ Message[] messagesSent, Message[] messageReceieved) {
+    // Constructor
+
+    public User(String username, String password, double balance, Item[] itemsList, Message[] messagesSent, Message[] messageReceieved) {
         this.username = username;
         this.password = password;
         this.balance = balance;
-        // this.itemsList = itemsList;
+        this.itemsList = itemsList;
         this.messagesSent = messagesSent;
         this.messagesReceived = messageReceieved;
         User.user.add(this);
     }
+
+    // Accessors and modifiers
 
     public String getUsername() {
         return username;
@@ -42,9 +47,9 @@ public class User implements Serializable /*, Writable */ {
         return balance;
     }
 
-    /* public Item[] getItems() {
+    public Item[] getItems() {
         return itemsList;
-    } */
+    }
     
     public Message[] getMessagesSent() {
         return messagesSent;
@@ -66,10 +71,9 @@ public class User implements Serializable /*, Writable */ {
         this.balance = balance;
     }
 
-    /* public void setItems(Item[] itemsList) {
+    public void setItems(Item[] itemsList) {
         this.itemsList = itemsList;
     }
-    */
 
     public void setMessagesSent(Message[] messagesSent) {
         this.messagesSent = messagesSent;
