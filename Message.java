@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.*;
 
 /**
  * A simple Message class
