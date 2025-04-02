@@ -28,7 +28,7 @@ public interface Writable<T extends Serializable>
 
     //method to read the objects from the file
     public default ArrayList<T> readObject(String fileName) {
-        ArrayList<T> objects = new ArrayList<>();;
+        ArrayList<T> objects = new ArrayList<>();
         try {
             File f = new File(fileName);
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
