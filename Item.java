@@ -10,7 +10,7 @@ import java.util.*;
  * @version April 01, 2025
  */
 
-public class Item implements Serializable, Writable {
+public class Item extends Writable<Item> implements Serializable {
     private String name;
     private double price;
     private String description;
