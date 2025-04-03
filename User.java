@@ -20,9 +20,10 @@ public class User implements Serializable, UserInterface, Writable<User> {
     private Message[] messagesSent;
     private Message[] messagesReceived;
     private static ArrayList<User> user = new ArrayList<>();
+    private static File userData = null;
 
     // Constructor
-    public User(String username, String password, double balance, Item[] itemsList, Message[] messagesSent, Message[] messageReceieved) {
+    public User(String username, String password, double balance, Item[] itemsList, Message[] messagesSent, Message[] messageReceieved, String filename) {
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -30,6 +31,16 @@ public class User implements Serializable, UserInterface, Writable<User> {
         this.messagesSent = messagesSent;
         this.messagesReceived = messageReceieved;
         user.add(this);
+        if (userData == null) {    
+            try {
+                userData = new File(filename);
+                if (!userData.exists()) {
+                    userData.createNewFile();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
     }
 
     // Implement UserInterface
@@ -86,33 +97,25 @@ public class User implements Serializable, UserInterface, Writable<User> {
     }
 
     // Implement Writable interface
-    public synchronized void writeObject(String fileName, ArrayList<User> list) {
-        try {
-            File f = new File(fileName);
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+    public synchronized void writeObject(ArrayList<User> list) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(userData))) {
                 oos.writeObject(list);
-            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<User> readObject(String fileName) {
+    public synchronized ArrayList<User> readObject() {
         ArrayList<User> objects = new ArrayList<>();
-        try {
-            File f = new File(fileName);
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-                objects = (ArrayList<User>) ois.readObject();
-                return objects;
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
-            }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userData))) {
+            objects = (ArrayList<User>) ois.readObject();
+            return objects;
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        
         return objects;
     }
 

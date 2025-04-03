@@ -13,7 +13,7 @@ public interface ItemInterface {
     String getDescription();
     String getSellerID();
     void setSellerID(String sellerID);
-    void setPrice(int price);
+    void setPrice(double price);
     void setDescription(String description);
     void setName(String itemName);
 }

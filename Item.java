@@ -22,14 +22,24 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
     private String description;
     private String sellerID;
     private static ArrayList<Item> item = new ArrayList<>();
-    private static File itemData;
+    private static File itemData = null;
 
-    public Item(String name, double price, String description, String sellerID) {
+    public Item(String name, double price, String description, String sellerID, String fileName) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.sellerID = sellerID;
         item.add(this);
+        if (itemData == null) {    
+            try {
+                itemData = new File(fileName);
+                if (!itemData.exists()) {
+                    itemData.createNewFile();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
     }
 
     // Implement Item interface
@@ -53,7 +63,7 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
         this.sellerID = sellerID;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -70,33 +80,25 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
     }
 
     // Implement Writable interface
-    public synchronized void writeObject(String fileName, ArrayList<Item> list) {
-        try {
-            File f = new File(fileName);
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+    public synchronized void writeObject(ArrayList<Item> list) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(itemData))) {
                 oos.writeObject(list);
-            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<Item> readObject(String fileName) {
+    public synchronized ArrayList<Item> readObject() {
         ArrayList<Item> objects = new ArrayList<>();
-        try {
-            File f = new File(fileName);
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-                objects = (ArrayList<Item>) ois.readObject();
-                return objects;
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
-            }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(itemData))) {
+            objects = (ArrayList<Item>) ois.readObject();
+            return objects;
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        
         return objects;
     }
 

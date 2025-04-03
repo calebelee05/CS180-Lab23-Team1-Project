@@ -11,8 +11,8 @@ import java.util.*;
  */
 public interface Writable<T extends Serializable> {   
     //method to write objects into the file
-    void writeObject(String fileName, ArrayList<T> list); 
+    void writeObject(ArrayList<T> list); 
 
     //method to read the objects from the file
-    ArrayList<T> readObject(String fileName);
+    ArrayList<T> readObject();
 }

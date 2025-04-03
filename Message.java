@@ -25,14 +25,25 @@ public class Message implements Serializable, MessageInterface, Writable<Message
     private String contents;
     private ZonedDateTime timestamp;
     private static ArrayList<Message> message = new ArrayList<>();
+    private static File messageData = null;
 
     // Constructors
-    public Message(String senderID, String recipientID, String contents) {
+    public Message(String senderID, String recipientID, String contents, String filename) {
         this.senderID = senderID;
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
         message.add(this);
+        if (messageData == null) {    
+            try {
+                messageData = new File(filename);
+                if (!messageData.exists()) {
+                    messageData.createNewFile();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
     }
 
     // Implement MessageInterface
@@ -73,33 +84,25 @@ public class Message implements Serializable, MessageInterface, Writable<Message
     }
 
     // Implement Writable interface
-    public synchronized void writeObject(String fileName, ArrayList<Message> list) {
-        try {
-            File f = new File(fileName);
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+    public synchronized void writeObject(ArrayList<Message> list) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(messageData))) {
                 oos.writeObject(list);
-            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<Message> readObject(String fileName) {
+    public synchronized ArrayList<Message> readObject() {
         ArrayList<Message> objects = new ArrayList<>();
-        try {
-            File f = new File(fileName);
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-                objects = (ArrayList<Message>) ois.readObject();
-                return objects;
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
-            }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(messageData))) {
+            objects = (ArrayList<Message>) ois.readObject();
+            return objects;
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        
         return objects;
     }
 
