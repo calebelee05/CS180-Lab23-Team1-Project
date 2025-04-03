@@ -11,7 +11,7 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message extends Writable<Message> implements Serializable, MessageInterface {
+public class Message implements Serializable, MessageInterface, Writable<Message> {
 
     // Fields
     private String senderID;
@@ -26,7 +26,7 @@ public class Message extends Writable<Message> implements Serializable, MessageI
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
-        Message.message.add(this);
+        message.add(this);
     }
 
     // Getters & Setters
@@ -63,7 +63,7 @@ public class Message extends Writable<Message> implements Serializable, MessageI
     }
 
     public static ArrayList<Message> getList() {
-        return new ArrayList<>(Message.message);
+        return new ArrayList<>(message);
     }
 
 }

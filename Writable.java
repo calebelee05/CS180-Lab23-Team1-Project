@@ -9,10 +9,9 @@ import java.util.*;
  * @author Anishka Rao
  * @version April 1, 2025
  */
-public class Writable<T extends Serializable>
-{   
+public interface Writable<T extends Serializable> {   
     //method to write objects into the file
-    public void writeObject(String fileName, ArrayList<T> list) {
+    default void writeObject(String fileName, ArrayList<T> list) {
         try {
             File f = new File(fileName);
             if (!f.exists()) {
@@ -27,7 +26,7 @@ public class Writable<T extends Serializable>
     }
 
     //method to read the objects from the file
-    public ArrayList<T> readObject(String fileName) {
+    default ArrayList<T> readObject(String fileName) {
         ArrayList<T> objects = new ArrayList<>();
         try {
             File f = new File(fileName);
