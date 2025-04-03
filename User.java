@@ -10,7 +10,7 @@ import java.util.*;
  * @version March 31, 2025
  */
 
-public class User implements Serializable, Writable<User> {
+public class User extends Writable<User> implements Serializable {
 
     // Fields
     private String username;
