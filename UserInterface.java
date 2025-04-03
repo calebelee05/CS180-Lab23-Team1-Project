@@ -7,6 +7,7 @@
  * @version April 3, 2025
  */
 public interface UserInterface {
+    // Accessors and Modifiers
     String getUsername();
     String getPassword();
     double getBalance();

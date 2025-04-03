@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
  * @version April 3, 2025
  */
 public interface MessageInterface {
+    // Accessors and Modifiers
     String getSenderID();
     void setSenderID(String senderID);
     String getRecipientID();

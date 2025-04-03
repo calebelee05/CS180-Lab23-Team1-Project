@@ -22,7 +22,6 @@ public class User implements Serializable, UserInterface, Writable<User> {
     private static ArrayList<User> user = new ArrayList<>();
 
     // Constructor
-
     public User(String username, String password, double balance, Item[] itemsList, Message[] messagesSent, Message[] messageReceieved) {
         this.username = username;
         this.password = password;
@@ -30,11 +29,10 @@ public class User implements Serializable, UserInterface, Writable<User> {
         this.itemsList = itemsList;
         this.messagesSent = messagesSent;
         this.messagesReceived = messageReceieved;
-        User.user.add(this);
+        user.add(this);
     }
 
-    // Accessors and modifiers
-
+    // Implement UserInterface
     public String getUsername() {
         return username;
     }
@@ -84,7 +82,38 @@ public class User implements Serializable, UserInterface, Writable<User> {
     }
 
     public static ArrayList<User> getList() {
-        return new ArrayList<>(User.user);
+        return new ArrayList<>(user);
+    }
+
+    // Implement Writable interface
+    public synchronized void writeObject(String fileName, ArrayList<User> list) {
+        try {
+            File f = new File(fileName);
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+                oos.writeObject(list);
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public synchronized ArrayList<User> readObject(String fileName) {
+        ArrayList<User> objects = new ArrayList<>();
+        try {
+            File f = new File(fileName);
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+                objects = (ArrayList<User>) ois.readObject();
+                return objects;
+            } catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return objects;
     }
 
     @Override

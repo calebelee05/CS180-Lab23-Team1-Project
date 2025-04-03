@@ -11,34 +11,8 @@ import java.util.*;
  */
 public interface Writable<T extends Serializable> {   
     //method to write objects into the file
-    default void writeObject(String fileName, ArrayList<T> list) {
-        try {
-            File f = new File(fileName);
-            if (!f.exists()) {
-                f.createNewFile();
-            }
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
-                oos.writeObject(list);
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
+    void writeObject(String fileName, ArrayList<T> list); 
 
     //method to read the objects from the file
-    default ArrayList<T> readObject(String fileName) {
-        ArrayList<T> objects = new ArrayList<>();
-        try {
-            File f = new File(fileName);
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-                objects = (ArrayList<T>) ois.readObject();
-                return objects;
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return objects;
-    }
+    ArrayList<T> readObject(String fileName);
 }

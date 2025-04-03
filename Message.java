@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -29,7 +35,7 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         message.add(this);
     }
 
-    // Getters & Setters
+    // Implement MessageInterface
     public String getSenderID() {
         return this.senderID;
     }
@@ -66,4 +72,39 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         return new ArrayList<>(message);
     }
 
+    // Implement Writable interface
+    public synchronized void writeObject(String fileName, ArrayList<Message> list) {
+        try {
+            File f = new File(fileName);
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+                oos.writeObject(list);
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public synchronized ArrayList<Message> readObject(String fileName) {
+        ArrayList<Message> objects = new ArrayList<>();
+        try {
+            File f = new File(fileName);
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+                objects = (ArrayList<Message>) ois.readObject();
+                return objects;
+            } catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return objects;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Sender: %s\nRecipient: %s\nContent: %s\n", senderID, recipientID, contents);
+    }
 }

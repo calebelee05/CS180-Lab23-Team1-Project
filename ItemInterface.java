@@ -7,6 +7,7 @@
  * @version April 3, 2025
  */
 public interface ItemInterface {
+    // Accessors and Modifiers
     String getName();
     double getPrice();
     String getDescription();
