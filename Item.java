@@ -14,14 +14,14 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
     private String name;
     private double price;
     private String description;
-    private int itemID;
+    private String sellerID;
     private static ArrayList<Item> item = new ArrayList<>();
 
-    public Item(String name, double price, String description, int itemID) {
+    public Item(String name, double price, String description, String sellerID) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.itemID = itemID;
+        this.sellerID = sellerID;
         Item.item.add(this);
     }
 
@@ -37,12 +37,12 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
         return description;
     }
 
-    public int getItemID() {
-        return itemID;
+    public String getSellerID() {
+        return sellerID;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
     }
 
     public void setPrice(int price) {
@@ -63,7 +63,7 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
 
     @Override
     public String toString() {
-        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nItem ID: %s", name, price, description, itemID);
+        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nItem ID: %s", name, price, description, sellerID);
     }
 
 }

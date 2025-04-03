@@ -10,8 +10,8 @@ public interface ItemInterface {
     String getName();
     double getPrice();
     String getDescription();
-    int getItemID();
-    void setItemID(int itemID);
+    String getSellerID();
+    void setSellerID(String sellerID);
     void setPrice(int price);
     void setDescription(String description);
     void setName(String itemName);
