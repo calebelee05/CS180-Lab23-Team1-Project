@@ -10,14 +10,14 @@ import java.util.*;
  * @version April 01, 2025
  */
 
-public class Item extends Writable<Item> implements Serializable {
+public class Item extends Writable<Item> implements Serializable, ItemInterface {
     private String name;
     private double price;
     private String description;
-    private String itemID;
+    private int itemID;
     private static ArrayList<Item> item = new ArrayList<>();
 
-    public Item(String name, double price, String description, String itemID) {
+    public Item(String name, double price, String description, int itemID) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -37,11 +37,11 @@ public class Item extends Writable<Item> implements Serializable {
         return description;
     }
 
-    public String getItemID() {
+    public int getItemID() {
         return itemID;
     }
 
-    public void setItemID(String itemID) {
+    public void setItemID(int itemID) {
         this.itemID = itemID;
     }
 
@@ -58,7 +58,7 @@ public class Item extends Writable<Item> implements Serializable {
     }
 
     public static ArrayList<Item> getList() {
-        return new ArrayList<>(Item.item);
+        return new ArrayList<>(item);
     }
 
     @Override

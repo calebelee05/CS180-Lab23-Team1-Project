@@ -11,7 +11,7 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message extends Writable<Message> implements Serializable {
+public class Message extends Writable<Message> implements Serializable, MessageInterface {
 
     // Fields
     private String senderID;
