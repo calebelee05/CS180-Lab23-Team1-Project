@@ -1,10 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -24,24 +18,22 @@ public class Message implements Serializable, MessageInterface {
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
-    private static ArrayList<Message> messageList = new ArrayList<>();
-    private static File saveFile = null;
+    private static List<MessageInterface> messageList = Collections.synchronizedList(new ArrayList<>());
+    private static final String FILEPATH = "MessageData.txt";
 
     // Constructors
-    public Message(String senderID, String recipientID, String contents, String filename) {
+    public Message(String senderID, String recipientID, String contents) {
         this.senderID = senderID;
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
-        if (saveFile == null) {    
-            try {
-                saveFile = new File(filename);
-                if (!saveFile.exists()) {
-                    saveFile.createNewFile();
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+        File saveFile = new File(FILEPATH);
+        try {
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
             }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
         messageList.add(this);
     }
@@ -79,23 +71,23 @@ public class Message implements Serializable, MessageInterface {
         this.timestamp = timestamp;
     }
 
-    public static ArrayList<Message> getList() {
+    public static List<MessageInterface> getList() {
         return messageList;
     }
 
     // Implement File I/O methods
     public static synchronized void writeObject() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
                 oos.writeObject(messageList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<Message> readObject() {
-        ArrayList<Message> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
-            messageList = (ArrayList<Message>) ois.readObject();
+    public static synchronized List<MessageInterface> readObject() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
+            List<MessageInterface> objects = (List<MessageInterface>) ois.readObject();
+            messageList = Collections.synchronizedList(objects);
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {

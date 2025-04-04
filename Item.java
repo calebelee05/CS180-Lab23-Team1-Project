@@ -21,25 +21,23 @@ public class Item implements Serializable, ItemInterface {
     private double price;
     private String description;
     private String sellerID;
-    private static ArrayList<Item> ItemList = new ArrayList<>();
-    private static File saveFile = null;
+    private static List<ItemInterface> itemList = Collections.synchronizedList(new ArrayList<>());
+    private static final String FILEPATH = "ItemData.txt";
 
-    public Item(String name, double price, String description, String sellerID, String fileName) {
+    public Item(String name, double price, String description, String sellerID) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.sellerID = sellerID;
-        if (saveFile == null) {
-            try {
-                saveFile = new File(fileName);
-                if (!saveFile.exists()) {
-                    saveFile.createNewFile();
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+        File saveFile = new File(FILEPATH);
+        try {
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
             }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        ItemList.add(this);
+        itemList.add(this);
     }
 
     // Implement Item interface
@@ -75,7 +73,7 @@ public class Item implements Serializable, ItemInterface {
         this.name = itemName;
     }
 
-    public boolean equals(Item item) {
+    public boolean equals(ItemInterface item) {
         return (sellerID.equals(item.getSellerID()) && name.equals(item.getName()));
     }
 
@@ -83,30 +81,32 @@ public class Item implements Serializable, ItemInterface {
      *  public static ArrayList<Item> searchItems(String searchFor)
      */
 
-    public static ArrayList<Item> getList() {
-        return ItemList;
+    public void deleteItem() {}
+
+    public static List<ItemInterface> getList() {
+        return itemList;
     }
 
     // Implement File I/O methods
     public static synchronized void writeObject() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
-                oos.writeObject(ItemList);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
+                oos.writeObject(itemList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static synchronized ArrayList<Item> readObject() {
-        ArrayList<Item> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
-            ItemList = (ArrayList<Item>) ois.readObject();
+    public static synchronized List<ItemInterface> readObject() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
+            List<ItemInterface> objects = (List<ItemInterface>) ois.readObject();
+            itemList = Collections.synchronizedList(objects);
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
         
-        return ItemList;
+        return itemList;
     }
 
     @Override

@@ -13,16 +13,16 @@ public interface UserInterface {
     String getUsername();
     String getPassword();
     double getBalance();
-    ArrayList<Item> getItems();
-    ArrayList<Message> getMessagesSent();
-    ArrayList<Message> getMessagesReceived();
+    ArrayList<ItemInterface> getItems();
+    ArrayList<MessageInterface> getMessagesSent();
+    ArrayList<MessageInterface> getMessagesReceived();
     void setUsername(String username);
     void setPassword(String password);
     void setBalance(double balance);
-    void setItems(ArrayList<Item> itemsList);
-    void setMessagesSent(ArrayList<Message> messagesSent);
-    void setMessagesReceived(ArrayList<Message> messagesReceived);
-    boolean equals(User user);
+    void setItems(ArrayList<ItemInterface> itemsList);
+    void setMessagesSent(ArrayList<MessageInterface> messagesSent);
+    void setMessagesReceived(ArrayList<MessageInterface> messagesReceived);
+    boolean equals(UserInterface user);
 
     // TODO: Need to implement
 
@@ -32,15 +32,15 @@ public interface UserInterface {
 
     // Item Listing
     void addItem(String name, double price, String description); // Shouldn't allow users to add more than one items with same name?
-    Item getItem(String name); // Return item with this name
-    void deleteItem(Item item); // Delete item from listing (and from database)
-    void setItem(Item item, String name, double price, String description); // Edit item in the listing with this name
+    ItemInterface getItem(String name); // Return item with this name
+    void deleteItem(ItemInterface item); // Delete item from listing (and from database)
+    void setItem(ItemInterface item, String name, double price, String description); // Edit item in the listing with this name
 
     // Balance Tracking
-    void buyItem(Item item); // user bought item; decrease balance by item price
-    void sellItem(Item item); // user sold item; increase balance by item price
+    void buyItem(ItemInterface item); // user bought item; decrease balance by item price
+    void sellItem(ItemInterface item); // user sold item; increase balance by item price
 
     // Messaging
-    void sendMessage(User recipient, String content); // Send message to recipient
+    void sendMessage(UserInterface recipient, String content); // Send message to recipient
 
 }
