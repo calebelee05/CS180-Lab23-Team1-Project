@@ -16,14 +16,14 @@ public class User implements Serializable, UserInterface, Writable<User> {
     private String username;
     private String password;
     private double balance;
-    private Item[] itemsList;
-    private Message[] messagesSent;
-    private Message[] messagesReceived;
+    private ArrayList<Item> itemsList = new ArrayList<>();
+    private ArrayList<Message> messagesSent = new ArrayList<>();
+    private ArrayList<Message> messagesReceived = new ArrayList<>();
     private static ArrayList<User> user = new ArrayList<>();
     private static File userData = null;
 
     // Constructor
-    public User(String username, String password, double balance, Item[] itemsList, Message[] messagesSent, Message[] messageReceieved, String filename) {
+    public User(String username, String password, double balance, ArrayList<Item> itemsList, ArrayList<Message> messagesSent, ArrayList<Message> messageReceieved, String filename) {
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -56,15 +56,15 @@ public class User implements Serializable, UserInterface, Writable<User> {
         return balance;
     }
 
-    public Item[] getItems() {
+    public ArrayList<Item> getItems() {
         return itemsList;
     }
     
-    public Message[] getMessagesSent() {
+    public ArrayList<Message> getMessagesSent() {
         return messagesSent;
     }
 
-    public Message[] getMessagesReceived() {
+    public ArrayList<Message> getMessagesReceived() {
         return messagesReceived;
     }
     
@@ -80,15 +80,15 @@ public class User implements Serializable, UserInterface, Writable<User> {
         this.balance = balance;
     }
 
-    public void setItems(Item[] itemsList) {
+    public void setItems(ArrayList<Item> itemsList) {
         this.itemsList = itemsList;
     }
 
-    public void setMessagesSent(Message[] messagesSent) {
+    public void setMessagesSent(ArrayList<Message> messagesSent) {
         this.messagesSent = messagesSent;
     }
 
-    public void setMessagesReceived(Message[] messagesReceived) {
+    public void setMessagesReceived(ArrayList<Message> messagesReceived) {
         this.messagesReceived = messagesReceived;
     }
 

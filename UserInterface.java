@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * A UserInterface interface
  *
@@ -11,13 +13,13 @@ public interface UserInterface {
     String getUsername();
     String getPassword();
     double getBalance();
-    Item[] getItems();
-    Message[] getMessagesSent();
-    Message[] getMessagesReceived();
+    ArrayList<Item> getItems();
+    ArrayList<Message> getMessagesSent();
+    ArrayList<Message> getMessagesReceived();
     void setUsername(String username);
     void setPassword(String password);
     void setBalance(double balance);
-    void setItems(Item[] itemsList);
-    void setMessagesSent(Message[] messagesSent);
-    void setMessagesReceived(Message[] messagesReceived);
+    void setItems(ArrayList<Item> itemsList);
+    void setMessagesSent(ArrayList<Message> messagesSent);
+    void setMessagesReceived(ArrayList<Message> messagesReceived);
 }

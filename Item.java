@@ -75,9 +75,11 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
         this.name = itemName;
     }
 
+
     public static ArrayList<Item> getList() {
         return new ArrayList<>(item);
     }
+
 
     // Implement Writable interface
     public synchronized void writeObject(ArrayList<Item> list) {
@@ -104,7 +106,7 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
 
     @Override
     public String toString() {
-        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nItem ID: %s", name, price, description, sellerID);
+        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s", name, price, description, sellerID);
     }
 
 }
