@@ -16,29 +16,24 @@ public class User implements Serializable, UserInterface {
     private String username;
     private String password;
     private double balance;
-    private ArrayList<Item> itemsList = new ArrayList<>();
-    private ArrayList<Message> messagesSent = new ArrayList<>();
-    private ArrayList<Message> messagesReceived = new ArrayList<>();
-    private static ArrayList<User> userList = new ArrayList<>();
-    private static File saveFile = null;
+    private ArrayList<ItemInterface> itemsList = new ArrayList<>();
+    private ArrayList<MessageInterface> messagesSent = new ArrayList<>();
+    private ArrayList<MessageInterface> messagesReceived = new ArrayList<>();
+    private static List<UserInterface> userList = Collections.synchronizedList(new ArrayList<>());
+    private static final String FILEPATH = "UserData.txt";
 
     // Constructor
-    public User(String username, String password, double balance, ArrayList<Item> itemsList, ArrayList<Message> messagesSent, ArrayList<Message> messageReceieved, String filename) {
+    public User(String username, String password, double balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
-        this.itemsList = itemsList;
-        this.messagesSent = messagesSent;
-        this.messagesReceived = messageReceieved;
-        if (saveFile == null) {    
-            try {
-                saveFile = new File(filename);
-                if (!saveFile.exists()) {
-                    saveFile.createNewFile();
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+        File saveFile = new File(FILEPATH);
+        try {
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
             }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
         userList.add(this);
     }
@@ -56,15 +51,15 @@ public class User implements Serializable, UserInterface {
         return balance;
     }
 
-    public ArrayList<Item> getItems() {
+    public ArrayList<ItemInterface> getItems() {
         return itemsList;
     }
     
-    public ArrayList<Message> getMessagesSent() {
+    public ArrayList<MessageInterface> getMessagesSent() {
         return messagesSent;
     }
 
-    public ArrayList<Message> getMessagesReceived() {
+    public ArrayList<MessageInterface> getMessagesReceived() {
         return messagesReceived;
     }
     
@@ -80,19 +75,19 @@ public class User implements Serializable, UserInterface {
         this.balance = balance;
     }
 
-    public void setItems(ArrayList<Item> itemsList) {
+    public void setItems(ArrayList<ItemInterface> itemsList) {
         this.itemsList = itemsList;
     }
 
-    public void setMessagesSent(ArrayList<Message> messagesSent) {
+    public void setMessagesSent(ArrayList<MessageInterface> messagesSent) {
         this.messagesSent = messagesSent;
     }
 
-    public void setMessagesReceived(ArrayList<Message> messagesReceived) {
+    public void setMessagesReceived(ArrayList<MessageInterface> messagesReceived) {
         this.messagesReceived = messagesReceived;
     }
 
-    public boolean equals(User user) {
+    public boolean equals(UserInterface user) {
         return username.equals(user.getUsername());
     }
 
@@ -101,26 +96,41 @@ public class User implements Serializable, UserInterface {
     /* TODO: Find and return user with the username from the userList
      * public static User findUser(String username)
      */
-    
+
+    public void deleteUser() {} // Remove user from userList, delete all items user has listed
+    // Consider how to deal with messages sent by user; delete completely? or display as "DeletedUser" to message recipients?
+
+    // Item Listing
+    public void addItem(String name, double price, String description) {} // Shouldn't allow users to add more than one items with same name?
+    public ItemInterface getItem(String name) {return null;} // Return item with this name
+    public void deleteItem(ItemInterface item) {} // Delete item from listing (and from database)
+    public void setItem(ItemInterface item, String name, double price, String description) {} // Edit item in the listing with this name
+
+    // Balance Tracking
+    public void buyItem(ItemInterface item) {} // user bought item; decrease balance by item price
+    public void sellItem(ItemInterface item) {} // user sold item; increase balance by item price
+
+    // Messaging
+    public void sendMessage(UserInterface recipient, String content) {} // Send message to recipient
 
 
-    public static ArrayList<User> getList() {
+    public static List<UserInterface> getList() {
         return userList;
     }
 
     // Implement File I/O methods
     public static synchronized void writeObject() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
             oos.writeObject(userList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static synchronized ArrayList<User> readObject() {
-        ArrayList<User> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
-            userList = (ArrayList<User>) ois.readObject();
+    public static synchronized List<UserInterface> readObject() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
+            List<UserInterface> objects = (List<UserInterface>) ois.readObject();
+            userList = Collections.synchronizedList(objects);
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
