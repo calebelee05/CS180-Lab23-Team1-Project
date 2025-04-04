@@ -16,30 +16,30 @@ import java.util.*;
  * @version April 01, 2025
  */
 
-public class Item implements Serializable, ItemInterface, Writable<Item> {
+public class Item implements Serializable, ItemInterface {
     private String name;
     private double price;
     private String description;
     private String sellerID;
-    private static ArrayList<Item> item = new ArrayList<>();
-    private static File itemData = null;
+    private static ArrayList<Item> ItemList = new ArrayList<>();
+    private static File saveFile = null;
 
     public Item(String name, double price, String description, String sellerID, String fileName) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.sellerID = sellerID;
-        item.add(this);
-        if (itemData == null) {    
+        if (saveFile == null) {
             try {
-                itemData = new File(fileName);
-                if (!itemData.exists()) {
-                    itemData.createNewFile();
+                saveFile = new File(fileName);
+                if (!saveFile.exists()) {
+                    saveFile.createNewFile();
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
+        ItemList.add(this);
     }
 
     // Implement Item interface
@@ -75,33 +75,34 @@ public class Item implements Serializable, ItemInterface, Writable<Item> {
         this.name = itemName;
     }
 
-
-    public static ArrayList<Item> getList() {
-        return new ArrayList<>(item);
+    public boolean equals(Item item) {
+        return (sellerID.equals(item.getSellerID()) && name.equals(item.getName()));
     }
 
+    public static ArrayList<Item> getList() {
+        return ItemList;
+    }
 
-    // Implement Writable interface
-    public synchronized void writeObject(ArrayList<Item> list) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(itemData))) {
-                oos.writeObject(list);
+    // Implement File I/O methods
+    public static synchronized void writeObject() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+                oos.writeObject(ItemList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<Item> readObject() {
+    public static synchronized ArrayList<Item> readObject() {
         ArrayList<Item> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(itemData))) {
-            objects = (ArrayList<Item>) ois.readObject();
-            return objects;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
+            ItemList = (ArrayList<Item>) ois.readObject();
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
         
-        return objects;
+        return ItemList;
     }
 
     @Override

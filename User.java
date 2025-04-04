@@ -10,7 +10,7 @@ import java.util.*;
  * @version March 31, 2025
  */
 
-public class User implements Serializable, UserInterface, Writable<User> {
+public class User implements Serializable, UserInterface {
 
     // Fields
     private String username;
@@ -19,8 +19,8 @@ public class User implements Serializable, UserInterface, Writable<User> {
     private ArrayList<Item> itemsList = new ArrayList<>();
     private ArrayList<Message> messagesSent = new ArrayList<>();
     private ArrayList<Message> messagesReceived = new ArrayList<>();
-    private static ArrayList<User> user = new ArrayList<>();
-    private static File userData = null;
+    private static ArrayList<User> userList = new ArrayList<>();
+    private static File saveFile = null;
 
     // Constructor
     public User(String username, String password, double balance, ArrayList<Item> itemsList, ArrayList<Message> messagesSent, ArrayList<Message> messageReceieved, String filename) {
@@ -30,17 +30,17 @@ public class User implements Serializable, UserInterface, Writable<User> {
         this.itemsList = itemsList;
         this.messagesSent = messagesSent;
         this.messagesReceived = messageReceieved;
-        user.add(this);
-        if (userData == null) {    
+        if (saveFile == null) {    
             try {
-                userData = new File(filename);
-                if (!userData.exists()) {
-                    userData.createNewFile();
+                saveFile = new File(filename);
+                if (!saveFile.exists()) {
+                    saveFile.createNewFile();
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
+        userList.add(this);
     }
 
     // Implement UserInterface
@@ -92,31 +92,34 @@ public class User implements Serializable, UserInterface, Writable<User> {
         this.messagesReceived = messagesReceived;
     }
 
-    public static ArrayList<User> getList() {
-        return new ArrayList<>(user);
+    public boolean equals(User user) {
+        return username.equals(user.getUsername());
     }
 
-    // Implement Writable interface
-    public synchronized void writeObject(ArrayList<User> list) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(userData))) {
-                oos.writeObject(list);
+    public static ArrayList<User> getList() {
+        return userList;
+    }
+
+    // Implement File I/O methods
+    public static synchronized void writeObject() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+            oos.writeObject(userList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public synchronized ArrayList<User> readObject() {
+    public static synchronized ArrayList<User> readObject() {
         ArrayList<User> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userData))) {
-            objects = (ArrayList<User>) ois.readObject();
-            return objects;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
+            userList = (ArrayList<User>) ois.readObject();
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
         
-        return objects;
+        return userList;
     }
 
     @Override

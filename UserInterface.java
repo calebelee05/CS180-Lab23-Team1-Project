@@ -22,4 +22,5 @@ public interface UserInterface {
     void setItems(ArrayList<Item> itemsList);
     void setMessagesSent(ArrayList<Message> messagesSent);
     void setMessagesReceived(ArrayList<Message> messagesReceived);
+    boolean equals(User user);
 }

@@ -17,15 +17,15 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message implements Serializable, MessageInterface, Writable<Message> {
+public class Message implements Serializable, MessageInterface {
 
     // Fields
     private String senderID;
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
-    private static ArrayList<Message> message = new ArrayList<>();
-    private static File messageData = null;
+    private static ArrayList<Message> messageList = new ArrayList<>();
+    private static File saveFile = null;
 
     // Constructors
     public Message(String senderID, String recipientID, String contents, String filename) {
@@ -33,17 +33,17 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
-        message.add(this);
-        if (messageData == null) {    
+        if (saveFile == null) {    
             try {
-                messageData = new File(filename);
-                if (!messageData.exists()) {
-                    messageData.createNewFile();
+                saveFile = new File(filename);
+                if (!saveFile.exists()) {
+                    saveFile.createNewFile();
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
+        messageList.add(this);
     }
 
     // Implement MessageInterface
@@ -80,13 +80,13 @@ public class Message implements Serializable, MessageInterface, Writable<Message
     }
 
     public static ArrayList<Message> getList() {
-        return new ArrayList<>(message);
+        return messageList;
     }
 
-    // Implement Writable interface
-    public synchronized void writeObject(ArrayList<Message> list) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(messageData))) {
-                oos.writeObject(list);
+    // Implement File I/O methods
+    public static synchronized void writeObject() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+                oos.writeObject(messageList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -94,16 +94,15 @@ public class Message implements Serializable, MessageInterface, Writable<Message
 
     public synchronized ArrayList<Message> readObject() {
         ArrayList<Message> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(messageData))) {
-            objects = (ArrayList<Message>) ois.readObject();
-            return objects;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
+            messageList = (ArrayList<Message>) ois.readObject();
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
         
-        return objects;
+        return messageList;
     }
 
     @Override
