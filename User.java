@@ -96,6 +96,14 @@ public class User implements Serializable, UserInterface {
         return username.equals(user.getUsername());
     }
 
+    // TODO: Implement methods in UserInterface
+
+    /* TODO: Find and return user with the username from the userList
+     * public static User findUser(String username)
+     */
+    
+
+
     public static ArrayList<User> getList() {
         return userList;
     }
@@ -118,7 +126,6 @@ public class User implements Serializable, UserInterface {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        
         return userList;
     }
 

@@ -18,4 +18,7 @@ public interface ItemInterface {
     void setDescription(String description);
     void setName(String itemName);
     boolean equals(Item item);
+
+    // TODO: Need to implement
+    void deleteItem(); // Remove item from itemList
 }

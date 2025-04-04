@@ -79,6 +79,10 @@ public class Item implements Serializable, ItemInterface {
         return (sellerID.equals(item.getSellerID()) && name.equals(item.getName()));
     }
 
+    /* TODO (maybe later): return items corresponding to search keyword
+     *  public static ArrayList<Item> searchItems(String searchFor)
+     */
+
     public static ArrayList<Item> getList() {
         return ItemList;
     }
