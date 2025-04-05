@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * A UserInterface interface
@@ -15,13 +15,13 @@ public interface UserInterface {
     double getBalance();
     ArrayList<ItemInterface> getItems();
     ArrayList<MessageInterface> getMessagesSent();
-    ArrayList<MessageInterface> getMessagesReceived();
+    List<MessageInterface> getMessagesReceived();
     void setUsername(String username);
     void setPassword(String password);
     void setBalance(double balance);
     void setItems(ArrayList<ItemInterface> itemsList);
     void setMessagesSent(ArrayList<MessageInterface> messagesSent);
-    void setMessagesReceived(ArrayList<MessageInterface> messagesReceived);
+    void setMessagesReceived(List<MessageInterface> messagesReceived);
     boolean equals(UserInterface user);
 
     // TODO: Need to implement

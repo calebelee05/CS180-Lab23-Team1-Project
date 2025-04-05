@@ -18,7 +18,7 @@ public class User implements Serializable, UserInterface {
     private double balance;
     private ArrayList<ItemInterface> itemsList = new ArrayList<>();
     private ArrayList<MessageInterface> messagesSent = new ArrayList<>();
-    private ArrayList<MessageInterface> messagesReceived = new ArrayList<>();
+    private List<MessageInterface> messagesReceived = Collections.synchronizedList(new ArrayList<>());
     private static List<UserInterface> userList = Collections.synchronizedList(new ArrayList<>());
     private static final String FILEPATH = "UserData.txt";
 
@@ -59,7 +59,7 @@ public class User implements Serializable, UserInterface {
         return messagesSent;
     }
 
-    public ArrayList<MessageInterface> getMessagesReceived() {
+    public List<MessageInterface> getMessagesReceived() {
         return messagesReceived;
     }
     
@@ -83,7 +83,7 @@ public class User implements Serializable, UserInterface {
         this.messagesSent = messagesSent;
     }
 
-    public void setMessagesReceived(ArrayList<MessageInterface> messagesReceived) {
+    public void setMessagesReceived(List<MessageInterface> messagesReceived) {
         this.messagesReceived = messagesReceived;
     }
 
