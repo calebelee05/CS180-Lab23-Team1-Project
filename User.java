@@ -87,6 +87,7 @@ public class User implements Serializable, UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
+    @Override
     public boolean equals(UserInterface user) {
         return username.equals(user.getUsername());
     }
@@ -97,7 +98,19 @@ public class User implements Serializable, UserInterface {
      * public static User findUser(String username)
      */
 
-    public void deleteUser() {} // Remove user from userList, delete all items user has listed
+    public void deleteUser() {
+
+        userList.remove(this);
+
+        for (int i = 0; i < Item.getList().size(); i++) {
+            if (Item.getList().get(i).getSellerID().equals(this.username)) {
+                Item.getList().remove(i);
+            }
+        }
+
+        writeObject();
+
+    } // Remove user from userList, delete all items user has listed
     // Consider how to deal with messages sent by user; delete completely? or display as "DeletedUser" to message recipients?
 
     // Item Listing
@@ -107,11 +120,18 @@ public class User implements Serializable, UserInterface {
     public void setItem(ItemInterface item, String name, double price, String description) {} // Edit item in the listing with this name
 
     // Balance Tracking
-    public void buyItem(ItemInterface item) {} // user bought item; decrease balance by item price
-    public void sellItem(ItemInterface item) {} // user sold item; increase balance by item price
+    public void buyItem(ItemInterface item) {
+        this.balance -= item.getPrice();
+    } // user bought item; decrease balance by item price
+    public void sellItem(ItemInterface item) {
+        this.balance += item.getPrice();
+    } // user sold item; increase balance by item price
 
     // Messaging
-    public void sendMessage(UserInterface recipient, String content) {} // Send message to recipient
+    public void sendMessage(UserInterface recipient, String content) {
+        Message message = new Message(this.username, recipient.getUsername(), content);
+        Message.getList().add(message);
+    } // Send message to recipient
 
 
     public static List<UserInterface> getList() {

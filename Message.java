@@ -1,4 +1,10 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -11,14 +17,14 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message implements Serializable, MessageInterface {
+public class Message implements Serializable, MessageInterface, Writable<Message> {
 
     // Fields
     private String senderID;
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
-    private static List<MessageInterface> messageList = Collections.synchronizedList(new ArrayList<>());
+    private static ArrayList<Message> message = new ArrayList<>();
     private static final String FILEPATH = "MessageData.txt";
 
     // Constructors
@@ -35,7 +41,7 @@ public class Message implements Serializable, MessageInterface {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        messageList.add(this);
+        message.add(this);
     }
 
     // Implement MessageInterface
@@ -71,30 +77,31 @@ public class Message implements Serializable, MessageInterface {
         this.timestamp = timestamp;
     }
 
-    public static List<MessageInterface> getList() {
-        return messageList;
+    public static ArrayList<Message> getList() {
+        return new ArrayList<>(message);
     }
 
-    // Implement File I/O methods
-    public static synchronized void writeObject() {
+    // Implement Writable interface
+    public synchronized void writeObject(ArrayList<Message> list) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-                oos.writeObject(messageList);
+                oos.writeObject(list);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static synchronized List<MessageInterface> readObject() {
+    public synchronized ArrayList<Message> readObject() {
+        ArrayList<Message> objects = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
-            List<MessageInterface> objects = (List<MessageInterface>) ois.readObject();
-            messageList = Collections.synchronizedList(objects);
+            objects = (ArrayList<Message>) ois.readObject();
+            return objects;
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
         
-        return messageList;
+        return objects;
     }
 
     @Override

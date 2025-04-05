@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * An item class
+ * An Item class
  *
  * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
  *
@@ -81,7 +81,10 @@ public class Item implements Serializable, ItemInterface {
      *  public static ArrayList<Item> searchItems(String searchFor)
      */
 
-    public void deleteItem() {}
+    public void deleteItem() {
+        itemList.remove(this);
+        writeObject();
+    }
 
     public static List<ItemInterface> getList() {
         return itemList;
