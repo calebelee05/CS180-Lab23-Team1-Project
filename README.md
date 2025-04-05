@@ -6,7 +6,7 @@ Topic: A Market Place
 Phase 1: Building the database, interfaces and test cases
 This phase covers the creation of the database for the market place. This includes creating and deleting the user and retailer accounts. It also involves adding, deleting and searching for items. 
 
-  Message.java
+## Message.java
     Fields
     - private String senderID: The ID of the message sender.
     - private String recipientID: The ID of the message recipient.
@@ -37,7 +37,7 @@ This phase covers the creation of the database for the market place. This includ
     - MessageInterface: Defines the methods implemented by the Message class.
     - Writable<Message>: Used to read and write Message objects from and to a file.
 
-  MessageInterface.java
+## MessageInterface.java
     Methods:
     - String getSenderID(): returns the senderID
     - void setSenderID(String senderID): takes the senderID as a parameter and sets the value for the instance variable
