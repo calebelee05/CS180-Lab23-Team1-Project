@@ -93,7 +93,30 @@ This phase covers the creation of the database for the market place. This includ
     - Serializable: Serializes instances of the User class.
     - UserInterface: Defines the methods implemented by the User class.
 - 
-  UserInterface.java
+## UserInterface.java
+    Methods
+    - String getUsername(): Returns the username of the user.
+    - String getPassword(): Returns the password of the user.
+    - double getBalance(): Returns the current balance of the user.
+    - ArrayList<ItemInterface> getItems(): Returns the list of items listed by the user.
+    - ArrayList<MessageInterface> getMessagesSent(): Returns the list of messages sent by the user.
+    - List<MessageInterface> getMessagesReceived(): Returns the list of messages received by the user.
+    - void setUsername(String username): Sets the username of the user.
+    - void setPassword(String password): Sets the password of the user.
+    - void setBalance(double balance): Sets the balance of the user.
+    - void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
+    - void setMessagesSent(ArrayList<MessageInterface> messagesSent): Sets the list of messages sent by the user.
+    - void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
+    - boolean equals(UserInterface user): Checks if this user is equal to another user based on the username.
+    - void deleteUser(): Removes the user from the userList and deletes all items listed by the user.
+    - void addItem(String name, double price, String description): Adds a new item to the user's item list.
+    - ItemInterface getItem(String name): Returns the item with the given name from the user's item list.
+    - void deleteItem(ItemInterface item): Deletes an item from the user's item list.
+    - void setItem(ItemInterface item, String name, double price, String description): Edits an item in the user's item list.
+    - void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
+    - void sellItem(ItemInterface item): Increases the user's balance by the item's price.
+    - void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+
   Item.java
   ItemInterface.java
   Writable.java
