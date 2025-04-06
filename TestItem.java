@@ -1,9 +1,8 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.List;
-import java.util.ArrayList;
 
-public class ItemTest {
+public class TestItem {
     // Instance variables used for testing with generic items
     String itemName = "Item 1";
     String itemDescription = "Test Item 1";
