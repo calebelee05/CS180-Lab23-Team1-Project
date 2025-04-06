@@ -31,11 +31,10 @@ This phase covers the creation of the database for the market place. This includ
     - public synchronized void writeObject(ArrayList<Message> list): Writes the arraylist of Message objects to the file.
     - public synchronized ArrayList<Message> readObject(): Reads Message objects from the file and returns them as an ArrayList.
     - public String toString(): Returns a String representation of the Message object.
+    - public boolean equals(Object object): Returns true if the object is a Message object and the senderID, recipientID, timestamp is the same.
     
     Interfaces Implemented
-    - Serializable: Serializes instances of the Message class.
     - MessageInterface: Defines the methods implemented by the Message class.
-    - Writable<Message>: Used to read and write Message objects from and to a file.
 
 ## MessageInterface.java
     Methods:
@@ -47,6 +46,8 @@ This phase covers the creation of the database for the market place. This includ
     - void setContents(String contents): Sets the contents.
     - ZonedDateTime getTimestamp(): Returns the timestamp.
     - void setTimeStamp(ZonedDateTime timestamp): Sets the timestamp.
+
+    Extends Serializable interface: Serializes instances of MessageInterface.
     
 ## User.java
     Fields
@@ -84,6 +85,9 @@ This phase covers the creation of the database for the market place. This includ
     - public void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
     - public void sellItem(ItemInterface item): Increases the user's balance by the item's price.
     - public void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+    - public void receiveMessage(MessageInterface message): Receives a message sent.
+    - public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException: Returns messages sent by the specified sender.
+    - public MessageInterface getMessageToUser(String recipient) throws UserNotFoundException: Returns messages sent to the specified recipient.
     - public static List<UserInterface> getList(): Returns the list of all User objects.
     - public static synchronized void writeObject(): Writes the `userList` to the file.
     - public static synchronized List<UserInterface> readObject(): Reads User objects from the file and returns them as a list.
@@ -116,6 +120,8 @@ This phase covers the creation of the database for the market place. This includ
     - void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
     - void sellItem(ItemInterface item): Increases the user's balance by the item's price.
     - void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+
+    Extends Serializable interface: Serializes instances of UserInterface.
 
 ## Item.java
     Fields
