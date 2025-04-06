@@ -162,4 +162,7 @@ This phase covers the creation of the database for the market place. This includ
     - boolean equals(ItemInterface item): Checks if this item is equal to another item.
     - void deleteItem(): Removes the item from the itemList.
 
-  Writable.java
+## Writable.java
+    Methods
+    - void writeObject(ArrayList<T> list): Writes a list of Serializable objects to a file.
+    - ArrayList<T> readObject(): Reads a list of Serializable objects from a file.
