@@ -18,7 +18,6 @@ public interface ItemInterface extends Serializable {
     void setPrice(double price);
     void setDescription(String description);
     void setName(String itemName);
-    boolean equals(ItemInterface item);
 
     // TODO: Need to implement
     void deleteItem(); // Remove item from itemList

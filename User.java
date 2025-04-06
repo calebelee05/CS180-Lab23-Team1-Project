@@ -87,11 +87,6 @@ public class User implements Serializable, UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
-    @Override
-    public boolean equals(UserInterface user) {
-        return username.equals(user.getUsername());
-    }
-
     // TODO: Implement methods in UserInterface
 
     /* TODO: Find and return user with the username from the userList
@@ -121,7 +116,7 @@ public class User implements Serializable, UserInterface {
 
     // Item Listing
     public void addItem(String name, double price, String description) {
-        itemsList.add(new Item(name, price, description, username));
+        itemsList.add(new Item(name, price, description, this.username));
     } // Shouldn't allow users to add more than one items with same name?
 
     public ItemInterface getItem(String name) throws ItemNotFoundError {
@@ -180,6 +175,16 @@ public class User implements Serializable, UserInterface {
             e.printStackTrace();
         }
         return userList;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        try {
+            UserInterface user = (User) object;
+            return username.equals(user.getUsername());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

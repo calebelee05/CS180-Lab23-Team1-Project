@@ -20,5 +20,4 @@ public interface MessageInterface extends Serializable {
     ZonedDateTime getTimestamp();
     void setTimeStamp(ZonedDateTime timestamp);
     void deleteMessage();
-    boolean equals(MessageInterface message);
 }
