@@ -166,5 +166,13 @@ This phase covers the creation of the database for the market place. This includ
     - boolean equals(ItemInterface item): Checks if this item is equal to another item.
     - void deleteItem(): Removes the item from the itemList.
 
-    
-    Extends Serializable interface: Serializes instances of ItemInterface.
+    Interfaces Implemented
+    - Serializable: Serializes instances of ItemInterface.
+
+## ItemNotFoundException.java
+    Constructors
+    - public ItemNotFoundException(String message): Instantiates a new ItemNotFoundException with the provided message.
+
+## UserNotFoundException.java
+    Constructors
+    - public UserNotFoundException(String message): Instantiates a new UserNotFoundException with the provided message.
