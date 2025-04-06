@@ -161,7 +161,7 @@ public class User implements Serializable, UserInterface {
 
     public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException {
         for (int i = 0; i < messagesReceived.size(); i++) {
-            if (messagesReceived.get(i).getRecipientID().equals(senderID)) {
+            if (messagesReceived.get(i).getSenderID().equals(senderID)) {
                 return messagesReceived.get(i);
             }
         }
