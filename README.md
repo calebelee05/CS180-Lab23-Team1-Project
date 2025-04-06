@@ -117,6 +117,49 @@ This phase covers the creation of the database for the market place. This includ
     - void sellItem(ItemInterface item): Increases the user's balance by the item's price.
     - void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
 
-  Item.java
-  ItemInterface.java
+## Item.java
+    Fields
+    - private String name: The name of the item.
+    - private double price: The price of the item.
+    - private String description: The description of the item.
+    - private String sellerID: The ID of the seller of the item.
+    - private static List<ItemInterface> itemList: A synchronized List to store all Item objects.
+    - private static final String FILEPATH: A constant String representing the file path for storing Item objects (ItemData.txt).
+
+    Constructors
+    - public Item(String name, double price, String description, String sellerID): Initializes a new Item object with the provided name, price, description, and seller ID. It also creates a new file if it doesn't exist and adds the newly instantiated Item object to the `itemList`.
+
+    Methods
+    - public String getName(): Returns the name of the item.
+    - public double getPrice(): Returns the price of the item.
+    - public String getDescription(): Returns the description of the item.
+    - public String getSellerID(): Returns the seller ID of the item.
+    - public void setSellerID(String sellerID): Sets the seller ID of the item.
+    - public void setPrice(double price): Sets the price of the item.
+    - public void setDescription(String description): Sets the description of the item.
+    - public void setName(String itemName): Sets the name of the item.
+    - public boolean equals(ItemInterface item): Checks if this item is equal to another item based on the seller ID and name.
+    - public void deleteItem(): Removes the item from the `itemList`.
+    - public static List<ItemInterface> getList(): Returns the list of all Item objects.
+    - public static synchronized void writeObject(): Writes the `itemList` to the file.
+    - public static synchronized List<ItemInterface> readObject(): Reads Item objects from the file and returns them as a list.
+    - public String toString(): Returns a String representation of the Item object.
+
+    Interfaces Implemented
+    - Serializable: Serializes instances of the Item class.
+    - ItemInterface: Defines the methods implemented by the Item class.
+
+## ItemInterface.java
+    Methods
+    - String getName(): Returns the name of the item.
+    - double getPrice(): Returns the price of the item.
+    - String getDescription(): Returns the description of the item.
+    - String getSellerID(): Returns the seller ID of the item.
+    - void setSellerID(String sellerID): Sets the seller ID of the item.
+    - void setPrice(double price): Sets the price of the item.
+    - void setDescription(String description): Sets the description of the item.
+    - void setName(String itemName): Sets the name of the item.
+    - boolean equals(ItemInterface item): Checks if this item is equal to another item.
+    - void deleteItem(): Removes the item from the itemList.
+
   Writable.java
