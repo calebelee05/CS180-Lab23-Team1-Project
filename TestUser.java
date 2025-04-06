@@ -94,7 +94,7 @@ public class TestUser {
         
         user1.sendMessage(user2, messageContent);
 
-        assertEquals(messageContent, user2.getMessageFromUser(username).getContents()); // Test sendMessage(), receiveMessage(), getMessageFromUser()
-        assertEquals(messageContent, user1.getMessageToUser(username2).getContents()); // Test getMessageToUser()
+        assertEquals(messageContent, user2.getMessageFromUser(username).get(0).getContents()); // Test sendMessage(), receiveMessage(), getMessageFromUser()
+        assertEquals(messageContent, user1.getMessageToUser(username2).get(0).getContents()); // Test getMessageToUser()
     }
 }
