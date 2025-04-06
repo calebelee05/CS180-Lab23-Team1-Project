@@ -78,7 +78,7 @@ This phase covers the creation of the database for the market place. This includ
     - public void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
     - public void deleteUser(): Removes the user from the `userList` and deletes all items listed by the user.
     - public void addItem(String name, double price, String description): Adds a new item to the user's item list.
-    - public ItemInterface getItem(String name): Returns the item with the given name from the user's item list.
+    - public ItemInterface getItem(String name) throws ItemNotFoundException: Returns the item with the given name from the user's item list. Throws ItemNotFoundException if item with the name does not exist in the list.
     - public void deleteItem(ItemInterface item): Deletes an item from the user's item list.
     - public void setItem(ItemInterface item, String name, double price, String description): Edits an item in the user's item list.
     - public void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
