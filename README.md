@@ -76,7 +76,6 @@ This phase covers the creation of the database for the market place. This includ
     - public void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
     - public void setMessagesSent(ArrayList<MessageInterface> messagesSent): Sets the list of messages sent by the user.
     - public void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
-    - public boolean equals(UserInterface user): Checks if this user is equal to another user based on the username.
     - public void deleteUser(): Removes the user from the `userList` and deletes all items listed by the user.
     - public void addItem(String name, double price, String description): Adds a new item to the user's item list.
     - public ItemInterface getItem(String name): Returns the item with the given name from the user's item list.
@@ -92,9 +91,9 @@ This phase covers the creation of the database for the market place. This includ
     - public static synchronized void writeObject(): Writes the `userList` to the file.
     - public static synchronized List<UserInterface> readObject(): Reads User objects from the file and returns them as a list.
     - public String toString(): Returns a String representation of the User object.
+    - public boolean equals(Object object): Checks if this user is equal to another user based on the username.
 
     Interfaces Implemented
-    - Serializable: Serializes instances of the User class.
     - UserInterface: Defines the methods implemented by the User class.
 - 
 ## UserInterface.java
@@ -152,7 +151,6 @@ This phase covers the creation of the database for the market place. This includ
     - public String toString(): Returns a String representation of the Item object.
 
     Interfaces Implemented
-    - Serializable: Serializes instances of the Item class.
     - ItemInterface: Defines the methods implemented by the Item class.
 
 ## ItemInterface.java
@@ -168,7 +166,5 @@ This phase covers the creation of the database for the market place. This includ
     - boolean equals(ItemInterface item): Checks if this item is equal to another item.
     - void deleteItem(): Removes the item from the itemList.
 
-## Writable.java
-    Methods
-    - void writeObject(ArrayList<T> list): Writes a list of Serializable objects to a file.
-    - ArrayList<T> readObject(): Reads a list of Serializable objects from a file.
+    
+    Extends Serializable interface: Serializes instances of ItemInterface.
