@@ -23,7 +23,6 @@ public interface UserInterface extends Serializable {
     void setItems(ArrayList<ItemInterface> itemsList);
     void setMessagesSent(ArrayList<MessageInterface> messagesSent);
     void setMessagesReceived(List<MessageInterface> messagesReceived);
-    boolean equals(UserInterface user);
 
     // TODO: Need to implement
 

@@ -75,11 +75,6 @@ public class Message implements MessageInterface {
         messageList.remove(this);
     }
 
-    public boolean equals(MessageInterface message) {
-        return (message.getSenderID().equals(senderID) && message.getRecipientID().equals(recipientID)
-            && message.getTimestamp().equals(timestamp));
-    }
-
     public static ArrayList<MessageInterface> getList() {
         return new ArrayList<>(messageList);
     }
@@ -102,6 +97,17 @@ public class Message implements MessageInterface {
         }
         
         return messageList;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        try {
+            MessageInterface message = (Message) object;
+            return (message.getSenderID().equals(senderID) && message.getRecipientID().equals(recipientID)
+                && message.getTimestamp().equals(timestamp));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

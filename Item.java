@@ -72,9 +72,7 @@ public class Item implements ItemInterface {
         this.name = itemName;
     }
 
-    public boolean equals(ItemInterface item) {
-        return (sellerID.equals(item.getSellerID()) && name.equals(item.getName()));
-    }
+    
 
     /* TODO (maybe later): return items corresponding to search keyword
      *  public static ArrayList<Item> searchItems(String searchFor)
@@ -109,6 +107,16 @@ public class Item implements ItemInterface {
         }
         
         return itemList;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        try {
+            ItemInterface item = (Item) object;
+            return (sellerID.equals(item.getSellerID()) && name.equals(item.getName()));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
