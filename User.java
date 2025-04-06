@@ -132,15 +132,23 @@ public class User implements Serializable, UserInterface {
         }
         throw new ItemNotFoundError("Item does not exist");
     } // Return item with this name
-    public void deleteItem(ItemInterface item) {
 
+    public void deleteItem(ItemInterface item) {
+        itemsList.remove(item);
+        item.deleteItem();
     } // Delete item from listing (and from database)
-    public void setItem(ItemInterface item, String name, double price, String description) {} // Edit item in the listing with this name
+
+    public void setItem(ItemInterface item, String name, double price, String description) {
+        item.setName(name);
+        item.setPrice(price);
+        item.setDescription(description);
+    } // Edit item in the listing with this name
 
     // Balance Tracking
     public void buyItem(ItemInterface item) {
         this.balance -= item.getPrice();
     } // user bought item; decrease balance by item price
+    
     public void sellItem(ItemInterface item) {
         this.balance += item.getPrice();
     } // user sold item; increase balance by item price
