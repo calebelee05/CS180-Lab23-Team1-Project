@@ -32,7 +32,7 @@ public interface UserInterface extends Serializable {
 
     // Item Listing
     void addItem(String name, double price, String description); // Shouldn't allow users to add more than one items with same name?
-    ItemInterface getItem(String name) throws ItemNotFoundError; // Return item with this name
+    ItemInterface getItem(String name) throws ItemNotFoundException; // Return item with this name
     void deleteItem(ItemInterface item); // Delete item from listing (and from database)
     void setItem(ItemInterface item, String name, double price, String description); // Edit item in the listing with this name
 
@@ -42,5 +42,8 @@ public interface UserInterface extends Serializable {
 
     // Messaging
     void sendMessage(UserInterface recipient, String content); // Send message to recipient
+    void receiveMessage(MessageInterface message); // Receive message
+    MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException; // Find message sent by username
+    MessageInterface getMessageToUser(String recipient) throws UserNotFoundException; // Find message sent to username
 
 }

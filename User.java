@@ -119,13 +119,13 @@ public class User implements Serializable, UserInterface {
         itemsList.add(new Item(name, price, description, this.username));
     } // Shouldn't allow users to add more than one items with same name?
 
-    public ItemInterface getItem(String name) throws ItemNotFoundError {
+    public ItemInterface getItem(String name) throws ItemNotFoundException {
         for (int i = 0; i < itemsList.size(); i++) {
             if (itemsList.get(i).getName().equals(name)) {
                 return itemsList.get(i);
             }
         }
-        throw new ItemNotFoundError("Item does not exist");
+        throw new ItemNotFoundException("Item does not exist");
     } // Return item with this name
 
     public void deleteItem(ItemInterface item) {
@@ -150,8 +150,32 @@ public class User implements Serializable, UserInterface {
 
     // Messaging
     public void sendMessage(UserInterface recipient, String content) {
-        messagesSent.add(new Message(username, recipient.getUsername(), content));
+        MessageInterface message = new Message(username, recipient.getUsername(), content);
+        messagesSent.add(message);
+        recipient.receiveMessage(message);
     } // Send message to recipient
+
+    public void receiveMessage(MessageInterface message) {
+        messagesReceived.add(message);
+    }
+
+    public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException {
+        for (int i = 0; i < messagesReceived.size(); i++) {
+            if (messagesReceived.get(i).getRecipientID().equals(senderID)) {
+                return messagesReceived.get(i);
+            }
+        }
+        throw new UserNotFoundException("No message sent from user");
+    }
+
+    public MessageInterface getMessageToUser(String recipientID) throws UserNotFoundException {
+        for (int i = 0; i < messagesSent.size(); i++) {
+            if (messagesSent.get(i).getRecipientID().equals(recipientID)) {
+                return messagesSent.get(i);
+            }
+        }
+        throw new UserNotFoundException("No message sent to user");
+    }
 
 
     public static List<UserInterface> getList() {
