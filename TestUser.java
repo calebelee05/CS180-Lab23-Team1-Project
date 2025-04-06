@@ -60,7 +60,7 @@ public class TestUser {
 
     // Test Item listing manipulation
     @Test
-    public void testItemManipulation() throws ItemNotFoundError {
+    public void testItemManipulation() throws ItemNotFoundException {
         String newItemName = "Modified Item 2";
         String newItemDescription = "Modified Test Item 2";
         double newItemPrice = 10.0;
@@ -84,6 +84,17 @@ public class TestUser {
         assertEquals(0, user1.getItems().size()); // Test deleteItem()
     }
 
+    
+    // Test user messaging
     @Test
-    public void test
+    public void testMessage() throws UserNotFoundException {
+        String messageContent = "Hello";
+        String username2 = "User2";
+        UserInterface user2 = new User(username2,"qwer",0.0);
+        
+        user1.sendMessage(user2, messageContent);
+
+        assertEquals(messageContent, user2.getMessageFromUser(username).getContents()); // Test sendMessage(), receiveMessage(), getMessageFromUser()
+        assertEquals(messageContent, user1.getMessageToUser(username2).getContents()); // Test getMessageToUser()
+    }
 }
