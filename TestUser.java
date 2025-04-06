@@ -23,7 +23,7 @@ public class TestUser {
     UserInterface user1 = new User("", "", 0.0);
 
     @Test
-    public void TestGettersSetters() {
+    public void testGettersSetters() {
         user1.setUsername(username);
         user1.setBalance(balance);
         user1.setPassword(password);
@@ -44,4 +44,7 @@ public class TestUser {
         assertEquals(password, user1.getPassword());
         assertEquals(true,user1.equals(user1Copy));
     }
+
+    @Test
+    public void test
 }
