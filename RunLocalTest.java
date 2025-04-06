@@ -10,6 +10,6 @@ public class RunLocalTest {
          System.out.println(failure.toString());
       }
 		
-      System.out.println(result.wasSuccessful());
+      System.out.println("All tests passed successfully: " + result.wasSuccessful());
    }
 }  	
