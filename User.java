@@ -102,10 +102,12 @@ public class User implements Serializable, UserInterface {
 
         userList.remove(this);
 
-        for (int i = 0; i < Item.getList().size(); i++) {
-            if (Item.getList().get(i).getSellerID().equals(this.username)) {
-                Item.getList().remove(i);
-            }
+        for (int i = 0; i < itemsList.size(); i++) {
+            itemsList.get(i).deleteItem();
+        }
+        
+        for (int j = 0; j < messagesSent.size(); j++) {
+            messagesSent.get(j).deleteMessage();
         }
 
         writeObject();
@@ -129,8 +131,7 @@ public class User implements Serializable, UserInterface {
 
     // Messaging
     public void sendMessage(UserInterface recipient, String content) {
-        Message message = new Message(this.username, recipient.getUsername(), content);
-        Message.getList().add(message);
+        messagesSent.add(new Message(username, recipient.getUsername(), content));
     } // Send message to recipient
 
 
