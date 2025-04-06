@@ -102,10 +102,16 @@ public class User implements Serializable, UserInterface {
 
         userList.remove(this);
 
-        for (int i = 0; i < Item.getList().size(); i++) {
-            if (Item.getList().get(i).getSellerID().equals(this.username)) {
-                Item.getList().remove(i);
-            }
+        for (int i = 0; i < itemsList.size(); i++) {
+            itemsList.get(i).deleteItem();
+        }
+        
+        for (int j = 0; j < messagesSent.size(); j++) {
+            messagesSent.get(j).deleteMessage();
+        }
+
+        for (int k = 0; k < messagesReceived.size(); k++) {
+            messagesReceived.get(k).deleteMessage();
         }
 
         writeObject();
@@ -114,9 +120,21 @@ public class User implements Serializable, UserInterface {
     // Consider how to deal with messages sent by user; delete completely? or display as "DeletedUser" to message recipients?
 
     // Item Listing
-    public void addItem(String name, double price, String description) {} // Shouldn't allow users to add more than one items with same name?
-    public ItemInterface getItem(String name) {return null;} // Return item with this name
-    public void deleteItem(ItemInterface item) {} // Delete item from listing (and from database)
+    public void addItem(String name, double price, String description) {
+        itemsList.add(new Item(name, price, description, username));
+    } // Shouldn't allow users to add more than one items with same name?
+
+    public ItemInterface getItem(String name) throws ItemNotFoundError {
+        for (int i = 0; i < itemsList.size(); i++) {
+            if (itemsList.get(i).getName().equals(name)) {
+                return itemsList.get(i);
+            }
+        }
+        throw new ItemNotFoundError("Item does not exist");
+    } // Return item with this name
+    public void deleteItem(ItemInterface item) {
+
+    } // Delete item from listing (and from database)
     public void setItem(ItemInterface item, String name, double price, String description) {} // Edit item in the listing with this name
 
     // Balance Tracking
@@ -129,8 +147,7 @@ public class User implements Serializable, UserInterface {
 
     // Messaging
     public void sendMessage(UserInterface recipient, String content) {
-        Message message = new Message(this.username, recipient.getUsername(), content);
-        Message.getList().add(message);
+        messagesSent.add(new Message(username, recipient.getUsername(), content));
     } // Send message to recipient
 
 
@@ -151,10 +168,8 @@ public class User implements Serializable, UserInterface {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
             List<UserInterface> objects = (List<UserInterface>) ois.readObject();
             userList = Collections.synchronizedList(objects);
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return userList;
     }

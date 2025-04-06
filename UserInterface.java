@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -8,7 +9,7 @@ import java.util.*;
  * @author Caleb Lee
  * @version April 3, 2025
  */
-public interface UserInterface {
+public interface UserInterface extends Serializable {
     // Accessors and Modifiers
     String getUsername();
     String getPassword();
@@ -32,7 +33,7 @@ public interface UserInterface {
 
     // Item Listing
     void addItem(String name, double price, String description); // Shouldn't allow users to add more than one items with same name?
-    ItemInterface getItem(String name); // Return item with this name
+    ItemInterface getItem(String name) throws ItemNotFoundError; // Return item with this name
     void deleteItem(ItemInterface item); // Delete item from listing (and from database)
     void setItem(ItemInterface item, String name, double price, String description); // Edit item in the listing with this name
 
