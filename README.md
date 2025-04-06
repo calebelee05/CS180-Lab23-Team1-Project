@@ -31,11 +31,10 @@ This phase covers the creation of the database for the market place. This includ
     - public synchronized void writeObject(ArrayList<Message> list): Writes the arraylist of Message objects to the file.
     - public synchronized ArrayList<Message> readObject(): Reads Message objects from the file and returns them as an ArrayList.
     - public String toString(): Returns a String representation of the Message object.
+    - public boolean equals(Object object): Returns true if the object is a Message object and the senderID, recipientID, timestamp is the same.
     
     Interfaces Implemented
-    - Serializable: Serializes instances of the Message class.
     - MessageInterface: Defines the methods implemented by the Message class.
-    - Writable<Message>: Used to read and write Message objects from and to a file.
 
 ## MessageInterface.java
     Methods:
@@ -47,6 +46,8 @@ This phase covers the creation of the database for the market place. This includ
     - void setContents(String contents): Sets the contents.
     - ZonedDateTime getTimestamp(): Returns the timestamp.
     - void setTimeStamp(ZonedDateTime timestamp): Sets the timestamp.
+
+    Extends Serializable interface: Serializes instances of MessageInterface.
     
 ## User.java
     Fields
@@ -75,22 +76,24 @@ This phase covers the creation of the database for the market place. This includ
     - public void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
     - public void setMessagesSent(ArrayList<MessageInterface> messagesSent): Sets the list of messages sent by the user.
     - public void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
-    - public boolean equals(UserInterface user): Checks if this user is equal to another user based on the username.
     - public void deleteUser(): Removes the user from the `userList` and deletes all items listed by the user.
     - public void addItem(String name, double price, String description): Adds a new item to the user's item list.
-    - public ItemInterface getItem(String name): Returns the item with the given name from the user's item list.
+    - public ItemInterface getItem(String name) throws ItemNotFoundException: Returns the item with the given name from the user's item list. Throws ItemNotFoundException if item with the name does not exist in the list.
     - public void deleteItem(ItemInterface item): Deletes an item from the user's item list.
     - public void setItem(ItemInterface item, String name, double price, String description): Edits an item in the user's item list.
     - public void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
     - public void sellItem(ItemInterface item): Increases the user's balance by the item's price.
     - public void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+    - public void receiveMessage(MessageInterface message): Receives a message sent.
+    - public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException: Returns messages sent by the specified sender.
+    - public MessageInterface getMessageToUser(String recipient) throws UserNotFoundException: Returns messages sent to the specified recipient.
     - public static List<UserInterface> getList(): Returns the list of all User objects.
     - public static synchronized void writeObject(): Writes the `userList` to the file.
     - public static synchronized List<UserInterface> readObject(): Reads User objects from the file and returns them as a list.
     - public String toString(): Returns a String representation of the User object.
+    - public boolean equals(Object object): Checks if this user is equal to another user based on the username.
 
     Interfaces Implemented
-    - Serializable: Serializes instances of the User class.
     - UserInterface: Defines the methods implemented by the User class.
 - 
 ## UserInterface.java
@@ -116,6 +119,8 @@ This phase covers the creation of the database for the market place. This includ
     - void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
     - void sellItem(ItemInterface item): Increases the user's balance by the item's price.
     - void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+
+    Extends Serializable interface: Serializes instances of UserInterface.
 
 ## Item.java
     Fields
@@ -146,7 +151,6 @@ This phase covers the creation of the database for the market place. This includ
     - public String toString(): Returns a String representation of the Item object.
 
     Interfaces Implemented
-    - Serializable: Serializes instances of the Item class.
     - ItemInterface: Defines the methods implemented by the Item class.
 
 ## ItemInterface.java
@@ -162,7 +166,5 @@ This phase covers the creation of the database for the market place. This includ
     - boolean equals(ItemInterface item): Checks if this item is equal to another item.
     - void deleteItem(): Removes the item from the itemList.
 
-## Writable.java
-    Methods
-    - void writeObject(ArrayList<T> list): Writes a list of Serializable objects to a file.
-    - ArrayList<T> readObject(): Reads a list of Serializable objects from a file.
+    
+    Extends Serializable interface: Serializes instances of ItemInterface.

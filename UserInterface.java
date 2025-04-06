@@ -43,7 +43,7 @@ public interface UserInterface extends Serializable {
     // Messaging
     void sendMessage(UserInterface recipient, String content); // Send message to recipient
     void receiveMessage(MessageInterface message); // Receive message
-    MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException; // Find message sent by username
-    MessageInterface getMessageToUser(String recipient) throws UserNotFoundException; // Find message sent to username
+    ArrayList<MessageInterface> getMessageFromUser(String senderID); // Find message sent by username
+    ArrayList<MessageInterface> getMessageToUser(String recipientID); // Find message sent to username
 
 }

@@ -159,22 +159,25 @@ public class User implements Serializable, UserInterface {
         messagesReceived.add(message);
     }
 
-    public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException {
+    public ArrayList<MessageInterface> getMessageFromUser(String senderID) {
+        ArrayList<MessageInterface> messagesFromUser = new ArrayList<>();
         for (int i = 0; i < messagesReceived.size(); i++) {
             if (messagesReceived.get(i).getSenderID().equals(senderID)) {
-                return messagesReceived.get(i);
+                messagesFromUser.add(messagesReceived.get(i));
+                
             }
         }
-        throw new UserNotFoundException("No message sent from user");
+        return messagesFromUser;
     }
 
-    public MessageInterface getMessageToUser(String recipientID) throws UserNotFoundException {
+    public ArrayList<MessageInterface> getMessageToUser(String recipientID) {
+        ArrayList<MessageInterface> messagesToUser = new ArrayList<>();
         for (int i = 0; i < messagesSent.size(); i++) {
             if (messagesSent.get(i).getRecipientID().equals(recipientID)) {
-                return messagesSent.get(i);
+                messagesToUser.add(messagesSent.get(i));
             }
         }
-        throw new UserNotFoundException("No message sent to user");
+        return messagesToUser;
     }
 
 
