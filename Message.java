@@ -24,7 +24,7 @@ public class Message implements Serializable, MessageInterface, Writable<Message
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
-    private static ArrayList<Message> message = new ArrayList<>();
+    private static List<MessageInterface> messageList = Collections.synchronizedList(new ArrayList<>());
     private static final String FILEPATH = "MessageData.txt";
 
     // Constructors
@@ -41,7 +41,7 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        message.add(this);
+        messageList.add(this);
     }
 
     // Implement MessageInterface
@@ -77,11 +77,15 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         this.timestamp = timestamp;
     }
 
-    public static ArrayList<Message> getList() {
-        return new ArrayList<>(message);
+    public void deleteMessage() {
+        messageList.remove(this);
     }
 
-    // Implement Writable interface
+    public static ArrayList<MessageInterface> getList() {
+        return new ArrayList<>(messageList);
+    }
+
+
     public synchronized void writeObject(ArrayList<Message> list) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
                 oos.writeObject(list);

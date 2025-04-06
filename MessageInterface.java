@@ -18,4 +18,5 @@ public interface MessageInterface {
     void setContents(String contents);
     ZonedDateTime getTimestamp();
     void setTimeStamp(ZonedDateTime timestamp);
+    void deleteMessage();
 }
