@@ -39,6 +39,7 @@ public class TestUser {
         user1.setUsername(newUsername);
         user1.setBalance(newBalance);
         user1.setPassword(newPassword);
+
         itemList.add(item);
         messagesSent.add(messageSent);
         messagesReceived.add(messageReceived);
@@ -82,4 +83,7 @@ public class TestUser {
 
         assertEquals(0, user1.getItems().size()); // Test deleteItem()
     }
+
+    @Test
+    public void test
 }
