@@ -1,10 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -17,7 +11,7 @@ import java.util.*;
  * @version March 30, 2025
  */
 
-public class Message implements Serializable, MessageInterface, Writable<Message> {
+public class Message implements MessageInterface {
 
     // Fields
     private String senderID;
@@ -81,12 +75,17 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         messageList.remove(this);
     }
 
+    public boolean equals(MessageInterface message) {
+        return (message.getSenderID().equals(senderID) && message.getRecipientID().equals(recipientID)
+            && message.getTimestamp().equals(timestamp));
+    }
+
     public static ArrayList<MessageInterface> getList() {
         return new ArrayList<>(messageList);
     }
 
 
-    public synchronized void writeObject(ArrayList<Message> list) {
+    public static synchronized void writeObject(ArrayList<MessageInterface> list) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
                 oos.writeObject(list);
         } catch (IOException ioe) {
@@ -94,18 +93,15 @@ public class Message implements Serializable, MessageInterface, Writable<Message
         }
     }
 
-    public synchronized ArrayList<Message> readObject() {
-        ArrayList<Message> objects = new ArrayList<>();
+    public static synchronized List<MessageInterface> readObject() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
-            objects = (ArrayList<Message>) ois.readObject();
-            return objects;
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+            List<MessageInterface> objects = (List<MessageInterface>) ois.readObject();
+            messageList = Collections.synchronizedList(objects);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         
-        return objects;
+        return messageList;
     }
 
     @Override

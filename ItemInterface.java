@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  * A ItemInterface interface
@@ -7,7 +8,7 @@
  * @author Caleb Lee
  * @version April 3, 2025
  */
-public interface ItemInterface {
+public interface ItemInterface extends Serializable {
     // Accessors and Modifiers
     String getName();
     double getPrice();

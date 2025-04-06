@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /**
@@ -8,7 +9,7 @@ import java.time.ZonedDateTime;
  * @author Caleb Lee
  * @version April 3, 2025
  */
-public interface MessageInterface {
+public interface MessageInterface extends Serializable {
     // Accessors and Modifiers
     String getSenderID();
     void setSenderID(String senderID);
@@ -19,4 +20,5 @@ public interface MessageInterface {
     ZonedDateTime getTimestamp();
     void setTimeStamp(ZonedDateTime timestamp);
     void deleteMessage();
+    boolean equals(MessageInterface message);
 }

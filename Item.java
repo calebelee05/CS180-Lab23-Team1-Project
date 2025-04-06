@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -16,7 +15,7 @@ import java.util.*;
  * @version April 01, 2025
  */
 
-public class Item implements Serializable, ItemInterface {
+public class Item implements ItemInterface {
     private String name;
     private double price;
     private String description;
