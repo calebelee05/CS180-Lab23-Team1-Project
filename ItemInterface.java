@@ -28,6 +28,5 @@ public interface ItemInterface extends Serializable {
 
     void setName(String itemName);
 
-    // TODO: Need to implement
     void deleteItem(); // Remove item from itemList
 }
