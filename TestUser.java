@@ -79,7 +79,8 @@ public class TestUser {
         user1.buyItem(itemBought);
         user1.sellItem(item2);
 
-        assertEquals(balance - itemBoughtPrice + newItemPrice, user1.getBalance(), 0.001); // Test buyItem() and sellItem()
+        // Test buyItem() and sellItem()
+        assertEquals(balance - itemBoughtPrice + newItemPrice, user1.getBalance(), 0.001); 
 
         user1.deleteItem(user1.getItem(newItemName));
 
@@ -95,7 +96,9 @@ public class TestUser {
 
         user1.sendMessage(user2, messageContent);
 
-        assertEquals(messageContent, user2.getMessageFromUser(username).get(0).getContents()); // Test sendMessage(), receiveMessage(), getMessageFromUser()
-        assertEquals(messageContent, user1.getMessageToUser(username2).get(0).getContents()); // Test getMessageToUser()
+        // Test sendMessage(), receiveMessage(), getMessageFromUser()
+        assertEquals(messageContent, user2.getMessageFromUser(username).get(0).getContents()); 
+        // Test getMessageToUser()
+        assertEquals(messageContent, user1.getMessageToUser(username2).get(0).getContents()); 
     }
 }
