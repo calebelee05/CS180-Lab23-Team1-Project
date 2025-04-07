@@ -19,7 +19,7 @@ public interface UserInterface extends Serializable {
 
     double getBalance();
 
-    ArrayList<ItemInterface> getItems();
+    ArrayList<ItemInterface> getItemsList();
 
     ArrayList<MessageInterface> getMessagesSent();
 
@@ -31,7 +31,7 @@ public interface UserInterface extends Serializable {
 
     void setBalance(double balance);
 
-    void setItems(ArrayList<ItemInterface> itemsList);
+    void setItemsList(ArrayList<ItemInterface> itemsList);
 
     void setMessagesSent(ArrayList<MessageInterface> messagesSent);
 

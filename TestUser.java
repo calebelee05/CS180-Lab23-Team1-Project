@@ -52,13 +52,13 @@ public class TestUser {
         itemList.add(item);
         messagesSent.add(messageSent);
         messagesReceived.add(messageReceived);
-        user1.setItems(itemList);
+        user1.setItemsList(itemList);
         user1.setMessagesSent(messagesSent);
         user1.setMessagesReceived(messagesReceived);
 
         UserInterface user1Copy = new User(newUsername, newPassword, newBalance);
 
-        assertEquals(itemList, user1.getItems()); // Test getItems()
+        assertEquals(itemList, user1.getItemsList()); // Test getItems()
         assertEquals(messagesSent, user1.getMessagesSent()); // Test getMessagesSent()
         assertEquals(messagesReceived, user1.getMessagesReceived()); // Test getMessagesReceived()
         assertEquals(newUsername, user1.getUsername()); // Test getUsername()
@@ -91,7 +91,7 @@ public class TestUser {
 
         user1.deleteItem(user1.getItem(newItemName));
 
-        assertEquals(0, user1.getItems().size()); // Test deleteItem()
+        assertEquals(0, user1.getItemsList().size()); // Test deleteItem()
     }
 
     // Test user messaging
