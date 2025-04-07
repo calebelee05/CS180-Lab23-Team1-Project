@@ -51,7 +51,7 @@ public class User implements Serializable, UserInterface {
         return balance;
     }
 
-    public ArrayList<ItemInterface> getItems() {
+    public ArrayList<ItemInterface> getItemsList() {
         return itemsList;
     }
 
@@ -75,7 +75,7 @@ public class User implements Serializable, UserInterface {
         this.balance = balance;
     }
 
-    public void setItems(ArrayList<ItemInterface> itemsList) {
+    public void setItemsList(ArrayList<ItemInterface> itemsList) {
         this.itemsList = itemsList;
     }
 
