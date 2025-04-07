@@ -95,7 +95,7 @@ This phase covers the creation of the database for the market place. This includ
 
     Interfaces Implemented
     - UserInterface: Defines the methods implemented by the User class.
-- 
+
 ## UserInterface.java
     Methods
     - String getUsername(): Returns the username of the user.
