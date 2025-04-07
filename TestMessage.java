@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestMessage {
-
+    // Instance variables used for testing with generic messages
     String senderID = "Sender1";
     String recipientID = "Recipient1";
     String contents = "Hello";
     MessageInterface message = new Message(senderID, recipientID, contents);
 
-
+    // Testing Mutators and Accessors
     @Test
     public void testGettersSetters() {
         assertEquals(senderID, message.getSenderID());
@@ -32,6 +32,7 @@ public class TestMessage {
         assertEquals(newTimestamp, message.getTimestamp());
     }
 
+    // Testing equals and toString methods
     @Test
     public void testEqualsAndToString() {
         MessageInterface copyMessage = new Message(senderID, recipientID, "Different Contents");
@@ -43,6 +44,7 @@ public class TestMessage {
         assertEquals(expectedToString, newMessage.toString());
     }
 
+    // Testing the method of deleting a message
     @Test
     public void testDeleteMessage() {
         ArrayList<MessageInterface> currentMessages = new ArrayList<>(Message.getList());
@@ -60,6 +62,7 @@ public class TestMessage {
         assertTrue(messages.contains(message2));
     }
 
+    // Testing File IO Operations
     @Test
     public void testObjectReadAndWrite() {
         ArrayList<MessageInterface> everyMessage = new ArrayList<>(Message.getList());

@@ -19,6 +19,7 @@ public class TestItem {
     String anotherSellerID = "Seller2";
     ItemInterface item2 = new Item(anotherItemName, anotherItemPrice, anotherItemDescription, anotherSellerID);
 
+    // Testing Mutators and Accessors
     @Test
     public void TestGettersSetters() {
         item.setName(newItemName);
@@ -31,6 +32,7 @@ public class TestItem {
         assertEquals(newSellerID, item.getSellerID());
     }
 
+    // Testing equals and toString methods
     @Test
     public void testEqualsAndToString() {
         ItemInterface copyItem2 = new Item(anotherItemName, anotherItemPrice + 5, "Different description", anotherSellerID);
@@ -40,6 +42,7 @@ public class TestItem {
         assertEquals(expectedToString, item2.toString());
     }
 
+    // Testing the method of deleting an item
     @Test
     public void testDeleteItem() {
         List<ItemInterface> list = Item.getList();
@@ -54,6 +57,7 @@ public class TestItem {
         assertTrue(list.contains(testItem2));
     }
 
+    // Testing File IO Operations
     @Test
     public void testObjectReadAndWrite() {
         List<ItemInterface> list = Item.getList();
