@@ -31,7 +31,7 @@ public class TestItem {
 
     // Testing Mutators and Accessors
     @Test
-    public void TestGettersSetters() {
+    public void testGettersSetters() {
         item.setName(newItemName);
         item.setDescription(newItemDescription);
         item.setPrice(newItemPrice);
@@ -101,13 +101,13 @@ public class TestItem {
         assertEquals(2, readItems.size());
         boolean itemFound1 = false;
         boolean itemFound2 = false;
-        for (ItemInterface item : readItems) {
-            if (item.getSellerID().equals("SellerFile1")
-                    && item.getName().equals("ItemFile1")) {
+        for (ItemInterface i : readItems) {
+            if (i.getSellerID().equals("SellerFile1")
+                    && i.getName().equals("ItemFile1")) {
                 itemFound1 = true;
             }
-            if (item.getSellerID().equals("SellerFile2")
-                    && item.getName().equals("ItemFile2")) {
+            if (i.getSellerID().equals("SellerFile2")
+                    && i.getName().equals("ItemFile2")) {
                 itemFound2 = true;
             }
         }
