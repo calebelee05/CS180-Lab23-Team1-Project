@@ -2,6 +2,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.List;
 
+/**
+ * A JUnit test class for the Item Class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ *
+ * @author Zaid Al Awartani
+ * @version April 06, 2025
+ */
+
 public class TestItem {
     // Instance variables used for testing with generic items
     String itemName = "Item 1";

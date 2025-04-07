@@ -4,6 +4,15 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A JUnit test class for the Message Class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ *
+ * @author Zaid Al Awartani
+ * @version April 06, 2025
+ */
+
 public class TestMessage {
     // Instance variables used for testing with generic messages
     String senderID = "Sender1";
