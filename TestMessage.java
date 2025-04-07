@@ -1,6 +1,8 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestMessage {
 
@@ -33,6 +35,62 @@ public class TestMessage {
     @Test
     public void testEqualsAndToString() {
         MessageInterface copyMessage = new Message(senderID, recipientID, "Different Contents");
+        ((Message) copyMessage).setTimeStamp(message.getTimestamp());
+        assertTrue(message.equals(copyMessage));
 
+        MessageInterface newMessage = new Message(senderID, recipientID, contents);
+        String expectedToString = String.format("Sender: %s\\nRecipient: %s\\nContent: %s\\n\", senderID, recipientID, contents");
+        assertEquals(expectedToString, newMessage.toString());
+    }
+
+    @Test
+    public void testDeleteMessage() {
+        ArrayList<MessageInterface> currentMessages = new ArrayList<>(Message.getList());
+        for (MessageInterface m : currentMessages) {
+            ((Message) m).deleteMessage();
+        }
+        MessageInterface message1 = new Message("DeleteSender1", "DelRecipient1", "Deleted");
+        MessageInterface message2 = new Message("KeptSender", "KeptRecipient", "Keep");
+        List<MessageInterface> messages = Message.getList();
+        assertTrue(messages.contains(message1));
+        assertTrue(messages.contains(message2));
+        ((Message) message1).deleteMessage();
+        messages = Message.getList();
+        assertFalse(messages.contains(message1));
+        assertTrue(messages.contains(message2));
+    }
+
+    @Test
+    public void testObjectReadAndWrite() {
+        ArrayList<MessageInterface> everyMessage = new ArrayList<>(Message.getList());
+        for (MessageInterface m : everyMessage) {
+            ((Message) m).deleteMessage();
+        }
+
+        MessageInterface continuedMessage1 = new Message("ContinuedSender1", "ContinuedRecipient1", "Continued Message 1");
+        MessageInterface continuedMessage2 = new Message("ContinuedSender2", "ContinuedRecipient2", "Continued Message 2");
+        Message.writeObject(new ArrayList<>(Message.getList()));
+        everyMessage  = new ArrayList<>(Message.getList());
+        for (MessageInterface m : everyMessage) {
+            ((Message) m).deleteMessage();
+        }
+        assertEquals(0, Message.getList().size());
+
+        List<MessageInterface> readMessages = Message.readObject();
+        assertEquals(2, readMessages.size());
+
+        boolean foundMessage1 = false;
+        boolean foundMessage2 = false;
+        for (MessageInterface m : readMessages) {
+            if ((m.getContents().equals("Continued Message 1") && m.getRecipientID().equals("ContinuedRecipient1")) && m.getSenderID().equals("ContinuedSender1")) {
+                foundMessage1 = true;
+            }
+            if ((m.getContents().equals("Continued Message 2") && m.getRecipientID().equals("ContinuedRecipient2")) && m.getSenderID().equals("ContinuedSender2")) {
+                foundMessage2 = true;
+            }
+        }
+        assertTrue(foundMessage1 && foundMessage2);
     }
 }
+
+
