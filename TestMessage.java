@@ -1,3 +1,4 @@
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.time.ZonedDateTime;
@@ -12,8 +13,8 @@ import java.util.List;
  * @author Zaid Al Awartani
  * @version April 06, 2025
  */
-
 public class TestMessage {
+
     // Instance variables used for testing with generic messages
     String senderID = "Sender1";
     String recipientID = "Recipient1";
@@ -82,7 +83,7 @@ public class TestMessage {
         MessageInterface continuedMessage1 = new Message("ContinuedSender1", "ContinuedRecipient1", "Continued Message 1");
         MessageInterface continuedMessage2 = new Message("ContinuedSender2", "ContinuedRecipient2", "Continued Message 2");
         Message.writeObject(new ArrayList<>(Message.getList()));
-        everyMessage  = new ArrayList<>(Message.getList());
+        everyMessage = new ArrayList<>(Message.getList());
         for (MessageInterface m : everyMessage) {
             ((Message) m).deleteMessage();
         }
@@ -104,5 +105,3 @@ public class TestMessage {
         assertTrue(foundMessage1 && foundMessage2);
     }
 }
-
-

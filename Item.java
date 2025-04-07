@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,8 +15,8 @@ import java.util.*;
  * @author Zaid Al Awartani
  * @version April 01, 2025
  */
-
 public class Item implements ItemInterface {
+
     private String name;
     private double price;
     private String description;
@@ -72,12 +73,9 @@ public class Item implements ItemInterface {
         this.name = itemName;
     }
 
-    
-
     /* TODO (maybe later): return items corresponding to search keyword
      *  public static ArrayList<Item> searchItems(String searchFor)
      */
-
     public void deleteItem() {
         itemList.remove(this);
         writeObject();
@@ -90,7 +88,7 @@ public class Item implements ItemInterface {
     // Implement File I/O methods
     public static synchronized void writeObject() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-                oos.writeObject(itemList);
+            oos.writeObject(itemList);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -105,10 +103,10 @@ public class Item implements ItemInterface {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        
+
         return itemList;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         try {

@@ -1,3 +1,4 @@
+
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -5,6 +6,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 public class TestUser {
+
     // Set the input
     String username = "User1";
     String password = "abcd1234";
@@ -15,7 +17,7 @@ public class TestUser {
     double itemPrice = 15.0;
     ItemInterface item = new Item(itemName, itemPrice, itemDescription, username);
     ArrayList<ItemInterface> itemList = new ArrayList<>();
-    
+
     String sellerID = "User2";
     String itemBoughtName = "Item bought";
     String itemBoughtDescription = "Test buyItem";
@@ -84,14 +86,13 @@ public class TestUser {
         assertEquals(0, user1.getItems().size()); // Test deleteItem()
     }
 
-    
     // Test user messaging
     @Test
     public void testMessage() throws UserNotFoundException {
         String messageContent = "Hello";
         String username2 = "User2";
-        UserInterface user2 = new User(username2,"qwer",0.0);
-        
+        UserInterface user2 = new User(username2, "qwer", 0.0);
+
         user1.sendMessage(user2, messageContent);
 
         assertEquals(messageContent, user2.getMessageFromUser(username).get(0).getContents()); // Test sendMessage(), receiveMessage(), getMessageFromUser()

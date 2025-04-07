@@ -1,3 +1,4 @@
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.List;
@@ -10,8 +11,8 @@ import java.util.List;
  * @author Zaid Al Awartani
  * @version April 06, 2025
  */
-
 public class TestItem {
+
     // Instance variables used for testing with generic items
     String itemName = "Item 1";
     String itemDescription = "Test Item 1";
@@ -57,7 +58,7 @@ public class TestItem {
         List<ItemInterface> list = Item.getList();
         list.clear();
         ItemInterface testItem1 = new Item("DeleteTest1", 40.0, "To delete", "SellerDelete");
-        ItemInterface testItem2 = new Item("KeepTest", 80.0, "To keep", "SellerKeep" );
+        ItemInterface testItem2 = new Item("KeepTest", 80.0, "To keep", "SellerKeep");
 
         assertTrue(list.contains(testItem1));
         assertTrue(list.contains(testItem2));

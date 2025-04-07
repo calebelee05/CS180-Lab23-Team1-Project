@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 
@@ -9,7 +10,6 @@ import java.util.*;
  * @author Caleb Lee
  * @version March 31, 2025
  */
-
 public class User implements Serializable, UserInterface {
 
     // Fields
@@ -54,7 +54,7 @@ public class User implements Serializable, UserInterface {
     public ArrayList<ItemInterface> getItems() {
         return itemsList;
     }
-    
+
     public ArrayList<MessageInterface> getMessagesSent() {
         return messagesSent;
     }
@@ -62,7 +62,7 @@ public class User implements Serializable, UserInterface {
     public List<MessageInterface> getMessagesReceived() {
         return messagesReceived;
     }
-    
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -92,7 +92,6 @@ public class User implements Serializable, UserInterface {
     /* TODO: Find and return user with the username from the userList
      * public static User findUser(String username)
      */
-
     public void deleteUser() {
 
         userList.remove(this);
@@ -100,7 +99,7 @@ public class User implements Serializable, UserInterface {
         for (int i = 0; i < itemsList.size(); i++) {
             itemsList.get(i).deleteItem();
         }
-        
+
         for (int j = 0; j < messagesSent.size(); j++) {
             messagesSent.get(j).deleteMessage();
         }
@@ -112,7 +111,6 @@ public class User implements Serializable, UserInterface {
         writeObject();
 
     } // Remove user from userList, delete all items user has listed
-    // Consider how to deal with messages sent by user; delete completely? or display as "DeletedUser" to message recipients?
 
     // Item Listing
     public void addItem(String name, double price, String description) {
@@ -143,7 +141,7 @@ public class User implements Serializable, UserInterface {
     public void buyItem(ItemInterface item) {
         this.balance -= item.getPrice();
     } // user bought item; decrease balance by item price
-    
+
     public void sellItem(ItemInterface item) {
         this.balance += item.getPrice();
     } // user sold item; increase balance by item price
@@ -164,7 +162,7 @@ public class User implements Serializable, UserInterface {
         for (int i = 0; i < messagesReceived.size(); i++) {
             if (messagesReceived.get(i).getSenderID().equals(senderID)) {
                 messagesFromUser.add(messagesReceived.get(i));
-                
+
             }
         }
         return messagesFromUser;
@@ -179,7 +177,6 @@ public class User implements Serializable, UserInterface {
         }
         return messagesToUser;
     }
-
 
     public static List<UserInterface> getList() {
         return userList;

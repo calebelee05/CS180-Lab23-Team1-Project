@@ -1,3 +1,4 @@
+
 import java.io.Serializable;
 
 /**
@@ -9,14 +10,22 @@ import java.io.Serializable;
  * @version April 3, 2025
  */
 public interface ItemInterface extends Serializable {
+
     // Accessors and Modifiers
     String getName();
+
     double getPrice();
+
     String getDescription();
+
     String getSellerID();
+
     void setSellerID(String sellerID);
+
     void setPrice(double price);
+
     void setDescription(String description);
+
     void setName(String itemName);
 
     // TODO: Need to implement

@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -7,10 +8,9 @@ import java.util.*;
  *
  * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
  *
- * @author Chris Souk
+ * @author Team 1 Lab 23
  * @version March 30, 2025
  */
-
 public class Message implements MessageInterface {
 
     // Fields
@@ -79,10 +79,9 @@ public class Message implements MessageInterface {
         return new ArrayList<>(messageList);
     }
 
-
     public static synchronized void writeObject(ArrayList<MessageInterface> list) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-                oos.writeObject(list);
+            oos.writeObject(list);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -95,7 +94,7 @@ public class Message implements MessageInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return messageList;
     }
 
@@ -103,8 +102,9 @@ public class Message implements MessageInterface {
     public boolean equals(Object object) {
         try {
             MessageInterface message = (Message) object;
-            return (message.getSenderID().equals(senderID) && message.getRecipientID().equals(recipientID)
-                && message.getTimestamp().equals(timestamp));
+            return (message.getSenderID().equals(senderID)
+                    && message.getRecipientID().equals(recipientID)
+                    && message.getTimestamp().equals(timestamp));
         } catch (Exception e) {
             return false;
         }
@@ -112,6 +112,9 @@ public class Message implements MessageInterface {
 
     @Override
     public String toString() {
-        return String.format("Sender: %s\nRecipient: %s\nContent: %s\n", senderID, recipientID, contents);
+        return String.format("Sender: %s\nRecipient: %s\nContent: %s\n",
+                senderID,
+                recipientID,
+                contents);
     }
 }
