@@ -40,7 +40,7 @@ public class TestUser {
 
     // Test accessors and modifiers
     @Test
-    public void TestGettersSetters() {
+    public void testGettersSetters() {
         String newUsername = "Modified user";
         String newPassword = "Modified password";
         double newBalance = 2000.0;
