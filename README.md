@@ -176,3 +176,9 @@ This phase covers the creation of the database for the market place. This includ
 ## UserNotFoundException.java
     Constructors
     - public UserNotFoundException(String message): Instantiates a new UserNotFoundException with the provided message.
+
+## Test Case Files
+    - RunLocalTest.java: Contains the main method to run all the test case classes.
+    - TestItem.java: Tests the functionality of the Item class.
+    - TestMessage.java: Tests the functionality of the Message class.
+    - TestUser.java: Tests the functionality of the User class.

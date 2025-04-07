@@ -10,7 +10,7 @@ import java.util.List;
  *
  * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
  *
- * @author Zaid Al Awartani
+ * @author Team 1 Lab 23
  * @version April 06, 2025
  */
 public class TestMessage {
