@@ -119,7 +119,11 @@ public class Item implements ItemInterface {
 
     @Override
     public String toString() {
-        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s", name, price, description, sellerID);
+        return String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s",
+                name,
+                price,
+                description,
+                sellerID);
     }
 
 }
