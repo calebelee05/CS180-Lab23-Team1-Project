@@ -45,10 +45,17 @@ public class TestItem {
     // Testing equals and toString methods
     @Test
     public void testEqualsAndToString() {
-        ItemInterface copyItem2 = new Item(anotherItemName, anotherItemPrice + 5, "Different description", anotherSellerID);
+        ItemInterface copyItem2 = new Item(anotherItemName,
+                anotherItemPrice + 5,
+                "Different description",
+                anotherSellerID);
         assertTrue(item2.equals(copyItem2));
         assertFalse(item.equals(item2));
-        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s", anotherItemName, anotherItemPrice, anotherItemDescription, anotherSellerID);
+        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s",
+                anotherItemName,
+                anotherItemPrice,
+                anotherItemDescription,
+                anotherSellerID);
         assertEquals(expectedToString, item2.toString());
     }
 
@@ -57,8 +64,14 @@ public class TestItem {
     public void testDeleteItem() {
         List<ItemInterface> list = Item.getList();
         list.clear();
-        ItemInterface testItem1 = new Item("DeleteTest1", 40.0, "To delete", "SellerDelete");
-        ItemInterface testItem2 = new Item("KeepTest", 80.0, "To keep", "SellerKeep");
+        ItemInterface testItem1 = new Item("DeleteTest1",
+                40.0,
+                "To delete",
+                "SellerDelete");
+        ItemInterface testItem2 = new Item("KeepTest",
+                80.0,
+                "To keep",
+                "SellerKeep");
 
         assertTrue(list.contains(testItem1));
         assertTrue(list.contains(testItem2));
@@ -72,8 +85,14 @@ public class TestItem {
     public void testObjectReadAndWrite() {
         List<ItemInterface> list = Item.getList();
         list.clear();
-        ItemInterface itemFile1 = new Item("ItemFile1", 150.0, "Continued item 1", "SellerFile1");
-        ItemInterface itemFile2 = new Item("ItemFile2", 250.0, "Continued item 2", "SellerFile2");
+        ItemInterface itemFile1 = new Item("ItemFile1",
+                150.0,
+                "Continued item 1",
+                "SellerFile1");
+        ItemInterface itemFile2 = new Item("ItemFile2",
+                250.0,
+                "Continued item 2",
+                "SellerFile2");
         Item.writeObject();
         list.clear();
         assertEquals(0, list.size());
@@ -83,10 +102,12 @@ public class TestItem {
         boolean itemFound1 = false;
         boolean itemFound2 = false;
         for (ItemInterface item : readItems) {
-            if (item.getSellerID().equals("SellerFile1") && item.getName().equals("ItemFile1")) {
+            if (item.getSellerID().equals("SellerFile1")
+                    && item.getName().equals("ItemFile1")) {
                 itemFound1 = true;
             }
-            if (item.getSellerID().equals("SellerFile2") && item.getName().equals("ItemFile2")) {
+            if (item.getSellerID().equals("SellerFile2")
+                    && item.getName().equals("ItemFile2")) {
                 itemFound2 = true;
             }
         }
