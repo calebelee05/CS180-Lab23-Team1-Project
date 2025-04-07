@@ -87,11 +87,6 @@ public class User implements Serializable, UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
-    // TODO: Implement methods in UserInterface
-
-    /* TODO: Find and return user with the username from the userList
-     * public static User findUser(String username)
-     */
     public void deleteUser() {
 
         userList.remove(this);

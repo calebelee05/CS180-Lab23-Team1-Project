@@ -37,7 +37,6 @@ public interface UserInterface extends Serializable {
 
     void setMessagesReceived(List<MessageInterface> messagesReceived);
 
-    // TODO: Need to implement
     // User Account
     void deleteUser(); // Remove user from userList, delete all items user has listed
 

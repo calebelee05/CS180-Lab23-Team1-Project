@@ -73,9 +73,6 @@ public class Item implements ItemInterface {
         this.name = itemName;
     }
 
-    /* TODO (maybe later): return items corresponding to search keyword
-     *  public static ArrayList<Item> searchItems(String searchFor)
-     */
     public void deleteItem() {
         itemList.remove(this);
         writeObject();
