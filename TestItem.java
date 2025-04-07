@@ -31,7 +31,7 @@ public class TestItem {
 
     // Testing Mutators and Accessors
     @Test
-    public void TestGettersSetters() {
+    public void testGettersSetters() {
         item.setName(newItemName);
         item.setDescription(newItemDescription);
         item.setPrice(newItemPrice);
