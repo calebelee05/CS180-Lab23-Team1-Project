@@ -1,9 +1,16 @@
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
-
 import org.junit.Test;
+
+/**
+ * Testing the User class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ *
+ * @author Team 1 Lab 23
+ * @version April 6, 2025
+ */
 
 public class TestUser {
 
