@@ -67,7 +67,7 @@ public class Message implements MessageInterface {
         return this.timestamp;
     }
 
-    public void setTimeStamp(ZonedDateTime timestamp) {
+    public void setTimestamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

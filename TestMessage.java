@@ -46,7 +46,7 @@ public class TestMessage {
     @Test
     public void testEqualsAndToString() {
         MessageInterface copyMessage = new Message(senderID, recipientID, "Different Contents");
-        ((Message) copyMessage).setTimeStamp(message.getTimestamp());
+        ((Message) copyMessage).setTimestamp(message.getTimestamp());
         assertTrue(message.equals(copyMessage));
 
         MessageInterface newMessage = new Message(senderID, recipientID, contents);
