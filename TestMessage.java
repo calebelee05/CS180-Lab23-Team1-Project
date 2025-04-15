@@ -35,7 +35,7 @@ public class TestMessage {
         message.setRecipientID(newRecipient);
         message.setContents(newContents);
         ZonedDateTime newTimestamp = ZonedDateTime.now();
-        message.setTimeStamp(newTimestamp);
+        message.setTimestamp(newTimestamp);
         assertEquals(newSender, message.getSenderID());
         assertEquals(newRecipient, message.getRecipientID());
         assertEquals(newContents, message.getContents());
@@ -50,12 +50,10 @@ public class TestMessage {
         assertTrue(message.equals(copyMessage));
 
         MessageInterface newMessage = new Message(senderID, recipientID, contents);
-        String expectedToString = String.format("Sender: %s\\n"
-                + "Recipient: %s\\n"
-                + "Content: %s\\n\""
-                + ", senderID"
-                + ", recipientID"
-                + ", contents");
+        String expectedToString = String.format("Sender: %s\n"
+                + "Recipient: %s\n"
+                + "Content: %s\n"
+                , senderID, recipientID, contents);
         assertEquals(expectedToString, newMessage.toString());
     }
 
