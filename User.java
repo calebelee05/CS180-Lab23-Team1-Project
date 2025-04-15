@@ -10,7 +10,7 @@ import java.util.*;
  * @author Team 1 Lab 23
  * @version March 31, 2025
  */
-public class User implements Serializable, UserInterface {
+public class User implements UserInterface {
 
     // Fields
     private String username;
@@ -87,6 +87,15 @@ public class User implements Serializable, UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
+    public static UserInterface logIn(String username, String password) {
+        UserInterface logInUser = new User(username, password, 0.0);
+        if (userList.indexOf(logInUser) == -1) {
+            return null;
+        } else {
+            return userList.get(userList.indexOf(logInUser));
+        }
+    }
+
     public void deleteUser() {
 
         userList.remove(this);
@@ -157,7 +166,6 @@ public class User implements Serializable, UserInterface {
         for (int i = 0; i < messagesReceived.size(); i++) {
             if (messagesReceived.get(i).getSenderID().equals(senderID)) {
                 messagesFromUser.add(messagesReceived.get(i));
-
             }
         }
         return messagesFromUser;
@@ -200,7 +208,7 @@ public class User implements Serializable, UserInterface {
     public boolean equals(Object object) {
         try {
             UserInterface user = (User) object;
-            return username.equals(user.getUsername());
+            return (username.equals(user.getUsername()) && password.equals(user.getPassword()));
         } catch (Exception e) {
             return false;
         }

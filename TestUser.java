@@ -1,6 +1,6 @@
 
-import static org.junit.Assert.assertEquals;
-import java.util.ArrayList;
+import static org.junit.Assert.*;
+import java.util.*;
 import org.junit.Test;
 
 /**
@@ -64,7 +64,17 @@ public class TestUser {
         assertEquals(newUsername, user1.getUsername()); // Test getUsername()
         assertEquals(newBalance, user1.getBalance(), 0.0001); // Test getBalance()
         assertEquals(newPassword, user1.getPassword()); // Test getPassword()
-        assertEquals(true, user1.equals(user1Copy)); // Test equals() method
+        assertTrue(user1.equals(user1Copy)); // Test equals() method
+    }
+
+    // Test password protected login and account deletion
+    @Test
+    public void testUserAccount() {
+        assertEquals(user1,User.logIn(username, password)); // Test user login
+        UserInterface user2 = new User("User2", "password", 0.0);
+        assertTrue(User.getList().contains(user2));
+        user2.deleteUser();
+        assertFalse(User.getList().contains(user2));
     }
 
     // Test Item listing manipulation
@@ -75,7 +85,6 @@ public class TestUser {
         double newItemPrice = 10.0;
 
         user1.addItem(itemName, itemPrice, itemDescription);
-
         assertEquals(item, user1.getItem(itemName)); // Test addItem() and getItem()
 
         user1.setItem(user1.getItem(itemName), newItemName, newItemPrice, newItemDescription);
