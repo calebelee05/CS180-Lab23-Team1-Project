@@ -1,5 +1,3 @@
-
-import java.io.*;
 import java.util.*;
 
 /**
@@ -19,23 +17,13 @@ public class User implements UserInterface {
     private ArrayList<ItemInterface> itemsList = new ArrayList<>();
     private ArrayList<MessageInterface> messagesSent = new ArrayList<>();
     private List<MessageInterface> messagesReceived = Collections.synchronizedList(new ArrayList<>());
-    private static List<UserInterface> userList = Collections.synchronizedList(new ArrayList<>());
-    private static final String FILEPATH = "UserData.txt";
+    public static final String FILEPATH = "UserData.txt";
 
     // Constructor
     public User(String username, String password, double balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
-        File saveFile = new File(FILEPATH);
-        try {
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        userList.add(this);
     }
 
     // Implement UserInterface
@@ -87,18 +75,9 @@ public class User implements UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
-    public static UserInterface logIn(String username, String password) {
-        UserInterface logInUser = new User(username, password, 0.0);
-        if (userList.indexOf(logInUser) == -1) {
-            return null;
-        } else {
-            return userList.get(userList.indexOf(logInUser));
-        }
-    }
-
     public void deleteUser() {
 
-        userList.remove(this);
+        Database.getUserList().remove(this);
 
         for (int i = 0; i < itemsList.size(); i++) {
             itemsList.get(i).deleteItem();
@@ -112,13 +91,13 @@ public class User implements UserInterface {
             messagesReceived.get(k).deleteMessage();
         }
 
-        writeObject();
-
     } // Remove user from userList, delete all items user has listed
 
     // Item Listing
-    public void addItem(String name, double price, String description) {
-        itemsList.add(new Item(name, price, description, this.username));
+    public ItemInterface addItem(String name, double price, String description) {
+        ItemInterface newItem = new Item(name, price, description, this.username);
+        itemsList.add(newItem);
+        return newItem;
     } // Shouldn't allow users to add more than one items with same name?
 
     public ItemInterface getItem(String name) throws ItemNotFoundException {
@@ -139,7 +118,7 @@ public class User implements UserInterface {
         item.setName(name);
         item.setPrice(price);
         item.setDescription(description);
-    } // Edit item in the listing with this name
+    } // Edit item in the listing
 
     // Balance Tracking
     public void buyItem(ItemInterface item) {
@@ -151,10 +130,11 @@ public class User implements UserInterface {
     } // user sold item; increase balance by item price
 
     // Messaging
-    public void sendMessage(UserInterface recipient, String content) {
+    public MessageInterface sendMessage(UserInterface recipient, String content) {
         MessageInterface message = new Message(username, recipient.getUsername(), content);
         messagesSent.add(message);
         recipient.receiveMessage(message);
+        return message;
     } // Send message to recipient
 
     public void receiveMessage(MessageInterface message) {
@@ -179,29 +159,6 @@ public class User implements UserInterface {
             }
         }
         return messagesToUser;
-    }
-
-    public static List<UserInterface> getList() {
-        return userList;
-    }
-
-    // Implement File I/O methods
-    public static synchronized void writeObject() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-            oos.writeObject(userList);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-    public static synchronized List<UserInterface> readObject() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
-            List<UserInterface> objects = (List<UserInterface>) ois.readObject();
-            userList = Collections.synchronizedList(objects);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return userList;
     }
 
     @Override

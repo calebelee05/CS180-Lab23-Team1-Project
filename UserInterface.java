@@ -41,7 +41,7 @@ public interface UserInterface extends Serializable {
     void deleteUser(); // Remove user from userList, delete all items user has listed
 
     // Item Listing
-    void addItem(String name, double price, String description); // Don't allow users to add items with same name
+    ItemInterface addItem(String name, double price, String description); // Don't allow users to add items with same name
 
     ItemInterface getItem(String name) throws ItemNotFoundException; // Return item with this name
 
@@ -55,7 +55,7 @@ public interface UserInterface extends Serializable {
     void sellItem(ItemInterface item); // user sold item; increase balance by item price
 
     // Messaging
-    void sendMessage(UserInterface recipient, String content); // Send message to recipient
+    MessageInterface sendMessage(UserInterface recipient, String content); // Send message to recipient
 
     void receiveMessage(MessageInterface message); // Receive message
 

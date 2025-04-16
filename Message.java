@@ -1,7 +1,4 @@
-
-import java.io.*;
 import java.time.ZonedDateTime;
-import java.util.*;
 
 /**
  * A simple Message class
@@ -18,8 +15,7 @@ public class Message implements MessageInterface {
     private String recipientID;
     private String contents;
     private ZonedDateTime timestamp;
-    private static List<MessageInterface> messageList = Collections.synchronizedList(new ArrayList<>());
-    private static final String FILEPATH = "MessageData.txt";
+    public static final String FILEPATH = "MessageData.txt";
 
     // Constructors
     public Message(String senderID, String recipientID, String contents) {
@@ -27,15 +23,6 @@ public class Message implements MessageInterface {
         this.recipientID = recipientID;
         this.contents = contents;
         this.timestamp = ZonedDateTime.now();
-        File saveFile = new File(FILEPATH);
-        try {
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        messageList.add(this);
     }
 
     // Implement MessageInterface
@@ -72,30 +59,7 @@ public class Message implements MessageInterface {
     }
 
     public void deleteMessage() {
-        messageList.remove(this);
-    }
-
-    public static ArrayList<MessageInterface> getList() {
-        return new ArrayList<>(messageList);
-    }
-
-    public static synchronized void writeObject(ArrayList<MessageInterface> list) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-            oos.writeObject(list);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-    public static synchronized List<MessageInterface> readObject() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
-            List<MessageInterface> objects = (List<MessageInterface>) ois.readObject();
-            messageList = Collections.synchronizedList(objects);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return messageList;
+        Database.getMessageList().remove(this);
     }
 
     @Override

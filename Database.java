@@ -1,0 +1,165 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A Database class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ *
+ * @author Team 1 Lab 23
+ * @version April 15, 2025
+ */
+public class Database implements DatabaseInterface {
+    private String userFile;
+    private String itemFile;
+    private String messageFile;
+    private static List<UserInterface> userList = Collections.synchronizedList(new ArrayList<>());
+    private static List<ItemInterface> itemList = Collections.synchronizedList(new ArrayList<>());
+    private static List<MessageInterface> messageList = Collections.synchronizedList(new ArrayList<>());
+
+    public Database(String userFile, String itemFile, String messageFile) {
+        this.userFile = userFile;
+        this.itemFile = itemFile;
+        this.messageFile = messageFile;
+    }
+
+    public String getUserFile() {
+        return userFile;
+    }
+    public String getItemFile() {
+        return itemFile;
+    }
+    public String getMessageFile() {
+        return messageFile;
+    }
+    public static List<UserInterface> getUserList() {
+        return userList;
+    }
+    public static List<ItemInterface> getItemList() {
+        return itemList;
+    }
+    public static List<MessageInterface> getMessageList() {
+        return messageList;
+    }
+    public void setUserFile(String userFile) {
+        this.userFile = userFile;
+    }
+    public void setItemFile(String itemFile) {
+        this.itemFile = itemFile;
+    }
+    public void setmessageFile(String messageFile) {
+        this.messageFile = messageFile;
+    }
+    public static void setUserList(List<UserInterface> list) {
+        userList = list;
+    }
+    public static void setItemList(List<ItemInterface> list) {
+        itemList = list;
+    }
+    public static void setMessageList(List<MessageInterface> list) {
+        messageList = list;
+    }
+
+    public void writeUser() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(userFile))) {
+            oos.writeObject(userList);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    public void writeItem() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(itemFile))) {
+            oos.writeObject(itemList);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    public void writeMessage() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(messageFile))) {
+            oos.writeObject(messageList);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public void readUser() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
+            userList = Collections.synchronizedList((List<UserInterface>) ois.readObject());
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    public void readItem() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
+            itemList = Collections.synchronizedList((List<ItemInterface>) ois.readObject());
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+    public void readMessage() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
+            messageList = Collections.synchronizedList((List<MessageInterface>) ois.readObject());
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public synchronized void update() {
+        writeUser();
+        writeItem();
+        writeMessage();
+        readUser();
+        readItem();
+        readMessage();
+    }
+
+    public UserInterface createAccount(String username, String password) {
+        UserInterface newUser = new User(username, password, 0.0);
+        userList.add(newUser);
+        update();
+        return newUser;
+    }
+
+    public void deleteAccount(UserInterface user) {
+        user.deleteUser();
+        update();
+    }
+
+    public static UserInterface logIn(String username, String password) throws UserNotFoundException {
+        for (UserInterface user : userList) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        throw new UserNotFoundException("Username or password is incorrect");
+    }   
+
+    public void addItem(UserInterface user, String itemName, double price, String description) {
+        itemList.add(user.addItem(itemName, price, description));
+        update();
+    }
+
+    public void deleteItem(UserInterface user, ItemInterface item) {
+        user.deleteItem(item);
+        update();
+    }
+
+    public void sendMessage(UserInterface sender, UserInterface recipient, String content) {
+        messageList.add(sender.sendMessage(recipient, content));
+        update();
+    }
+
+    public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) {
+        buyer.buyItem(item);
+        seller.sellItem(item);
+        update();
+    }
+}

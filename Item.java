@@ -1,12 +1,3 @@
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.*;
-
 /**
  * An Item class
  *
@@ -21,23 +12,13 @@ public class Item implements ItemInterface {
     private double price;
     private String description;
     private String sellerID;
-    private static List<ItemInterface> itemList = Collections.synchronizedList(new ArrayList<>());
-    private static final String FILEPATH = "ItemData.txt";
+    public static final String FILEPATH = "ItemData.txt";
 
     public Item(String name, double price, String description, String sellerID) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.sellerID = sellerID;
-        File saveFile = new File(FILEPATH);
-        try {
-            if (!saveFile.exists()) {
-                saveFile.createNewFile();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        itemList.add(this);
     }
 
     // Implement Item interface
@@ -74,34 +55,7 @@ public class Item implements ItemInterface {
     }
 
     public void deleteItem() {
-        itemList.remove(this);
-        writeObject();
-    }
-
-    public static List<ItemInterface> getList() {
-        return itemList;
-    }
-
-    // Implement File I/O methods
-    public static synchronized void writeObject() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
-            oos.writeObject(itemList);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-    public static synchronized List<ItemInterface> readObject() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILEPATH))) {
-            List<ItemInterface> objects = (List<ItemInterface>) ois.readObject();
-            itemList = Collections.synchronizedList(objects);
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return itemList;
+        Database.getItemList().remove(this);
     }
 
     @Override
