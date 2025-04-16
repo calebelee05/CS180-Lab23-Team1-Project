@@ -25,6 +25,32 @@ public class Database implements DatabaseInterface {
         this.messageFile = messageFile;
     }
 
+    public static void main(String[] args) {
+        String username = "User1";
+        String password = "password";
+        Database database = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
+        UserInterface user1 = database.createAccount(username, password);
+        if (userList.contains(user1)) {
+            System.out.println("true");
+        }
+        try {
+            UserInterface user = Database.logIn("User1", "password");
+            System.out.printf("Successfully logged in: %s\n", user.getUsername());
+        } catch (UserNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1");
+        if (itemList.contains(item1)) {
+            System.out.println("true");
+        }
+        database.deleteItem(user1, item1);
+        if (itemList.contains(item1)) {
+            System.out.println("false");
+        }
+        UserInterface user2 = database.createAccount("User2", "password2");
+        database.sendMessage(user1, user2, "hi");
+    }
+
     public String getUserFile() {
         return userFile;
     }
@@ -112,13 +138,20 @@ public class Database implements DatabaseInterface {
         }
     }
 
-    public synchronized void update() {
+    public void write() {
         writeUser();
         writeItem();
         writeMessage();
+    }
+    public void read() {
         readUser();
         readItem();
         readMessage();
+    }
+
+    public synchronized void update() {
+        write();
+        read();
     }
 
     public UserInterface createAccount(String username, String password) {
@@ -142,9 +175,11 @@ public class Database implements DatabaseInterface {
         throw new UserNotFoundException("Username or password is incorrect");
     }   
 
-    public void addItem(UserInterface user, String itemName, double price, String description) {
-        itemList.add(user.addItem(itemName, price, description));
+    public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {
+        ItemInterface item = user.addItem(itemName, price, description);
+        itemList.add(item);
         update();
+        return item;
     }
 
     public void deleteItem(UserInterface user, ItemInterface item) {
@@ -152,9 +187,11 @@ public class Database implements DatabaseInterface {
         update();
     }
 
-    public void sendMessage(UserInterface sender, UserInterface recipient, String content) {
-        messageList.add(sender.sendMessage(recipient, content));
+    public MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content) {
+        MessageInterface message = sender.sendMessage(recipient, content);
+        messageList.add(message);
         update();
+        return message;
     }
 
     public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) {

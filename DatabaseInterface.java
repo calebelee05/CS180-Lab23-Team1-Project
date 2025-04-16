@@ -22,8 +22,8 @@ public interface DatabaseInterface {
     void update();
     UserInterface createAccount(String username, String password);
     void deleteAccount(UserInterface user);
-    void addItem(UserInterface user, String itemName, double price, String description);
+    ItemInterface addItem(UserInterface user, String itemName, double price, String description);
     void deleteItem(UserInterface user, ItemInterface item);
-    void sendMessage(UserInterface sender, UserInterface recipient, String content);
+    MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content);
     void transaction(UserInterface buyer, UserInterface seller, ItemInterface item);
 }
