@@ -172,8 +172,17 @@ public class Database implements DatabaseInterface {
                 return user;
             }
         }
-        throw new UserNotFoundException("Username or password is incorrect");
-    }   
+        throw new UserNotFoundException("Wrong username or password");
+    }
+
+    public static boolean userExists(String username) {
+        for (UserInterface user : userList) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {
         ItemInterface item = user.addItem(itemName, price, description);
