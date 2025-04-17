@@ -96,4 +96,23 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+        int port = 8888;
+        DATABASE.readUser();
+        DATABASE.readItem();
+        DATABASE.readMessage();
+
+        System.out.println("Server started on port " + port);
+        try {
+            ServerSocket ss = new ServerSocket(port);
+            Socket s = ss.accept();
+            Thread t = new Thread(new Server(s));
+            t.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
