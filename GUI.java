@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.*;
+import java.io.*;
 
 /**
  * This is the GUI class. CS180 Team Phase.
@@ -10,8 +12,13 @@ import java.awt.event.*;
  * @version April, 2025
  */
 public class GUI extends JComponent implements Runnable
-{
+{  
+    //private Socket socket;
+    //private PrintWriter toServer;
+    //private BufferedReader fromServer;
+
     Database database;
+    UserInterface user;
 
     JFrame frame;
     Container content;
@@ -19,13 +26,22 @@ public class GUI extends JComponent implements Runnable
     JButton login;
     JButton createAccount;
     JButton loginToAccount;
-    
+
     JTextField username;
     JTextField password;
-    
+
     JTextField createUser;
     JTextField createPass;
     JButton createAcc;
+    JPanel userAndPass;
+
+    JButton itemListing;
+    JButton itemSearch;
+    JButton messages; 
+    JButton deleteAccount;
+    JButton logout;
+    JButton displayBalance;
+    JPanel userAccount;
 
     ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -37,24 +53,63 @@ public class GUI extends JComponent implements Runnable
                 }
                 if (e.getSource() == loginToAccount) {
                     try {
-                        UserInterface user = database.logIn(username.getText(), password.getText());
+                        //TODO - Client Connectivity
+
+                        user = database.logIn(username.getText(), password.getText());
+                        JOptionPane.showMessageDialog(null, "Login Successful!",
+                            "Login Successful", JOptionPane.INFORMATION_MESSAGE);
                     } catch (UserNotFoundException unfe) {
                         JOptionPane.showMessageDialog(null, unfe.getMessage(),
-                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 if (e.getSource() == createAcc) {
+                    //TODO - Client Connectivity
+
                     User newUser = new User(createUser.getText(), createPass.getText(), 0);
+                    JOptionPane.showMessageDialog(null, "Account Created!",
+                        "Account Created", JOptionPane.INFORMATION_MESSAGE);
+                }
+                if (e.getSource() == itemListing) {
+                    //TODO - Client Connectivity
+
+                    database.getItemList();
+                }
+                if (e.getSource() == itemSearch) {
+
+                }
+                if (e.getSource() == messages) {
+
+                }
+                if (e.getSource() == deleteAccount) {
+
+                }
+                if (e.getSource() == logout) {
+
+                }
+                if (e.getSource() == displayBalance) {
+
                 }
             }
         };
+/*
+    public void beginConnection() {
+        try {
+            //TODO
+        } catch (UnknownHostException uhe) {
+            System.out.println("Cannot find host!");
+        } catch (IOException ioe) {
+            System.out.println("Connection failed!");
+        }
+    }
+*/
 
     public void allowLogin() {
         username = new JTextField(50);
         JLabel usernameLabel = new JLabel("Enter Username:");
         password = new JTextField(50);
         JLabel passwordLabel = new JLabel("Enter Password:");
-        JPanel userAndPass = new JPanel();
+        userAndPass = new JPanel();
         userAndPass.setLayout(new BoxLayout(userAndPass, BoxLayout.Y_AXIS));
         username.setAlignmentX(Component.CENTER_ALIGNMENT);
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -72,13 +127,13 @@ public class GUI extends JComponent implements Runnable
         content.add(userAndPass, BorderLayout.CENTER);
         content.revalidate();
     }
-    
+
     public void create() {
         createUser = new JTextField(50);
         JLabel usernameLabel = new JLabel("Enter Username:");
         createPass = new JTextField(50);
         JLabel passwordLabel = new JLabel("Enter Password:");
-        JPanel userAndPass = new JPanel();
+        userAndPass = new JPanel();
         userAndPass.setLayout(new BoxLayout(userAndPass, BoxLayout.Y_AXIS));
         createUser.setAlignmentX(Component.CENTER_ALIGNMENT);
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,6 +149,33 @@ public class GUI extends JComponent implements Runnable
         userAndPass.add(createAcc);
         content.remove(loginPanel);
         content.add(userAndPass, BorderLayout.CENTER);
+        content.revalidate();
+    }
+
+    public void loggedIn() {
+        itemListing = new JButton("View Item List");
+        itemListing.addActionListener(actionListener);
+        itemSearch = new JButton("Search Item");
+        itemSearch.addActionListener(actionListener);
+        messages = new JButton("View Messages");
+        messages.addActionListener(actionListener);
+        deleteAccount = new JButton("Delete Account");
+        deleteAccount.addActionListener(actionListener);
+        logout = new JButton("Logout");
+        logout.addActionListener(actionListener);
+        displayBalance = new JButton("View Balance");
+        displayBalance.addActionListener(actionListener);
+
+        userAccount = new JPanel();
+        userAccount.setLayout(new FlowLayout());
+        userAccount.add(itemListing);
+        userAccount.add(itemSearch);
+        userAccount.add(messages);
+        userAccount.add(deleteAccount);
+        userAccount.add(logout);
+        userAccount.add(displayBalance);
+        content.remove(userAndPass);
+        content.add(userAccount, BorderLayout.CENTER);
         content.revalidate();
     }
 
