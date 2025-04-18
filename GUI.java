@@ -57,7 +57,7 @@ public class GUI extends JComponent implements Runnable, Communicator {
                 String usernameInput = username.getText();
                 String passwordInput = password.getText();
 
-                // Ensure inputs are valid
+                // Validate inputs
                 if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -87,7 +87,7 @@ public class GUI extends JComponent implements Runnable, Communicator {
                 String usernameInput = createUser.getText();
                 String passwordInput = createPass.getText();
 
-                // Ensure inputs are valid
+                // Validate inputs
                 if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -129,12 +129,42 @@ public class GUI extends JComponent implements Runnable, Communicator {
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == itemSearch) {
+            if (e.getSource() == itemSearch) { // search by item name/description, price range, and seller username
+                // Get inputs
+                String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input
+                String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input
+                String highPriceQuery = "10.0"; // High-bound for price range // Replace with input
+                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID // Replace with actual input
+
+                // Validate inputs
                 try {
-                    Object response = client.sendRequest(ITEM_SEARCH);
+                    double lowBound = Double.parseDouble(lowPriceQuery);
+                    double highBound = Double.parseDouble(highPriceQuery);
+                    if (lowBound < 0 || highBound < 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Price range must be non-negative.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null,
+                            "Please enter valid numbers for price range.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                } 
+
+                // Send request and process response
+                try {
+                    Object response = client.sendRequest(ITEM_SEARCH,
+                            textQuery,
+                            lowPriceQuery,
+                            highPriceQuery,
+                            sellerQuery);
                     if (response instanceof List) {
                         List<ItemInterface> itemList = (List<ItemInterface>) response;
-                        // use itemList
+                        // use filtered itemList
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve item list.",

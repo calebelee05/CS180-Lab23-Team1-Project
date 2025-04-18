@@ -1,5 +1,7 @@
+
 import java.io.*;
 import java.net.*;
+import java.util.List;
 
 /**
  * A Server class
@@ -10,6 +12,7 @@ import java.net.*;
  * @version April 16, 2025
  */
 public class Server implements Runnable, Communicator {
+
     private static final DatabaseInterface DATABASE = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
     private Socket socket;
     private UserInterface user;
@@ -42,7 +45,7 @@ public class Server implements Runnable, Communicator {
                         }
                     }
                 } else if (signInOption.equals(SIGN_UP)) {
-                    while (true) { 
+                    while (true) {
                         username = reader.readLine();
                         password = reader.readLine();
                         if (Database.userExists(username)) {
@@ -55,12 +58,20 @@ public class Server implements Runnable, Communicator {
                     }
                 }
                 // Home screen
-                while (true) { 
+                while (true) {
                     String mainMenuOption = reader.readLine();
                     if (mainMenuOption.equals(ITEM_LISTING)) {
                         oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
-                        
+                        String textQuery = reader.readLine();
+                        double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                        double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                        String sellerQuery = reader.readLine();
+                        List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
+                                lowPriceQuery,
+                                highPriceQuery,
+                                sellerQuery);
+                        oos.writeObject(filteredItems);
                     } else if (mainMenuOption.equals(MESSAGES)) {
                         oos.writeObject(Database.getMessageList());
                     } else if (mainMenuOption.equals(LOG_OUT)) {

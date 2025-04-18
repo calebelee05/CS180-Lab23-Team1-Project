@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
  * @version April 15, 2025
  */
 public class Database implements DatabaseInterface {
+
     private String userFile;
     private String itemFile;
     private String messageFile;
@@ -54,36 +56,127 @@ public class Database implements DatabaseInterface {
     public String getUserFile() {
         return userFile;
     }
+
     public String getItemFile() {
         return itemFile;
     }
+
     public String getMessageFile() {
         return messageFile;
     }
+
     public static List<UserInterface> getUserList() {
         return userList;
     }
+
     public static List<ItemInterface> getItemList() {
         return itemList;
     }
+
+    public static List<ItemInterface> searchItemList(String textQuery,
+            double lowPriceQuery,
+            double highPriceQuery,
+            String sellerQuery) {
+        List<ItemInterface> filteredList = new ArrayList<>();
+
+        if (textQuery != null) {
+            for (ItemInterface item : itemList) { // item name has precedence; added first
+                if (item.getName().toLowerCase().contains(textQuery.toLowerCase())) {
+                    if (filteredList.indexOf(item) == -1) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            for (ItemInterface item : itemList) {
+                if (item.getDescription().toLowerCase().contains(textQuery.toLowerCase())) {
+                    if (filteredList.indexOf(item) == -1) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+        }
+
+        if (lowPriceQuery != -1) {
+            if (!filteredList.isEmpty()) {
+                for (ItemInterface item : filteredList) {
+                    if (!(item.getPrice() >= lowPriceQuery)) {
+                        filteredList.remove(item);
+                    }
+                }
+            } else {
+                for (ItemInterface item : itemList) {
+                    if (item.getPrice() >= lowPriceQuery) {
+                        if (filteredList.indexOf(item) == -1) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (highPriceQuery != -1) {
+            if (!filteredList.isEmpty()) {
+                for (ItemInterface item : filteredList) {
+                    if (!(item.getPrice() <= highPriceQuery)) {
+                        filteredList.remove(item);
+                    }
+                }
+            } else {
+                for (ItemInterface item : itemList) {
+                    if (item.getPrice() <= highPriceQuery) {
+                        if (filteredList.indexOf(item) == -1) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (sellerQuery != null) {
+            if (!filteredList.isEmpty()) {
+                for (ItemInterface item : filteredList) {
+                    if (!(item.getSellerID().contains(sellerQuery))) { // no lowercase; case sensitive
+                        filteredList.remove(item);
+                    }
+                }
+            } else {
+                for (ItemInterface item : itemList) {
+                    if (item.getSellerID().contains(sellerQuery)) { // no lowercase; case sensitive
+                        if (filteredList.indexOf(item) == -1) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredList;
+    }
+
     public static List<MessageInterface> getMessageList() {
         return messageList;
     }
+
     public void setUserFile(String userFile) {
         this.userFile = userFile;
     }
+
     public void setItemFile(String itemFile) {
         this.itemFile = itemFile;
     }
+
     public void setmessageFile(String messageFile) {
         this.messageFile = messageFile;
     }
+
     public static void setUserList(List<UserInterface> list) {
         userList = list;
     }
+
     public static void setItemList(List<ItemInterface> list) {
         itemList = list;
     }
+
     public static void setMessageList(List<MessageInterface> list) {
         messageList = list;
     }
@@ -95,6 +188,7 @@ public class Database implements DatabaseInterface {
             ioe.printStackTrace();
         }
     }
+
     public void writeItem() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(itemFile))) {
             oos.writeObject(itemList);
@@ -102,6 +196,7 @@ public class Database implements DatabaseInterface {
             ioe.printStackTrace();
         }
     }
+
     public void writeMessage() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(messageFile))) {
             oos.writeObject(messageList);
@@ -119,6 +214,7 @@ public class Database implements DatabaseInterface {
             ioe.printStackTrace();
         }
     }
+
     public void readItem() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
             itemList = Collections.synchronizedList((List<ItemInterface>) ois.readObject());
@@ -128,6 +224,7 @@ public class Database implements DatabaseInterface {
             ioe.printStackTrace();
         }
     }
+
     public void readMessage() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
             messageList = Collections.synchronizedList((List<MessageInterface>) ois.readObject());
@@ -143,6 +240,7 @@ public class Database implements DatabaseInterface {
         writeItem();
         writeMessage();
     }
+
     public void read() {
         readUser();
         readItem();
