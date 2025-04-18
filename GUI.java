@@ -5,27 +5,28 @@ import java.net.*;
 import java.io.*;
 
 /**
- * This is the GUI class. CS180 Team Phase.
+ * This is the GUI class.
  *
- * @author Anishka Rao, lab section 23
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
  * 
- * @version April, 2025
+ * @author Team 1 Lab 23
+ * @version April 17, 2025
  */
-public class GUI extends JComponent implements Runnable
-{  
-    //private Socket socket;
-    //private PrintWriter toServer;
-    //private BufferedReader fromServer;
+public class GUI extends JComponent implements Runnable, Communicator
+{
 
-    Database database;
-    UserInterface user;
+    private UserInterface user;
 
-    JFrame frame;
-    Container content;
-    JPanel loginPanel;
-    JButton login;
-    JButton createAccount;
-    JButton loginToAccount;
+    private Client client;
+    private final String host = "localhost";
+    private final int port = 8888;
+
+    private JFrame frame;
+    private Container content;
+    private JPanel loginPanel;
+    private JButton login;
+    private JButton createAccount;
+    private JButton loginToAccount;
 
     JTextField username;
     JTextField password;
@@ -52,16 +53,16 @@ public class GUI extends JComponent implements Runnable
                     create();
                 }
                 if (e.getSource() == loginToAccount) {
-                    try {
-                        //TODO - Client Connectivity
+                    // try {
+                    //     //TODO - Client Connectivity
 
-                        user = database.logIn(username.getText(), password.getText());
-                        JOptionPane.showMessageDialog(null, "Login Successful!",
-                            "Login Successful", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (UserNotFoundException unfe) {
-                        JOptionPane.showMessageDialog(null, unfe.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    //     user = database.logIn(username.getText(), password.getText());
+                    //     JOptionPane.showMessageDialog(null, "Login Successful!",
+                    //         "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+                    // } catch (UserNotFoundException unfe) {
+                    //     JOptionPane.showMessageDialog(null, unfe.getMessage(),
+                    //         "Error", JOptionPane.ERROR_MESSAGE);
+                    // }
                 }
                 if (e.getSource() == createAcc) {
                     //TODO - Client Connectivity
@@ -71,38 +72,55 @@ public class GUI extends JComponent implements Runnable
                         "Account Created", JOptionPane.INFORMATION_MESSAGE);
                 }
                 if (e.getSource() == itemListing) {
-                    //TODO - Client Connectivity
-
-                    database.getItemList();
+                    try {
+                        client.sendRequest(ITEM_LISTING);
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
                 }
                 if (e.getSource() == itemSearch) {
-
+                    try {
+                        client.sendRequest(ITEM_SEARCH);
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
                 }
                 if (e.getSource() == messages) {
-
+                    try {
+                        client.sendRequest(MESSAGES);
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
                 }
                 if (e.getSource() == deleteAccount) {
-
+                    try {
+                        client.sendRequest(DELETE_ACCOUNT);
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
                 }
                 if (e.getSource() == logout) {
-
+                    try {
+                        client.sendRequest(LOG_OUT);
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
                 }
                 if (e.getSource() == displayBalance) {
 
                 }
             }
         };
-/*
+
     public void beginConnection() {
         try {
-            //TODO
-        } catch (UnknownHostException uhe) {
-            System.out.println("Cannot find host!");
+            client = new Client(host, port);
+            System.out.println("Connected to server!");
         } catch (IOException ioe) {
             System.out.println("Connection failed!");
         }
     }
-*/
+
 
     public void allowLogin() {
         username = new JTextField(50);
