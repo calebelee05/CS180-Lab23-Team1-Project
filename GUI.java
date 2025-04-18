@@ -2,7 +2,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.*;
 import java.io.*;
 
 /**
@@ -115,41 +114,46 @@ public class GUI extends JComponent implements Runnable, Communicator {
             }
             if (e.getSource() == itemListing) {
                 try {
-                    client.sendRequest(ITEM_LISTING);
+                    String response = client.sendRequest(ITEM_LISTING);
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == itemSearch) {
                 try {
-                    client.sendRequest(ITEM_SEARCH);
+                    String response = client.sendRequest(ITEM_SEARCH);
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == messages) {
                 try {
-                    client.sendRequest(MESSAGES);
+                    String response = client.sendRequest(MESSAGES);
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == deleteAccount) {
                 try {
-                    client.sendRequest(DELETE_ACCOUNT);
+                    String response = client.sendRequest(DELETE_ACCOUNT);
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == logout) {
                 try {
-                    client.sendRequest(LOG_OUT);
+                    String response = client.sendRequest(LOG_OUT);
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == displayBalance) {
-
+                try {
+                    String response = client.sendRequest(DISPLAY_BALANCE);
+                    int balance = Integer.parseInt(response);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
             }
         }
     };
