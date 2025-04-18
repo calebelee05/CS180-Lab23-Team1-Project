@@ -1,9 +1,12 @@
 public interface Communicator {
+    // Status
+    String ERROR_MESSAGE = "Error";
+    String SUCCESS_MESSAGE = "Success";
+    
     // Login screen
     String LOG_IN = "LogIn";
     String SIGN_UP = "SignUp";
     String LOGGED_IN = "LoggedIn";
-    String ERROR_MESSAGE = "Error";
     String ACCOUNT_CREATED = "AccountCreated";
 
     // main menu
@@ -12,4 +15,5 @@ public interface Communicator {
     String MESSAGES = "Messages";
     String LOG_OUT = "LogOut";
     String DELETE_ACCOUNT = "DeleteAccount";
+    String DISPLAY_BALANCE = "DisplayBalance";
 }

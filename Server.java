@@ -69,7 +69,10 @@ public class Server implements Runnable, Communicator {
                     } else if (mainMenuOption.equals(DELETE_ACCOUNT)) {
                         DATABASE.deleteAccount(user);
                         logout = true;
+                        oos.writeObject(SUCCESS_MESSAGE);
                         break;
+                    } else if (mainMenuOption.equals(DISPLAY_BALANCE)) {
+                        oos.writeObject(user.getBalance());
                     }
                 }
                 if (logout) {
