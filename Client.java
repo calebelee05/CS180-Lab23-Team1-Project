@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.net.Socket;
  * @version April 16, 2025
  */
 public class Client {
+
     private final Socket socket;
     private final PrintWriter writer;
     private final BufferedReader reader;
@@ -23,8 +25,10 @@ public class Client {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public String sendRequest(String request) throws IOException {
-        writer.println(request);
+    public String sendRequest(String... request) throws IOException {
+        for (String line : request) {
+            writer.println(line); // Send each line of the request
+        }
         return reader.readLine(); // Read server's response
     }
 
