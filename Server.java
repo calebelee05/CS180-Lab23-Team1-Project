@@ -58,11 +58,11 @@ public class Server implements Runnable, Communicator {
                 while (true) { 
                     String mainMenuOption = reader.readLine();
                     if (mainMenuOption.equals(ITEM_LISTING)) {
-
+                        oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
-
+                        
                     } else if (mainMenuOption.equals(MESSAGES)) {
-
+                        oos.writeObject(Database.getMessageList());
                     } else if (mainMenuOption.equals(LOG_OUT)) {
                         logout = true;
                         break;
