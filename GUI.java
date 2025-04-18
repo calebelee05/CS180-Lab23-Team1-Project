@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,12 +9,11 @@ import java.io.*;
  * This is the GUI class.
  *
  * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
- * 
+ *
  * @author Team 1 Lab 23
  * @version April 17, 2025
  */
-public class GUI extends JComponent implements Runnable, Communicator
-{
+public class GUI extends JComponent implements Runnable, Communicator {
 
     private UserInterface user;
 
@@ -38,79 +38,121 @@ public class GUI extends JComponent implements Runnable, Communicator
 
     JButton itemListing;
     JButton itemSearch;
-    JButton messages; 
+    JButton messages;
     JButton deleteAccount;
     JButton logout;
     JButton displayBalance;
     JPanel userAccount;
 
     ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == login) {
-                    allowLogin();
-                }
-                if (e.getSource() == createAccount) {
-                    create();
-                }
-                if (e.getSource() == loginToAccount) {
-                    // try {
-                    //     //TODO - Client Connectivity
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == login) {
+                allowLogin();
+            }
+            if (e.getSource() == createAccount) {
+                create();
+            }
+            if (e.getSource() == loginToAccount) {
+                // Get inputs
+                String usernameInput = username.getText();
+                String passwordInput = password.getText();
 
-                    //     user = database.logIn(username.getText(), password.getText());
-                    //     JOptionPane.showMessageDialog(null, "Login Successful!",
-                    //         "Login Successful", JOptionPane.INFORMATION_MESSAGE);
-                    // } catch (UserNotFoundException unfe) {
-                    //     JOptionPane.showMessageDialog(null, unfe.getMessage(),
-                    //         "Error", JOptionPane.ERROR_MESSAGE);
-                    // }
+                // Ensure inputs are valid
+                if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-                if (e.getSource() == createAcc) {
-                    //TODO - Client Connectivity
 
-                    User newUser = new User(createUser.getText(), createPass.getText(), 0);
-                    JOptionPane.showMessageDialog(null, "Account Created!",
-                        "Account Created", JOptionPane.INFORMATION_MESSAGE);
-                }
-                if (e.getSource() == itemListing) {
-                    try {
-                        client.sendRequest(ITEM_LISTING);
-                    } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
-                    }
-                }
-                if (e.getSource() == itemSearch) {
-                    try {
-                        client.sendRequest(ITEM_SEARCH);
-                    } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
-                    }
-                }
-                if (e.getSource() == messages) {
-                    try {
-                        client.sendRequest(MESSAGES);
-                    } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
-                    }
-                }
-                if (e.getSource() == deleteAccount) {
-                    try {
-                        client.sendRequest(DELETE_ACCOUNT);
-                    } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
-                    }
-                }
-                if (e.getSource() == logout) {
-                    try {
-                        client.sendRequest(LOG_OUT);
-                    } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
-                    }
-                }
-                if (e.getSource() == displayBalance) {
+                // Send request and process response
+                try {
+                    String response = client.sendRequest(LOG_IN, usernameInput, passwordInput);
+                    if (response.equals(ERROR_MESSAGE)) {
+                        JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (response.equals(LOGGED_IN)) {
+                        user = new User(usernameInput, passwordInput, 0);
 
+                        loggedIn();
+
+                        JOptionPane.showMessageDialog(null, "Logged in successfully!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
                 }
             }
-        };
+            if (e.getSource() == createAcc) {
+                // Get inputs
+                String usernameInput = createUser.getText();
+                String passwordInput = createPass.getText();
+
+                // Ensure inputs are valid
+                if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Send request and process response
+                try {
+                    String response = client.sendRequest(SIGN_UP, usernameInput, passwordInput);
+                    if (response.equals(ERROR_MESSAGE)) {
+                        JOptionPane.showMessageDialog(null, "Username already exists.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (response.equals(ACCOUNT_CREATED)) {
+                        user = new User(usernameInput, passwordInput, 0);
+
+                        loggedIn();
+
+                        JOptionPane.showMessageDialog(null, "Account created successfully!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+
+            }
+            if (e.getSource() == itemListing) {
+                try {
+                    client.sendRequest(ITEM_LISTING);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == itemSearch) {
+                try {
+                    client.sendRequest(ITEM_SEARCH);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == messages) {
+                try {
+                    client.sendRequest(MESSAGES);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == deleteAccount) {
+                try {
+                    client.sendRequest(DELETE_ACCOUNT);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == logout) {
+                try {
+                    client.sendRequest(LOG_OUT);
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == displayBalance) {
+
+            }
+        }
+    };
 
     public void beginConnection() {
         try {
@@ -120,7 +162,6 @@ public class GUI extends JComponent implements Runnable, Communicator
             System.out.println("Connection failed!");
         }
     }
-
 
     public void allowLogin() {
         username = new JTextField(50);
@@ -198,6 +239,8 @@ public class GUI extends JComponent implements Runnable, Communicator
     }
 
     public void run() {
+        beginConnection();
+
         frame = new JFrame("GUI");
         content = frame.getContentPane();
         content.setLayout(new BorderLayout());
