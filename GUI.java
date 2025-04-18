@@ -1,31 +1,32 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.*;
 import java.io.*;
+import java.util.List;
 
 /**
- * This is the GUI class. CS180 Team Phase.
+ * This is the GUI class.
  *
- * @author Anishka Rao, lab section 23
- * 
- * @version April, 2025
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
+ *
+ * @author Team 1 Lab 23
+ * @version April 17, 2025
  */
-public class GUI extends JComponent implements Runnable
-{  
-    //private Socket socket;
-    //private PrintWriter toServer;
-    //private BufferedReader fromServer;
+public class GUI extends JComponent implements Runnable, Communicator {
 
-    Database database;
-    UserInterface user;
+    private UserInterface user;
 
-    JFrame frame;
-    Container content;
-    JPanel loginPanel;
-    JButton login;
-    JButton createAccount;
-    JButton loginToAccount;
+    private Client client;
+    private final String host = "localhost";
+    private final int port = 8888;
+
+    private JFrame frame;
+    private Container content;
+    private JPanel loginPanel;
+    private JButton login;
+    private JButton createAccount;
+    private JButton loginToAccount;
 
     JTextField username;
     JTextField password;
@@ -37,72 +38,221 @@ public class GUI extends JComponent implements Runnable
 
     JButton itemListing;
     JButton itemSearch;
-    JButton messages; 
+    JButton messages;
     JButton deleteAccount;
     JButton logout;
     JButton displayBalance;
     JPanel userAccount;
 
     ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == login) {
-                    allowLogin();
-                }
-                if (e.getSource() == createAccount) {
-                    create();
-                }
-                if (e.getSource() == loginToAccount) {
-                    try {
-                        //TODO - Client Connectivity
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == login) {
+                allowLogin();
+            }
+            if (e.getSource() == createAccount) {
+                create();
+            }
+            if (e.getSource() == loginToAccount) {
+                // Get inputs
+                String usernameInput = username.getText();
+                String passwordInput = password.getText();
 
-                        user = database.logIn(username.getText(), password.getText());
-                        JOptionPane.showMessageDialog(null, "Login Successful!",
-                            "Login Successful", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (UserNotFoundException unfe) {
-                        JOptionPane.showMessageDialog(null, unfe.getMessage(),
+                // Validate inputs
+                if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
                             "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Send request and process response
+                try {
+                    Object response = client.sendRequest(LOG_IN, usernameInput, passwordInput);
+                    if (response instanceof String message) {
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(LOGGED_IN)) {
+                            user = new User(usernameInput, passwordInput, 0);
+                            loggedIn();
+                            JOptionPane.showMessageDialog(null, "Logged in successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
-                }
-                if (e.getSource() == createAcc) {
-                    //TODO - Client Connectivity
-
-                    User newUser = new User(createUser.getText(), createPass.getText(), 0);
-                    JOptionPane.showMessageDialog(null, "Account Created!",
-                        "Account Created", JOptionPane.INFORMATION_MESSAGE);
-                }
-                if (e.getSource() == itemListing) {
-                    //TODO - Client Connectivity
-
-                    database.getItemList();
-                }
-                if (e.getSource() == itemSearch) {
-
-                }
-                if (e.getSource() == messages) {
-
-                }
-                if (e.getSource() == deleteAccount) {
-
-                }
-                if (e.getSource() == logout) {
-
-                }
-                if (e.getSource() == displayBalance) {
-
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
                 }
             }
-        };
-/*
+            if (e.getSource() == createAcc) {
+                // Get inputs
+                String usernameInput = createUser.getText();
+                String passwordInput = createPass.getText();
+
+                // Validate inputs
+                if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Send request and process response
+                try {
+                    Object response = client.sendRequest(SIGN_UP, usernameInput, passwordInput);
+                    if (response instanceof String message) {
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Username already exists.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(ACCOUNT_CREATED)) {
+                            user = new User(usernameInput, passwordInput, 0);
+                            loggedIn();
+                            JOptionPane.showMessageDialog(null, "Account created successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+
+            }
+            if (e.getSource() == itemListing) {
+                try {
+                    Object response = client.sendRequest(ITEM_LISTING);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use itemList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == itemSearch) { // search by item name/description, price range, and seller username
+                // Get inputs
+                String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input
+                String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input
+                String highPriceQuery = "10.0"; // High-bound for price range // Replace with input
+                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID // Replace with actual input
+
+                // Validate inputs
+                try {
+                    double lowBound = Double.parseDouble(lowPriceQuery);
+                    double highBound = Double.parseDouble(highPriceQuery);
+                    if (lowBound < 0 || highBound < 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Price range must be non-negative.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null,
+                            "Please enter valid numbers for price range.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                } 
+
+                // Send request and process response
+                try {
+                    Object response = client.sendRequest(ITEM_SEARCH,
+                            textQuery,
+                            lowPriceQuery,
+                            highPriceQuery,
+                            sellerQuery);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use filtered itemList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == messages) {
+                try {
+                    Object response = client.sendRequest(MESSAGES);
+                    if (response instanceof List) {
+                        List<MessageInterface> messageList = (List<MessageInterface>) response;
+                        // use messageList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve message list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == deleteAccount) {
+                try {
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String message) {
+                        if (message.equals(SUCCESS_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Account deleted successfully.",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    "Failed to delete account.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == logout) {
+                try {
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String message) {
+                        if (message.equals(SUCCESS_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Log-out successful.",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    "Failed to log-out.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == displayBalance) {
+                try {
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String balanceString) {
+                        double balance = Double.parseDouble(balanceString);
+                        // use balance
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+        }
+    };
+
     public void beginConnection() {
         try {
-            //TODO
-        } catch (UnknownHostException uhe) {
-            System.out.println("Cannot find host!");
+            client = new Client(host, port);
+            System.out.println("Connected to server!");
         } catch (IOException ioe) {
             System.out.println("Connection failed!");
         }
     }
-*/
 
     public void allowLogin() {
         username = new JTextField(50);
@@ -180,6 +330,8 @@ public class GUI extends JComponent implements Runnable
     }
 
     public void run() {
+        beginConnection();
+
         frame = new JFrame("GUI");
         content = frame.getContentPane();
         content.setLayout(new BorderLayout());

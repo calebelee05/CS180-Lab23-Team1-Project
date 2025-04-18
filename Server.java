@@ -1,34 +1,21 @@
-import java.net.*;
+
 import java.io.*;
+import java.net.*;
+import java.util.List;
 
 /**
  * A Server class
  *
- * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 1
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
  *
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Server implements Runnable {
+public class Server implements Runnable, Communicator {
+
     private static final DatabaseInterface DATABASE = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
     private Socket socket;
     private UserInterface user;
-
-    // Message strings to communicate with client
-    // Login screen
-    public static final String LOG_IN = "LogIn";
-    public static final String SIGN_UP = "SignUp";
-    public static final String LOGGED_IN = "LoggedIn";
-    public static final String ERROR = "Error";
-    public static final String ACCOUNT_CREATED = "AccountCreated";
-
-    // main menu
-    public static final String ITEM_LISTING = "ItemListing";
-    public static final String ITEM_SEARCH = "ItemSearch";
-    public static final String MESSAGES = "Messages";
-    public static final String LOG_OUT = "LogOut";
-    public static final String DELETE_ACCOUNT = "DeleteAccount";
-
 
     public Server(Socket socket) {
         this.socket = socket;
@@ -54,15 +41,15 @@ public class Server implements Runnable {
                             oos.writeObject(LOGGED_IN);
                             break;
                         } catch (UserNotFoundException e) {
-                            oos.writeObject(ERROR);
+                            oos.writeObject(ERROR_MESSAGE);
                         }
                     }
                 } else if (signInOption.equals(SIGN_UP)) {
-                    while (true) { 
+                    while (true) {
                         username = reader.readLine();
                         password = reader.readLine();
                         if (Database.userExists(username)) {
-                            oos.writeObject(ERROR);
+                            oos.writeObject(ERROR_MESSAGE);
                         } else {
                             user = DATABASE.createAccount(username, password);
                             oos.writeObject(ACCOUNT_CREATED);
@@ -71,21 +58,32 @@ public class Server implements Runnable {
                     }
                 }
                 // Home screen
-                while (true) { 
+                while (true) {
                     String mainMenuOption = reader.readLine();
                     if (mainMenuOption.equals(ITEM_LISTING)) {
-
+                        oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
-
+                        String textQuery = reader.readLine();
+                        double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                        double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                        String sellerQuery = reader.readLine();
+                        List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
+                                lowPriceQuery,
+                                highPriceQuery,
+                                sellerQuery);
+                        oos.writeObject(filteredItems);
                     } else if (mainMenuOption.equals(MESSAGES)) {
-
+                        oos.writeObject(Database.getMessageList());
                     } else if (mainMenuOption.equals(LOG_OUT)) {
                         logout = true;
                         break;
                     } else if (mainMenuOption.equals(DELETE_ACCOUNT)) {
                         DATABASE.deleteAccount(user);
                         logout = true;
+                        oos.writeObject(SUCCESS_MESSAGE);
                         break;
+                    } else if (mainMenuOption.equals(DISPLAY_BALANCE)) {
+                        oos.writeObject(user.getBalance());
                     }
                 }
                 if (logout) {
