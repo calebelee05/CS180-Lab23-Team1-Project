@@ -11,7 +11,7 @@ import java.util.List;
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Server implements Runnable, Communicator {
+public class Server implements Runnable, Communicator, ServerInterface {
 
     private static final DatabaseInterface DATABASE = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
     private Socket socket;

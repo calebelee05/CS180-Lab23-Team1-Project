@@ -13,7 +13,7 @@ import java.util.List;
  * @author Team 1 Lab 23
  * @version April 17, 2025
  */
-public class GUI extends JComponent implements Runnable, Communicator {
+public class GUI extends JComponent implements Runnable, Communicator, GuiInterface {
 
     private UserInterface user;
 
