@@ -9,26 +9,10 @@ import java.net.*;
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Server implements Runnable {
+public class Server implements Runnable, Communicator {
     private static final DatabaseInterface DATABASE = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
     private Socket socket;
     private UserInterface user;
-
-    // Message strings to communicate with client
-    // Login screen
-    public static final String LOG_IN = "LogIn";
-    public static final String SIGN_UP = "SignUp";
-    public static final String LOGGED_IN = "LoggedIn";
-    public static final String ERROR = "Error";
-    public static final String ACCOUNT_CREATED = "AccountCreated";
-
-    // main menu
-    public static final String ITEM_LISTING = "ItemListing";
-    public static final String ITEM_SEARCH = "ItemSearch";
-    public static final String MESSAGES = "Messages";
-    public static final String LOG_OUT = "LogOut";
-    public static final String DELETE_ACCOUNT = "DeleteAccount";
-
 
     public Server(Socket socket) {
         this.socket = socket;

@@ -12,38 +12,51 @@ import java.net.Socket;
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Client {
+public class Client implements Runnable, Communicator {
 
-    public static void main(String[] args) {
-        // Connect to server
-        String host = ""; // placeholder
-        int port = -1; // placeholder
-        // actually connect to server
+    // Fields
+    Socket socket;
+    private UserInterface user;
 
+    // Methods
+    @Override
+    public void run() {
         // Set up server communication
-        Socket socket;
         BufferedReader reader;
         PrintWriter writer;
 
         try {
-            socket = new Socket(host, port);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
 
             boolean running = true;
             while (running) {
-                
+
             }
 
             socket.close();
             reader.close();
             writer.close();
         } catch (IOException e) {
-            System.out.printf("Could not connect to host \"%s\" at port \"%d\"\n", host, port);
+            e.printStackTrace();
         }
     }
 
-    private void setUp() {
+    public Client(Socket socket) {
+        this.socket = socket;
+    }
+
+    public static void main(String[] args) {
+        String host = "localhost";
+        int port = 8888;
+
+        try {
+            Socket s = new Socket(host, port);
+            Thread t = new Thread(new Client(s));
+            t.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
