@@ -101,12 +101,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                         if (message.equals(ERROR_MESSAGE)) {
                             JOptionPane.showMessageDialog(null, "Username already exists.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
-                        } else if (message.equals(ACCOUNT_CREATED)) {
-                            user = new User(usernameInput, passwordInput, 0);
-                            loggedIn();
-                            JOptionPane.showMessageDialog(null, "Account created successfully!",
-                                    "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else if (response instanceof UserInterface) {
+                        user = (User) response;
+                        loggedIn();
+                        JOptionPane.showMessageDialog(null, "Account created successfully!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -119,6 +119,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     if (response instanceof List) {
                         List<ItemInterface> itemList = (List<ItemInterface>) response;
                         // use itemList
+                        myItemListing();
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve item list.",
@@ -130,6 +131,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
             }
             if (e.getSource() == itemSearch) { // search by item name/description, price range, and seller username
+                searchItem();
                 // Get inputs
                 String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input
                 String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input
@@ -143,6 +145,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     if (lowBound < 0 || highBound < 0) {
                         JOptionPane.showMessageDialog(null,
                                 "Price range must be non-negative.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else if (lowBound > highBound) {
+                        JOptionPane.showMessageDialog(null,
+                                "Price range is not valid.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
@@ -165,6 +173,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     if (response instanceof List) {
                         List<ItemInterface> itemList = (List<ItemInterface>) response;
                         // use filtered itemList
+                        searchResult();
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve item list.",
@@ -181,6 +190,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     if (response instanceof List) {
                         List<MessageInterface> messageList = (List<MessageInterface>) response;
                         // use messageList
+                        messageListing();
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve message list.",
@@ -192,34 +202,42 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
             }
             if (e.getSource() == deleteAccount) {
-                try {
-                    Object response = client.sendRequest(DELETE_ACCOUNT);
-                    if (response instanceof String message) {
-                        if (message.equals(SUCCESS_MESSAGE)) {
-                            JOptionPane.showMessageDialog(null,
-                                    "Account deleted successfully.",
-                                    "Success",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(null,
-                                    "Failed to delete account.",
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete your account?",
+                "Delete account",
+                JOptionPane.YES_NO_OPTION);
+                if (confirm == 0) {
+                    try {
+                        Object response = client.sendRequest(DELETE_ACCOUNT);
+                        if (response instanceof String message) {
+                            if (message.equals(SUCCESS_MESSAGE)) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Account deleted successfully.",
+                                        "Success",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                initial();
+                            } else {
+                                JOptionPane.showMessageDialog(null,
+                                        "Failed to delete account.",
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
                         }
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
                     }
-                } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == logout) {
                 try {
-                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    Object response = client.sendRequest(LOG_OUT);
                     if (response instanceof String message) {
                         if (message.equals(SUCCESS_MESSAGE)) {
                             JOptionPane.showMessageDialog(null,
                                     "Log-out successful.",
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE);
+                            initial();
                         } else {
                             JOptionPane.showMessageDialog(null,
                                     "Failed to log-out.",
@@ -253,6 +271,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             System.out.println("Connection failed!");
             return null;
         }
+    }
+
+    // Phase 3 TODO
+    public void initial() {
+
     }
 
     public void allowLogin() {
@@ -328,6 +351,26 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         content.remove(userAndPass);
         content.add(userAccount, BorderLayout.CENTER);
         content.revalidate();
+    }
+
+    public void myItemListing() {
+
+    }
+
+    public void addItem() {
+
+    }
+
+    public void searchItem() {
+
+    }
+
+    public void searchResult() {
+
+    }
+
+    public void messageListing() {
+
     }
 
     public void run() {

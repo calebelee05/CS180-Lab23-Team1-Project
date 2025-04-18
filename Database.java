@@ -79,6 +79,22 @@ public class Database implements DatabaseInterface {
             String sellerQuery) {
         List<ItemInterface> filteredList = new ArrayList<>();
 
+        for (ItemInterface item : itemList) {
+            if (item.getPrice() >= lowPriceQuery &&
+                item.getPrice() <= highPriceQuery) {
+                    if (item.getName().toLowerCase().contains(textQuery.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(textQuery.toLowerCase())) {
+                            if (sellerQuery != null) {
+                                if (item.getSellerID().contains(sellerQuery)) { // no lowercase; case sensitive
+                                    filteredList.add(item);
+                                }
+                            } else {
+                                filteredList.add(item);
+                            }
+                    }
+                }
+        }
+        /*
         if (textQuery != null) {
             for (ItemInterface item : itemList) { // item name has precedence; added first
                 if (item.getName().toLowerCase().contains(textQuery.toLowerCase())) {
@@ -149,7 +165,7 @@ public class Database implements DatabaseInterface {
                 }
             }
         }
-
+        */
         return filteredList;
     }
 
@@ -211,7 +227,7 @@ public class Database implements DatabaseInterface {
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            userList = Collections.synchronizedList(new ArrayList<UserInterface>());
         }
     }
 
@@ -221,7 +237,7 @@ public class Database implements DatabaseInterface {
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            itemList = Collections.synchronizedList(new ArrayList<ItemInterface>());
         }
     }
 
@@ -231,7 +247,7 @@ public class Database implements DatabaseInterface {
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            messageList = Collections.synchronizedList(new ArrayList<MessageInterface>());
         }
     }
 

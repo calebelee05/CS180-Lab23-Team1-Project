@@ -52,7 +52,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                             oos.writeObject(ERROR_MESSAGE);
                         } else {
                             user = DATABASE.createAccount(username, password);
-                            oos.writeObject(ACCOUNT_CREATED);
+                            oos.writeObject(user);
                             break;
                         }
                     }
@@ -60,6 +60,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                 // Home screen
                 while (true) {
                     String mainMenuOption = reader.readLine();
+                    System.out.println(mainMenuOption);
                     if (mainMenuOption.equals(ITEM_LISTING)) {
                         oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
@@ -97,17 +98,17 @@ public class Server implements Runnable, Communicator, ServerInterface {
 
     public static void main(String[] args) {
         int port = 8888;
-        DATABASE.readUser();
-        DATABASE.readItem();
-        DATABASE.readMessage();
+        DATABASE.read();
 
-        System.out.println("Server started on port " + port);
         try {
             ServerSocket ss = new ServerSocket(port);
-            Socket s = ss.accept();
-            Thread t = new Thread(new Server(s));
-            t.start();
-
+            System.out.println("Server started on port " + port);
+            while (true) {
+                Socket s = ss.accept();
+                Thread t = new Thread(new Server(s));
+                t.start();
+                System.out.println("Client connected: " + s.getInetAddress());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

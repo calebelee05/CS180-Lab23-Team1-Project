@@ -1,3 +1,4 @@
+
 /**
  * A DatabaseInterface interface
  *
@@ -19,6 +20,8 @@ public interface DatabaseInterface {
     void readUser();
     void readItem();
     void readMessage();
+    void write();
+    void read();
     void update();
     UserInterface createAccount(String username, String password);
     void deleteAccount(UserInterface user);
