@@ -12,7 +12,7 @@ import java.net.Socket;
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Client {
+public class Client implements ClientInterface {
 
     private final Socket socket;
     private final PrintWriter writer;

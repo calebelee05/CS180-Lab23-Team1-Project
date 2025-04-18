@@ -245,12 +245,13 @@ public class GUI extends JComponent implements Runnable, Communicator {
         }
     };
 
-    public void beginConnection() {
+    public Client beginConnection() {
         try {
-            client = new Client(host, port);
             System.out.println("Connected to server!");
+            return (new Client(host, port));
         } catch (IOException ioe) {
             System.out.println("Connection failed!");
+            return null;
         }
     }
 
@@ -330,7 +331,7 @@ public class GUI extends JComponent implements Runnable, Communicator {
     }
 
     public void run() {
-        beginConnection();
+        client = beginConnection();
 
         frame = new JFrame("GUI");
         content = frame.getContentPane();
