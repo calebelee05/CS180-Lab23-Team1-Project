@@ -3,7 +3,7 @@ public interface Communicator {
     String LOG_IN = "LogIn";
     String SIGN_UP = "SignUp";
     String LOGGED_IN = "LoggedIn";
-    String ERROR = "Error";
+    String ERROR_MESSAGE = "Error";
     String ACCOUNT_CREATED = "AccountCreated";
 
     // main menu

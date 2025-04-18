@@ -38,7 +38,7 @@ public class Server implements Runnable, Communicator {
                             oos.writeObject(LOGGED_IN);
                             break;
                         } catch (UserNotFoundException e) {
-                            oos.writeObject(ERROR);
+                            oos.writeObject(ERROR_MESSAGE);
                         }
                     }
                 } else if (signInOption.equals(SIGN_UP)) {
@@ -46,7 +46,7 @@ public class Server implements Runnable, Communicator {
                         username = reader.readLine();
                         password = reader.readLine();
                         if (Database.userExists(username)) {
-                            oos.writeObject(ERROR);
+                            oos.writeObject(ERROR_MESSAGE);
                         } else {
                             user = DATABASE.createAccount(username, password);
                             oos.writeObject(ACCOUNT_CREATED);
