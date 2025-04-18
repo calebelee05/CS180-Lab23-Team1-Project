@@ -12,52 +12,25 @@ import java.net.Socket;
  * @author Team 1 Lab 23
  * @version April 16, 2025
  */
-public class Client implements Runnable, Communicator {
+public class Client {
+    private final Socket socket;
+    private final PrintWriter writer;
+    private final BufferedReader reader;
 
-    // Fields
-    Socket socket;
-    private UserInterface user;
-
-    // Methods
-    @Override
-    public void run() {
-        // Set up server communication
-        BufferedReader reader;
-        PrintWriter writer;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(), true);
-
-            boolean running = true;
-            while (running) {
-
-            }
-
-            socket.close();
-            reader.close();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Client(String host, int port) throws IOException {
+        this.socket = new Socket(host, port);
+        this.writer = new PrintWriter(socket.getOutputStream(), true);
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public Client(Socket socket) {
-        this.socket = socket;
+    public String sendRequest(String request) throws IOException {
+        writer.println(request);
+        return reader.readLine(); // Read server's response
     }
 
-    public static void main(String[] args) {
-        String host = "localhost";
-        int port = 8888;
-
-        try {
-            Socket s = new Socket(host, port);
-            Thread t = new Thread(new Client(s));
-            t.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void close() throws IOException {
+        socket.close();
+        writer.close();
+        reader.close();
     }
-
 }
