@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.List;
 
 /**
  * This is the GUI class.
@@ -65,17 +66,17 @@ public class GUI extends JComponent implements Runnable, Communicator {
 
                 // Send request and process response
                 try {
-                    String response = client.sendRequest(LOG_IN, usernameInput, passwordInput);
-                    if (response.equals(ERROR_MESSAGE)) {
-                        JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                    } else if (response.equals(LOGGED_IN)) {
-                        user = new User(usernameInput, passwordInput, 0);
-
-                        loggedIn();
-
-                        JOptionPane.showMessageDialog(null, "Logged in successfully!",
-                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                    Object response = client.sendRequest(LOG_IN, usernameInput, passwordInput);
+                    if (response instanceof String message) {
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(LOGGED_IN)) {
+                            user = new User(usernameInput, passwordInput, 0);
+                            loggedIn();
+                            JOptionPane.showMessageDialog(null, "Logged in successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -95,17 +96,17 @@ public class GUI extends JComponent implements Runnable, Communicator {
 
                 // Send request and process response
                 try {
-                    String response = client.sendRequest(SIGN_UP, usernameInput, passwordInput);
-                    if (response.equals(ERROR_MESSAGE)) {
-                        JOptionPane.showMessageDialog(null, "Username already exists.",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                    } else if (response.equals(ACCOUNT_CREATED)) {
-                        user = new User(usernameInput, passwordInput, 0);
-
-                        loggedIn();
-
-                        JOptionPane.showMessageDialog(null, "Account created successfully!",
-                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                    Object response = client.sendRequest(SIGN_UP, usernameInput, passwordInput);
+                    if (response instanceof String message) {
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Username already exists.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(ACCOUNT_CREATED)) {
+                            user = new User(usernameInput, passwordInput, 0);
+                            loggedIn();
+                            JOptionPane.showMessageDialog(null, "Account created successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -114,43 +115,99 @@ public class GUI extends JComponent implements Runnable, Communicator {
             }
             if (e.getSource() == itemListing) {
                 try {
-                    String response = client.sendRequest(ITEM_LISTING);
+                    Object response = client.sendRequest(ITEM_LISTING);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use itemList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == itemSearch) {
                 try {
-                    String response = client.sendRequest(ITEM_SEARCH);
+                    Object response = client.sendRequest(ITEM_SEARCH);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use itemList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == messages) {
                 try {
-                    String response = client.sendRequest(MESSAGES);
+                    Object response = client.sendRequest(MESSAGES);
+                    if (response instanceof List) {
+                        List<MessageInterface> messageList = (List<MessageInterface>) response;
+                        // use messageList
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve message list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == deleteAccount) {
                 try {
-                    String response = client.sendRequest(DELETE_ACCOUNT);
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String message) {
+                        if (message.equals(SUCCESS_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Account deleted successfully.",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    "Failed to delete account.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == logout) {
                 try {
-                    String response = client.sendRequest(LOG_OUT);
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String message) {
+                        if (message.equals(SUCCESS_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Log-out successful.",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    "Failed to log-out.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
             }
             if (e.getSource() == displayBalance) {
                 try {
-                    String response = client.sendRequest(DISPLAY_BALANCE);
-                    int balance = Integer.parseInt(response);
+                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    if (response instanceof String balanceString) {
+                        double balance = Double.parseDouble(balanceString);
+                        // use balance
+                    }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
