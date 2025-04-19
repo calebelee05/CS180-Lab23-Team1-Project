@@ -232,7 +232,7 @@ public class Database implements DatabaseInterface {
     }
 
     public void readItem() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(itemFile))) {
             itemList = Collections.synchronizedList((List<ItemInterface>) ois.readObject());
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
@@ -242,7 +242,7 @@ public class Database implements DatabaseInterface {
     }
 
     public void readMessage() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(userFile))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(messageFile))) {
             messageList = Collections.synchronizedList((List<MessageInterface>) ois.readObject());
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();

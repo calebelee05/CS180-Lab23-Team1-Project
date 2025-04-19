@@ -15,12 +15,15 @@ import org.junit.runner.notification.Failure;
 public class RunLocalTest {
 
     public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(TestUser.class, TestItem.class, TestMessage.class);
+        Result result = JUnitCore.runClasses(TestUser.class, TestItem.class, TestMessage.class, TestDatabase.class);
 
-        for (Failure failure : result.getFailures()) {
-            System.out.println(failure.toString());
+        if (result.wasSuccessful()) {
+            System.out.println("All tests passed successfully!");
+        } else {
+            System.out.println("Tests failed:");
+            for (Failure failure : result.getFailures()) {
+                System.out.println(failure);
+            }
         }
-
-        System.out.println("All tests passed successfully: " + result.wasSuccessful());
     }
 }
