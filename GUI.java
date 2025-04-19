@@ -161,7 +161,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                     return;
-                } 
+                }
 
                 // Send request and process response
                 try {
@@ -203,9 +203,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
             if (e.getSource() == deleteAccount) {
                 int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete your account?",
-                "Delete account",
-                JOptionPane.YES_NO_OPTION);
+                        "Are you sure you want to delete your account?",
+                        "Delete account",
+                        JOptionPane.YES_NO_OPTION);
                 if (confirm == 0) {
                     try {
                         Object response = client.sendRequest(DELETE_ACCOUNT);
