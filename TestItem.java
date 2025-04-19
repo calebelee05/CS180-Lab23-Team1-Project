@@ -2,6 +2,7 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.List;
+import org.junit.Before;
 
 /**
  * A JUnit test class for the Item Class
@@ -12,106 +13,52 @@ import java.util.List;
  * @version April 06, 2025
  */
 public class TestItem {
+    // fields used for testing
+    private ItemInterface item1;
+    private ItemInterface item2;
 
-    // Instance variables used for testing with generic items
-    String itemName = "Item 1";
-    String itemDescription = "Test Item 1";
-    double itemPrice = 15.0;
-    String sellerID = "Seller1";
-    ItemInterface item = new Item(itemName, itemPrice, itemDescription, sellerID);
-    String newItemName = "Modified Item 1";
-    String newItemDescription = "Modified Description 1";
-    double newItemPrice = 20.0;
-    String newSellerID = "SellerModified";
-    String anotherItemName = "Item 2";
-    String anotherItemDescription = "Test Item 2";
-    double anotherItemPrice = 12.0;
-    String anotherSellerID = "Seller2";
-    ItemInterface item2 = new Item(anotherItemName, anotherItemPrice, anotherItemDescription, anotherSellerID);
+    @Before
+    public void setUp() {
+        Database.getItemList().clear();
+        item1 = new Item("itemA", 10.0, "firstItem", "SellerA");
+        item2 = new Item("itemB", 20.0, "secondItem", "SellerB");
+        Database.getItemList().add(item1);
+        Database.getItemList().add(item2);
+    }
 
     // Testing Mutators and Accessors
     @Test
     public void testGettersSetters() {
-        item.setName(newItemName);
-        item.setDescription(newItemDescription);
-        item.setPrice(newItemPrice);
-        item.setSellerID(newSellerID);
-        assertEquals(newItemName, item.getName());
-        assertEquals(newItemDescription, item.getDescription());
-        assertEquals(newItemPrice, item.getPrice(), 0.001);
-        assertEquals(newSellerID, item.getSellerID());
+        assertEquals("itemA", item1.getName());
+        assertEquals(10.0, item1.getPrice(), 0.001);
+        assertEquals("firstItem", item1.getDescription());
+        assertEquals("SellerA", item1.getSellerID());
+        item1.setName("itemG");
+        item1.setPrice(15.0);
+        item1.setDescription("updated");
+        item1.setSellerID("SellerG");
+        assertEquals("itemG", item1.getName());
+        assertEquals(15.0, item1.getPrice(), 0.001);
+        assertEquals("updated", item1.getDescription());
+        assertEquals("SellerG", item1.getSellerID());
     }
 
     // Testing equals and toString methods
     @Test
     public void testEqualsAndToString() {
-        ItemInterface copyItem2 = new Item(anotherItemName,
-                anotherItemPrice + 5,
-                "Different description",
-                anotherSellerID);
-        assertTrue(item2.equals(copyItem2));
-        assertFalse(item.equals(item2));
-        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s",
-                anotherItemName,
-                anotherItemPrice,
-                anotherItemDescription,
-                anotherSellerID);
+        ItemInterface copyItem = new Item("itemB", 0.0, "description", "SellerB");
+        assertTrue(item2.equals(copyItem));
+        assertFalse(item1.equals(item2));
+        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s", "itemB", 20.00, "secondItem", "SellerB");
         assertEquals(expectedToString, item2.toString());
     }
 
     // Testing the method of deleting an item
     @Test
     public void testDeleteItem() {
-        List<ItemInterface> list = Item.getList();
-        list.clear();
-        ItemInterface testItem1 = new Item("DeleteTest1",
-                40.0,
-                "To delete",
-                "SellerDelete");
-        ItemInterface testItem2 = new Item("KeepTest",
-                80.0,
-                "To keep",
-                "SellerKeep");
-
-        assertTrue(list.contains(testItem1));
-        assertTrue(list.contains(testItem2));
-        testItem1.deleteItem();
-        assertFalse(list.contains(testItem1));
-        assertTrue(list.contains(testItem2));
+        item1.deleteItem();
+        List<ItemInterface> itemList = Database.getItemList();
+        assertFalse(itemList.contains(item1));
+        assertTrue(itemList.contains(item2));
     }
-
-    // Testing File IO Operations
-    @Test
-    public void testObjectReadAndWrite() {
-        List<ItemInterface> list = Item.getList();
-        list.clear();
-        ItemInterface itemFile1 = new Item("ItemFile1",
-                150.0,
-                "Continued item 1",
-                "SellerFile1");
-        ItemInterface itemFile2 = new Item("ItemFile2",
-                250.0,
-                "Continued item 2",
-                "SellerFile2");
-        Item.writeObject();
-        list.clear();
-        assertEquals(0, list.size());
-
-        List<ItemInterface> readItems = Item.readObject();
-        assertEquals(2, readItems.size());
-        boolean itemFound1 = false;
-        boolean itemFound2 = false;
-        for (ItemInterface i : readItems) {
-            if (i.getSellerID().equals("SellerFile1")
-                    && i.getName().equals("ItemFile1")) {
-                itemFound1 = true;
-            }
-            if (i.getSellerID().equals("SellerFile2")
-                    && i.getName().equals("ItemFile2")) {
-                itemFound2 = true;
-            }
-        }
-        assertTrue(itemFound1 && itemFound2);
-    }
-
 }

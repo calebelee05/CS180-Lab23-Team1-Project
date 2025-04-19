@@ -15,6 +15,7 @@ import org.junit.Before;
  */
 
 public class TestUser {
+    // fields used for testing
     private UserInterface user1;
 
     @Before
