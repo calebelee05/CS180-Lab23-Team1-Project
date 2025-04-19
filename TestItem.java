@@ -13,6 +13,7 @@ import org.junit.Before;
  * @version April 06, 2025
  */
 public class TestItem {
+
     // fields used for testing
     private ItemInterface item1;
     private ItemInterface item2;
