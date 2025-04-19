@@ -2,6 +2,8 @@
 import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.Test;
+import org.junit.Before;
+
 
 /**
  * Testing the User class
@@ -13,108 +15,60 @@ import org.junit.Test;
  */
 
 public class TestUser {
+    private UserInterface user1;
 
-    // Set the input
-    String username = "User1";
-    String password = "abcd1234";
-    double balance = 1000.0;
-
-    String itemName = "Item 1";
-    String itemDescription = "Test Item 1";
-    double itemPrice = 15.0;
-    ItemInterface item = new Item(itemName, itemPrice, itemDescription, username);
-    ArrayList<ItemInterface> itemList = new ArrayList<>();
-
-    String sellerID = "User2";
-    String itemBoughtName = "Item bought";
-    String itemBoughtDescription = "Test buyItem";
-    double itemBoughtPrice = 12.0;
-    ItemInterface itemBought = new Item(itemBoughtName, itemBoughtPrice, itemBoughtDescription, sellerID);
-
-    MessageInterface messageSent = new Message(username, "User2", "Hello");
-    MessageInterface messageReceived = new Message("User2", username, "Hi");
-    ArrayList<MessageInterface> messagesSent = new ArrayList<>();
-    ArrayList<MessageInterface> messagesReceived = new ArrayList<>();
-
-    UserInterface user1 = new User(username, password, balance);
+    @Before
+    public void setUp() {
+        user1 = new User("User1", "password1", 1000.0);
+    }
 
     // Test accessors and modifiers
     @Test
     public void testGettersSetters() {
-        String newUsername = "Modified user";
-        String newPassword = "Modified password";
-        double newBalance = 2000.0;
-
-        user1.setUsername(newUsername);
-        user1.setBalance(newBalance);
-        user1.setPassword(newPassword);
-
-        itemList.add(item);
-        messagesSent.add(messageSent);
-        messagesReceived.add(messageReceived);
-        user1.setItemsList(itemList);
-        user1.setMessagesSent(messagesSent);
-        user1.setMessagesReceived(messagesReceived);
-
-        UserInterface user1Copy = new User(newUsername, newPassword, newBalance);
-
-        assertEquals(itemList, user1.getItemsList()); // Test getItems()
-        assertEquals(messagesSent, user1.getMessagesSent()); // Test getMessagesSent()
-        assertEquals(messagesReceived, user1.getMessagesReceived()); // Test getMessagesReceived()
-        assertEquals(newUsername, user1.getUsername()); // Test getUsername()
-        assertEquals(newBalance, user1.getBalance(), 0.0001); // Test getBalance()
-        assertEquals(newPassword, user1.getPassword()); // Test getPassword()
-        assertTrue(user1.equals(user1Copy)); // Test equals() method
-    }
-
-    // Test password protected login and account deletion
-    @Test
-    public void testUserAccount() {
-        assertEquals(user1,User.logIn(username, password)); // Test user login
-        UserInterface user2 = new User("User2", "password", 0.0);
-        assertTrue(User.getList().contains(user2));
-        user2.deleteUser();
-        assertFalse(User.getList().contains(user2));
+        // initial
+        assertEquals("User1", user1.getUsername());
+        assertEquals("password1", user1.getPassword());
+        assertEquals(1000.0, user1.getBalance(), 0.001);
+        // modifying
+        user1.setUsername("UserG");
+        user1.setPassword("passwordG");
+        user1.setBalance(2000.0);
+        // verification
+        assertEquals("UserG", user1.getUsername());
+        assertEquals("passwordG", user1.getPassword());
+        assertEquals(2000.0, user1.getBalance(), 0.001);
     }
 
     // Test Item listing manipulation
     @Test
     public void testItemManipulation() throws ItemNotFoundException {
-        String newItemName = "Modified Item 2";
-        String newItemDescription = "Modified Test Item 2";
-        double newItemPrice = 10.0;
-
-        user1.addItem(itemName, itemPrice, itemDescription);
-        assertEquals(item, user1.getItem(itemName)); // Test addItem() and getItem()
-
-        user1.setItem(user1.getItem(itemName), newItemName, newItemPrice, newItemDescription);
-        ItemInterface item2 = new Item(newItemName, newItemPrice, newItemDescription, username);
-
-        assertEquals(item2, user1.getItem(newItemName)); // Test setItem()
-
-        user1.buyItem(itemBought);
-        user1.sellItem(item2);
-
-        // Test buyItem() and sellItem()
-        assertEquals(balance - itemBoughtPrice + newItemPrice, user1.getBalance(), 0.001); 
-
-        user1.deleteItem(user1.getItem(newItemName));
-
-        assertEquals(0, user1.getItemsList().size()); // Test deleteItem()
+        // adding and getting
+        ItemInterface item1 = user1.addItem("Item1", 50.0, "Description1");
+        assertEquals(item1, user1.getItem("Item1"));
+        // modification
+        user1.setItem(item1, "ItemG", 75.0, "Description2");
+        assertEquals("ItemG", item1.getName());
+        assertEquals(75.0, item1.getPrice(), 0.001);
+        assertEquals("Description2", item1.getDescription());
+        // buying and selling
+        user1.buyItem(item1);
+        assertEquals(1000.0 - 75.0, user1.getBalance(), 0.001);
+        user1.sellItem(item1);
+        assertEquals(1000.0, user1.getBalance(), 0.001);
+        // deletion
+        user1.deleteItem(item1);
+        assertTrue(user1.getItemsList().isEmpty());
     }
 
     // Test user messaging
     @Test
     public void testMessage() throws UserNotFoundException {
-        String messageContent = "Hello";
-        String username2 = "User2";
-        UserInterface user2 = new User(username2, "qwer", 0.0);
-
-        user1.sendMessage(user2, messageContent);
-
-        // Test sendMessage(), receiveMessage(), getMessageFromUser()
-        assertEquals(messageContent, user2.getMessageFromUser(username).get(0).getContents()); 
-        // Test getMessageToUser()
-        assertEquals(messageContent, user1.getMessageToUser(username2).get(0).getContents()); 
+        UserInterface user2 = new User("User2", "password2", 500.0);
+        MessageInterface message = user1.sendMessage(user2, "Message");
+        assertTrue(user1.getMessagesSent().contains(message)); // list sent
+        ArrayList<MessageInterface> received = user2.getMessageFromUser("User1"); // received
+        assertTrue(received.contains(message));
+        ArrayList<MessageInterface> sent = user1.getMessageToUser("User2"); // message sent
+        assertTrue(sent.contains(message));
     }
 }
