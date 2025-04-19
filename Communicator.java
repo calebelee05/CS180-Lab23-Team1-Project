@@ -9,7 +9,7 @@ public interface Communicator {
     String LOGGED_IN = "LoggedIn";
     String ACCOUNT_CREATED = "AccountCreated";
 
-    // main menu
+    // Main menu
     String ITEM_LISTING = "ItemListing";
     String ITEM_SEARCH = "ItemSearch";
     String MESSAGES = "Messages";
