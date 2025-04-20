@@ -4,6 +4,15 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A JUnit test class for the Database Class
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
+ *
+ * @author Team 1 Lab 23
+ * @version April 19, 2025
+ */
+
 public class TestDatabase {
 
     // fields used for testing

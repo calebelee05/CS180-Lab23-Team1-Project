@@ -15,7 +15,7 @@ import org.junit.runner.notification.Failure;
 public class RunLocalTest {
 
     public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(TestUser.class, TestItem.class, TestMessage.class, TestDatabase.class);
+        Result result = JUnitCore.runClasses(TestUser.class, TestItem.class, TestMessage.class, TestDatabase.class, TestServer.class, TestClient.class);
 
         if (result.wasSuccessful()) {
             System.out.println("All tests passed successfully!");
