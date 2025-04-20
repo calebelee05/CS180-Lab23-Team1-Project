@@ -320,3 +320,7 @@ This phase covers the creation of the client-server connectivity and implements 
     - void deleteItem(UserInterface user, ItemInterface item): Deletes an existing item from the system.
     - MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Sends a message from one user to another with the given content.
     - void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Processes a transaction between a buyer and a seller for a specific item.
+
+## Test Case Files
+    - TestClient.java: Tests the functionality of the Client class.
+    - TestServer.java: Tests the functionality of the Server class.
