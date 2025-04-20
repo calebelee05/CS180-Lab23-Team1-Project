@@ -16,8 +16,6 @@ import java.util.*;
  */
 public class GUI extends JComponent implements Runnable, Communicator, GuiInterface {
 
-    private UserInterface user;
-
     private Client client;
     private final String host = "localhost";
     private final int port = 8888;
@@ -73,7 +71,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(LOGGED_IN)) {
-                            user = new User(usernameInput, passwordInput, 0);
                             loggedIn();
                             JOptionPane.showMessageDialog(null, "Logged in successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -102,12 +99,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                         if (message.equals(ERROR_MESSAGE)) {
                             JOptionPane.showMessageDialog(null, "Username already exists.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(LOGGED_IN)) {
+                            loggedIn();
+                            JOptionPane.showMessageDialog(null, "Account created successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
-                    } else if (response instanceof UserInterface) {
-                        user = (User) response;
-                        loggedIn();
-                        JOptionPane.showMessageDialog(null, "Account created successfully!",
-                                "Success", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -118,9 +114,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
                     if (response instanceof List) {
-                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        List<ItemInterface> itemList = (ArrayList<ItemInterface>) response;
                         // use itemList
-                        myItemListing();
+                        myItemListing(itemList);
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve item list.",
@@ -355,7 +351,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         content.revalidate();
     }
 
-    public void myItemListing() {
+    public void myItemListing(List<ItemInterface> itemList) {
 
     }
 
