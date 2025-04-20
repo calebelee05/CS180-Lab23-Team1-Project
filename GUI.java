@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * This is the GUI class.
@@ -171,9 +172,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             highPriceQuery,
                             sellerQuery);
                     if (response instanceof List) {
-                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        List<ItemInterface> itemList = (ArrayList<ItemInterface>) response;
                         // use filtered itemList
-                        searchResult();
+                        searchResult(itemList);
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve item list.",
@@ -188,9 +189,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 try {
                     Object response = client.sendRequest(MESSAGES);
                     if (response instanceof List) {
-                        List<MessageInterface> messageList = (List<MessageInterface>) response;
+                        List<MessageInterface> messageList = (ArrayList<MessageInterface>) response;
                         // use messageList
-                        messageListing();
+                        messageListing(messageList);
                     } else {
                         JOptionPane.showMessageDialog(null,
                                 "Failed to retrieve message list.",
@@ -255,6 +256,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     if (response instanceof String balanceString) {
                         double balance = Double.parseDouble(balanceString);
                         // use balance
+                        showBalance();
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -273,7 +275,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
-    // Phase 3 TODO
+    // Phase 3 TODO: implement GUI layout
     public void initial() {
 
     }
@@ -365,11 +367,15 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     }
 
-    public void searchResult() {
+    public void searchResult(List<ItemInterface> itemList) {
 
     }
 
-    public void messageListing() {
+    public void messageListing(List<MessageInterface> messageList) {
+
+    }
+
+    public void showBalance() {
 
     }
 
