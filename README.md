@@ -249,3 +249,52 @@ This phase covers the creation of the client-server connectivity and implements 
     - String DELETE_ACCOUNT: A constant `String` for the client to request the deletion of their account.
     - String DISPLAY_BALANCE: A constant `String` for the client to request displaying their account balance.
 
+## Database.java
+    Fields
+    - private String userFile: The file path for storing user data.
+    - private String itemFile: The file path for storing item data.
+    - private String messageFile: The file path for storing message data.
+    - private static List<UserInterface> userList: A List to store all `UserInterface` objects.
+    - private static List<ItemInterface> itemList: A List to store all `ItemInterface` objects.
+    - private static List<MessageInterface> messageList: A List to store all `MessageInterface` objects.
+    
+    Constructors
+    - public Database(String userFile, String itemFile, String messageFile): Initializes a new `Database` object with the specified file paths for user, item, and message data.
+    
+    Methods
+    - public static void main(String[] args): A main method for basic testing of the `Database` class functionalities.
+    - public String getUserFile(): Returns the file path for user data.
+    - public String getItemFile(): Returns the file path for item data.
+    - public String getMessageFile(): Returns the file path for message data.
+    - public static List<UserInterface> getUserList(): Returns a list of all `UserInterface` objects.
+    - public static List<ItemInterface> getItemList(): Returns a list of all `ItemInterface` objects.
+    - public static List<ItemInterface> searchItemList(String textQuery, double lowPriceQuery, double highPriceQuery, String sellerQuery): Searches the `itemList` for items that match the given field values.
+    - public static List<MessageInterface> getMessageList(): Returns a list of all `MessageInterface` objects.
+    - public void setUserFile(String userFile): Sets the file path for user data.
+    - public void setItemFile(String itemFile): Sets the file path for item data.
+    - public void setmessageFile(String messageFile): Sets the file path for message data.
+    - public static void setUserList(List<UserInterface> list): Sets the list of all `UserInterface` objects.
+    - public static void setItemList(List<ItemInterface> list): Sets the list of all `ItemInterface` objects.
+    - public static void setMessageList(List<MessageInterface> list): Sets the list of all `MessageInterface` objects.
+    - public void writeUser(): Writes the `userList` to the user data file.
+    - public void writeItem(): Writes the `itemList` to the item data file.
+    - public void writeMessage(): Writes the `messageList` to the message data file.
+    - public void readUser(): Reads the user data file into the `userList`. Creates a new empty list if the file is not found or an error occurs.
+    - public void readItem(): Reads the item data file into the `itemList`. Creates a new empty list if the file is not found or an error occurs.
+    - public void readMessage(): Reads the message data file into the `messageList`. Creates a new empty list if the file is not found or an error occurs.
+    - public void write(): Writes and saves data to the files.
+    - public void read(): Reads from the files.
+    - public synchronized void update(): Updates the files.
+    - public UserInterface createAccount(String username, String password): Creates and returns a new `User` object with the given username and password.
+    - public void deleteAccount(UserInterface user): Calls the `deleteUser()` method on the provided `UserInterface` object.
+    - public static UserInterface logIn(String username, String password) throws UserNotFoundException: Searches the `userList` for a user with the matching username and password. If found, returns the `UserInterface` object, otherwise, throws a `UserNotFoundException`.
+    - public static boolean userExists(String username): Checks if a user with the given username exists in the `userList`.
+    - public ItemInterface addItem(UserInterface user, String itemName, double price, String description): Adds a new item for a specified user.
+    - public void deleteItem(UserInterface user, ItemInterface item): Removes an item for a specified user.
+    - public MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Create a new message and adds it to the `messageList`. Returns the newly created `MessageInterface` object.
+    - public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Calls the `buyItem()` method on the `buyer` and the `sellItem()` method on the `seller` to conduct a transaction.
+    
+    Interfaces Implemented
+    - DatabaseInterface: Defines the methods implemented by the `Database` class.
+
+
