@@ -182,3 +182,70 @@ This phase covers the creation of the database for the market place. This includ
     - TestItem.java: Tests the functionality of the Item class.
     - TestMessage.java: Tests the functionality of the Message class.
     - TestUser.java: Tests the functionality of the User class.
+
+Phase 2: Building the Network I/O
+This phase covers the creation of the client-server connectivity and implements Network I/O.
+
+## Client.java
+    Fields
+    - private final Socket socket: The socket connection to the server.
+    - private final PrintWriter writer: Used to send text-based requests to the server.
+    - private final ObjectInputStream ois: Used to read object-based responses from the server.
+
+    Constructors
+    - public Client(String host, int port) throws IOException: Initializes a new Client object by establishing a socket connection to the specified host and port. It also creates a `PrintWriter` for sending text and an `ObjectInputStream` for receiving objects.
+
+    Methods
+    - public Object sendRequest(String... request) throws IOException: Sends one or more lines of text as a request to the server. It then attempts to read a single `Object` as the server's response. Throws an `IOException` if there is an error during communication.
+    - public void close() throws IOException: Closes the socket connection and the associated `PrintWriter` and `ObjectInputStream`. Throws an `IOException` if an error occurs during the closing process.
+    
+    Interfaces Implemented
+    - ClientInterface: Defines the methods implemented by the Client class.
+
+## ClientInterface.java
+    Methods
+    - Object sendRequest(String... request) throws IOException: Defines the method signature for sending a request to a server. Throws an `IOException` if there is an error during the request or response process.
+    - void close() throws IOException: Defines the method signature for closing the connection to the server. Throws an `IOException` if an error occurs during the closing process.
+
+## Server.java
+    Fields
+    - private static final DatabaseInterface DATABASE: An instance of the `Database` class. Gives access to the database operations.
+    - private Socket socket: The socket connection established with a client.
+    - private UserInterface user: Represents the logged-in user associated with the current client connection.
+
+    Constructors
+    - public Server(Socket socket): Initializes a new `Server` object for a specific client connection, using the provided socket.
+
+    Methods
+    - public void run(): Implements the `Runnable` interface, defining the execution logic for each client connection thread. It handles the communication flow with the client:
+        - Sets up input and output streams for the socket.
+        - Implements a login/signup phase where the client can choose to log in to an existing account or create a new one.
+        - Enters a home screen loop after successful login, where the server listens for various client commands related to item listings, searching, messages, logout, account deletion, and displaying the user's balance.
+        - Handles client logout and account deletion, potentially breaking out of the inner loops to await a new login/signup attempt.
+    - public static void main(String[] args): The main entry point for the server application:
+        - Defines the port number the server will listen on (8888).
+        - Reads data from the database using `DATABASE.read()`.
+        - Creates a `ServerSocket` to listen for incoming client connections.
+        - Enters an infinite loop, accepting new client connections.
+        - For each new connection, it instantiates a new `Server` object and starts it in a new `Thread`, allowing multiple clients to be handled concurrently.
+        
+    Interfaces Implemented
+    - Runnable: Enables the `Server` class to be executed as a separate thread, allowing for multiple concurrent client interactions.
+    - Communicator: Defines constants used for communication between the client and server
+    - ServerInterface: Defines the methods that the `Server` class implements.
+
+## Communicator.java
+    Fields
+    - String ERROR_MESSAGE: A constant `String` representing an error message for communication between the client and server.
+    - String SUCCESS_MESSAGE: A constant `String` indicating a successful state.
+    - String LOG_IN: A constant `String` for the client to request the login screen.
+    - String SIGN_UP: A constant `String` for the client to request the signup screen.
+    - String LOGGED_IN: A constant `String` sent by the server to indicate a successful login.
+    - String ACCOUNT_CREATED: A constant `String` sent by the server to confirm successful account creation.
+    - String ITEM_LISTING: A constant `String` for the client to request a list of items.
+    - String ITEM_SEARCH: A constant `String` for the client to initiate a search for items.
+    - String MESSAGES: A constant `String` for the client to request their messages.
+    - String LOG_OUT: A constant `String` for the client to request to log out.
+    - String DELETE_ACCOUNT: A constant `String` for the client to request the deletion of their account.
+    - String DISPLAY_BALANCE: A constant `String` for the client to request displaying their account balance.
+
