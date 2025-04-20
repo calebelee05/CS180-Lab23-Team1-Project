@@ -297,4 +297,26 @@ This phase covers the creation of the client-server connectivity and implements 
     Interfaces Implemented
     - DatabaseInterface: Defines the methods implemented by the `Database` class.
 
-
+## DatabaseInterface.java
+    Methods
+    - String getUserFile(): Retrieves the file path used for storing user data.
+    - String getItemFile(): Retrieves the file path used for storing item data.
+    - String getMessageFile(): Retrieves the file path used for storing message data.
+    - void setUserFile(String userFile): Sets the file path used for storing user data.
+    - void setItemFile(String itemFile): Sets the file path used for storing item data.
+    - void setmessageFile(String messageFile): sets the file path used for storing message data.
+    - void writeUser(): Writes user data to the storage file.
+    - void writeItem(): Writes item data to the storage file.
+    - void writeMessage(): Writes message data to the storage file.
+    - void readUser(): Reads user data from the storage file.
+    - void readItem(): Reads item data from the storage file.
+    - void readMessage(): Reads message data from the storage file.
+    - void write(): Writes all data (user, item, message) to their respective storage files.
+    - void read(): Reads all data (user, item, message) from their respective storage files.
+    - void update(): Updates the stored data.
+    - UserInterface createAccount(String username, String password): Creates a new user account with the given username and password.
+    - void deleteAccount(UserInterface user): Deletes an existing user account.
+    - ItemInterface addItem(UserInterface user, String itemName, double price, String description): Adds a new item to the system, associated with a specific user.
+    - void deleteItem(UserInterface user, ItemInterface item): Deletes an existing item from the system.
+    - MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Sends a message from one user to another with the given content.
+    - void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Processes a transaction between a buyer and a seller for a specific item.
