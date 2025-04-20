@@ -1,3 +1,5 @@
+import java.util.List;
+
 public interface GuiInterface {
     Client beginConnection();
     void initial();
@@ -7,5 +9,7 @@ public interface GuiInterface {
     void myItemListing();
     void addItem();
     void searchItem();
-    void messageListing();
+    void searchResult(List<ItemInterface> itemList);
+    void messageListing(List<MessageInterface> messageList);
+    void showBalance();
 }
