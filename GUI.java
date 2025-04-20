@@ -138,7 +138,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
             }
             // Add Item
-            if (e.getActionCommand() == ADD) {
+            if (e.getActionCommand() == ADD_ITEM) {
                 addItem();
             }
 
@@ -188,7 +188,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             sellerQuery);
                     if (response instanceof List) {
                         List<ItemInterface> itemList = (ArrayList<ItemInterface>) response;
-                        // use filtered itemList
+                        // use filtered itemList (display search result)
                         searchResult(itemList);
                     } else {
                         JOptionPane.showMessageDialog(null,
@@ -387,34 +387,58 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     }
 
     // Phase 3 TODO: implement GUI layout
+
+    // Initial sign in screen
     public void initial() {
 
     }
 
+    // Main menu
     public void mainMenuScreen() {
 
     }
 
+    // Item listing screen
     public void myItemListing(List<ItemInterface> itemList) {
 
     }
 
+    // Add item screen
     public void addItem() {
 
     }
 
+    // View My Item
+    public void viewMyItem(ItemInterface item) {
+
+    }
+
+    // Item searching screen
     public void searchItem() {
 
     }
 
+    // Item search result
     public void searchResult(List<ItemInterface> itemList) {
 
     }
 
+    // View Item
+    public void viewItem(ItemInterface item) {
+
+    }
+
+    // Message lists
     public void messageListing(List<MessageInterface> messageList) {
 
     }
 
+    // Write new message
+    public void newMessage(UserInterface recipient) {
+
+    }
+
+    // Show balance
     public void showBalance() {
 
     }

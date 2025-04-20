@@ -21,9 +21,9 @@ public interface Communicator {
 
     // Item listing
     String ADD_ITEM = "AddItem";
-    String DELETE_ITEM = "DeleteItem";
     String ADD = "Add";
     String DELETE = "Delete";
+    String ITEM_CREATED = "ItemCreated";
 
     // Item search
     String SEARCH = "Search";

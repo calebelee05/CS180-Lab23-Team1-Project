@@ -32,7 +32,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             oos.flush();
             while (true) {
-                // Login screen
+                // Log in/Sign up
                 String signInOption = reader.readLine();
                 String username;
                 String password;
@@ -62,12 +62,29 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         }
                     }
                 }
-                // Home screen
+                // Main menu
                 while (true) {
                     String mainMenuOption = reader.readLine();
-                    System.out.println(mainMenuOption);
                     if (mainMenuOption.equals(ITEM_LISTING)) {
                         oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
+                        while (true) { 
+                            String itemListingOption = reader.readLine();
+                            if (itemListingOption.equals(ADD)) {
+                                try {
+                                    String itemName = reader.readLine();
+                                    double itemPrice = Double.parseDouble(reader.readLine());
+                                    String itemDescription = reader.readLine();
+                                    DATABASE.addItem(user, itemName, itemPrice, itemDescription);
+                                    oos.writeObject(ITEM_CREATED);
+                                } catch (Exception e) {
+                                    oos.writeObject(ERROR_MESSAGE);
+                                }
+                            } else if (itemListingOption.equals(DELETE)) {
+                                // read item and delete corresponding item
+                            } else if (itemListingOption.equals(MAIN_MENU)) {
+                                break;
+                            }
+                        }
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
                         String textQuery = reader.readLine();
                         double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
