@@ -6,7 +6,7 @@ public interface GuiInterface {
     void allowLogin();
     void create();
     void loggedIn();
-    void myItemListing();
+    void myItemListing(List<ItemInterface> itemList);
     void addItem();
     void searchItem();
     void searchResult(List<ItemInterface> itemList);

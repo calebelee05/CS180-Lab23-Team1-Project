@@ -57,7 +57,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                             oos.writeObject(ERROR_MESSAGE);
                         } else {
                             user = DATABASE.createAccount(username, password);
-                            oos.writeObject(user);
+                            oos.writeObject(LOGGED_IN);
                             break;
                         }
                     }
