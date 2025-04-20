@@ -41,17 +41,21 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     JButton deleteAccount;
     JButton logout;
     JButton displayBalance;
+    JButton mainMenu;
     JPanel userAccount;
 
     ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == login) {
+            // Log in option
+            if (e.getActionCommand() == LOG_IN) {
                 allowLogin();
             }
-            if (e.getSource() == createAccount) {
+            // Sign up option
+            if (e.getActionCommand() == SIGN_UP) {
                 create();
             }
-            if (e.getSource() == loginToAccount) {
+            // Log in button
+            if (e.getActionCommand() == LOGGED_IN) {
                 // Get inputs
                 String usernameInput = username.getText();
                 String passwordInput = password.getText();
@@ -80,7 +84,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == createAcc) {
+            // Create account button
+            if (e.getActionCommand() == ACCOUNT_CREATED) {
                 // Get inputs
                 String usernameInput = createUser.getText();
                 String passwordInput = createPass.getText();
@@ -108,9 +113,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
-
             }
-            if (e.getSource() == itemListing) {
+            // Back to menu
+            if (e.getSource() == mainMenu) {
+                mainMenuScreen();
+            }
+
+            // Item Listing
+            if (e.getActionCommand() == ITEM_LISTING) {
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
                     if (response instanceof List) {
@@ -127,13 +137,22 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == itemSearch) { // search by item name/description, price range, and seller username
+            // Add Item
+            if (e.getActionCommand() == ADD) {
+                addItem();
+            }
+
+            // Item Search
+            if (e.getActionCommand() == ITEM_SEARCH) { // search by item name/description, price range, and seller username
                 searchItem();
+            }
+            // Search button
+            if (e.getActionCommand() == SEARCH) {
                 // Get inputs
-                String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input
-                String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input
-                String highPriceQuery = "10.0"; // High-bound for price range // Replace with input
-                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID // Replace with actual input
+                String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input from textfield
+                String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input from textfield
+                String highPriceQuery = "10.0"; // High-bound for price range // Replace with input from textfield
+                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID // Replace with actual input from textfield
 
                 // Validate inputs
                 try {
@@ -181,7 +200,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == messages) {
+            
+            // Message Listing
+            if (e.getActionCommand() == MESSAGES) {
                 try {
                     Object response = client.sendRequest(MESSAGES);
                     if (response instanceof List) {
@@ -198,7 +219,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == deleteAccount) {
+
+            // Delete account
+            if (e.getActionCommand() == DELETE_ACCOUNT) {
                 int confirm = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to delete your account?",
                         "Delete account",
@@ -225,7 +248,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     }
                 }
             }
-            if (e.getSource() == logout) {
+
+            // Logout
+            if (e.getActionCommand() == LOG_OUT) {
                 try {
                     Object response = client.sendRequest(LOG_OUT);
                     if (response instanceof String message) {
@@ -246,7 +271,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
-            if (e.getSource() == displayBalance) {
+
+            // Display Balance
+            if (e.getActionCommand() == DISPLAY_BALANCE) {
                 try {
                     Object response = client.sendRequest(DELETE_ACCOUNT);
                     if (response instanceof String balanceString) {
@@ -271,11 +298,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
-    // Phase 3 TODO: implement GUI layout
-    public void initial() {
-
-    }
-
     public void allowLogin() {
         username = new JTextField(50);
         JLabel usernameLabel = new JLabel("Enter Username:");
@@ -289,6 +311,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginToAccount = new JButton("Login");
         loginToAccount.addActionListener(actionListener);
+        loginToAccount.setActionCommand(LOGGED_IN);
         loginToAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
         userAndPass.add(usernameLabel);
         userAndPass.add(username);
@@ -313,6 +336,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         createAcc = new JButton("Create Account");
         createAcc.addActionListener(actionListener);
+        createAcc.setActionCommand(ACCOUNT_CREATED);
         createAcc.setAlignmentX(Component.CENTER_ALIGNMENT);
         userAndPass.add(usernameLabel);
         userAndPass.add(createUser);
@@ -327,16 +351,27 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     public void loggedIn() {
         itemListing = new JButton("View Item List");
         itemListing.addActionListener(actionListener);
+        itemListing.setActionCommand(ITEM_LISTING);
+
         itemSearch = new JButton("Search Item");
         itemSearch.addActionListener(actionListener);
+        itemSearch.setActionCommand(ITEM_SEARCH);
+
         messages = new JButton("View Messages");
         messages.addActionListener(actionListener);
+        messages.setActionCommand(MESSAGES);
+
         deleteAccount = new JButton("Delete Account");
         deleteAccount.addActionListener(actionListener);
+        deleteAccount.setActionCommand(DELETE_ACCOUNT);
+
         logout = new JButton("Logout");
         logout.addActionListener(actionListener);
+        logout.setActionCommand(LOG_OUT);
+
         displayBalance = new JButton("View Balance");
         displayBalance.addActionListener(actionListener);
+        displayBalance.setActionCommand(DISPLAY_BALANCE);
 
         userAccount = new JPanel();
         userAccount.setLayout(new FlowLayout());
@@ -349,6 +384,15 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         content.remove(userAndPass);
         content.add(userAccount, BorderLayout.CENTER);
         content.revalidate();
+    }
+
+    // Phase 3 TODO: implement GUI layout
+    public void initial() {
+
+    }
+
+    public void mainMenuScreen() {
+
     }
 
     public void myItemListing(List<ItemInterface> itemList) {
@@ -388,8 +432,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
         login = new JButton("Login");
         login.addActionListener(actionListener);
+        login.setActionCommand(LOG_IN);
         createAccount = new JButton("Create Account");
         createAccount.addActionListener(actionListener);
+        createAccount.setActionCommand(SIGN_UP);
 
         loginPanel = new JPanel();
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
