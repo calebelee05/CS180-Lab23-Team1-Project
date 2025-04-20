@@ -21,6 +21,11 @@ public class Server implements Runnable, Communicator, ServerInterface {
         this.socket = socket;
     }
 
+    // Used for testing
+    public Socket getSocket() {
+        return socket;
+    }
+
     public void run() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
