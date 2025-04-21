@@ -109,7 +109,7 @@ public class Database implements DatabaseInterface {
         this.itemFile = itemFile;
     }
 
-    public void setmessageFile(String messageFile) {
+    public void setMessageFile(String messageFile) {
         this.messageFile = messageFile;
     }
 

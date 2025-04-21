@@ -1,3 +1,4 @@
+
 import org.junit.Test;
 import java.net.*;
 import java.io.*;
@@ -10,7 +11,6 @@ import java.io.*;
  * @author Team 1 Lab 23
  * @version April 19, 2025
  */
-
 public class TestClient {
 
     // tests that the constructor throws an IOException if it cannot connect
@@ -21,7 +21,7 @@ public class TestClient {
 
     // tests close() does not throw when opening a successful connection
     @Test
-    public void testNoThrowOnClose () throws Exception {
+    public void testNoThrowOnClose() throws Exception {
         try {
             ServerSocket serverSocket = new ServerSocket(0);
             int port = serverSocket.getLocalPort();

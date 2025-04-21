@@ -13,7 +13,6 @@ import org.junit.Before;
  * @author Team 1 Lab 23
  * @version April 06, 2025
  */
-
 public class TestMessage {
 
     // fields used for testing
@@ -57,7 +56,9 @@ public class TestMessage {
         assertTrue(message1.equals(copyMessage));
         assertFalse(message1.equals(message2));
 
-        String expectedMessage = String.format("Sender: %s\nRecipient: %s\nContent: %s\n", message1.getSenderID(), message1.getRecipientID(), "Contents1");
+        String expectedMessage = String.format("Sender: %s\nRecipient: %s\nContent: %s\n",
+                message1.getSenderID(),
+                message1.getRecipientID(), "Contents1");
         assertEquals(expectedMessage, message1.toString());
     }
 

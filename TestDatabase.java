@@ -1,3 +1,4 @@
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import java.util.List;
  * @author Team 1 Lab 23
  * @version April 19, 2025
  */
-
 public class TestDatabase {
 
     // fields used for testing
@@ -20,7 +20,7 @@ public class TestDatabase {
 
     @Before
     public void setUp() {
-        List<UserInterface>  userList = new ArrayList<>();
+        List<UserInterface> userList = new ArrayList<>();
         List<ItemInterface> itemList = new ArrayList<>();
         List<MessageInterface> messageList = new ArrayList<>();
         Database.setUserList(userList);
@@ -32,13 +32,13 @@ public class TestDatabase {
     // tests account creation, deletion, login
     @Test
     public void testUserAccountHandling() throws UserNotFoundException {
-        UserInterface user1 = database.createAccount("User1", "Password1");
+        UserInterface user1 = database.createAccount("user1", "Password1");
         assertTrue(Database.getUserList().contains(user1));
-        assertTrue(Database.userExists("User1"));
-        UserInterface logIn = Database.logIn("User1", "Password1");
-        assertEquals("User1", logIn.getUsername());
+        assertTrue(Database.userExists("user1"));
+        UserInterface logIn = Database.logIn("user1", "Password1");
+        assertEquals("user1", logIn.getUsername());
         database.deleteAccount(user1);
-        assertFalse(Database.userExists("User1"));
+        assertFalse(Database.userExists("user1"));
     }
 
     // tests item addition and deletion
@@ -56,18 +56,18 @@ public class TestDatabase {
     // tests message sending and transactions
     @Test
     public void testMessageSendingAndTransactions() {
-        UserInterface User1 = database.createAccount("User1", "Password1");
-        UserInterface User2 = database.createAccount("User2", "Password2");
-        MessageInterface message = database.sendMessage(User1, User2, "message");
+        UserInterface user1 = database.createAccount("User1", "Password1");
+        UserInterface user2 = database.createAccount("User2", "Password2");
+        MessageInterface message = database.sendMessage(user1, user2, "message");
         assertTrue(Database.getMessageList().contains(message));
-        assertTrue(User1.getMessagesSent().contains(message));
-        assertTrue(User2.getMessagesReceived().contains(message));
-        ItemInterface item = database.addItem(User1, "Item1", 20.0, "description");
-        double balance1 = User1.getBalance();
-        double balance2 = User2.getBalance();
-        database.transaction(User2, User1, item);
-        assertEquals(balance1 - 20.0, User2.getBalance(), 0.001);
-        assertEquals(balance2 + 20.0, User1.getBalance(), 0.001);
+        assertTrue(user1.getMessagesSent().contains(message));
+        assertTrue(user2.getMessagesReceived().contains(message));
+        ItemInterface item = database.addItem(user1, "Item1", 20.0, "description");
+        double balance1 = user1.getBalance();
+        double balance2 = user2.getBalance();
+        database.transaction(user2, user1, item);
+        assertEquals(balance1 - 20.0, user2.getBalance(), 0.001);
+        assertEquals(balance2 + 20.0, user1.getBalance(), 0.001);
     }
 
     // tests item searching
@@ -81,4 +81,3 @@ public class TestDatabase {
         assertEquals("pencil", results.get(0).getName());
     }
 }
-

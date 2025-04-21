@@ -1,3 +1,12 @@
+
+/**
+ * A Communicator interface to store message strings used for communication
+ *
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
+ *
+ * @author Team 1 Lab 23
+ * @version April 16, 2025
+ */
 public interface Communicator {
     // Status
     String ERROR_MESSAGE = "Error";

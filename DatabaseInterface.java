@@ -8,25 +8,46 @@
  * @version April 15, 2025
  */
 public interface DatabaseInterface {
+
     String getUserFile();
+
     String getItemFile();
+
     String getMessageFile();
+
     void setUserFile(String userFile);
+
     void setItemFile(String itemFile);
-    void setmessageFile(String messageFile);
+
+    void setMessageFile(String messageFile);
+
     void writeUser();
+
     void writeItem();
+
     void writeMessage();
+
     void readUser();
+
     void readItem();
+
     void readMessage();
+
     void write();
+
     void read();
+
     void update();
+
     UserInterface createAccount(String username, String password);
+
     void deleteAccount(UserInterface user);
+
     ItemInterface addItem(UserInterface user, String itemName, double price, String description);
+
     void deleteItem(UserInterface user, ItemInterface item);
+
     MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content);
+
     void transaction(UserInterface buyer, UserInterface seller, ItemInterface item);
 }

@@ -47,15 +47,15 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             // Log in option
-            if (e.getActionCommand() == LOG_IN) {
+            if (e.getActionCommand().equals(LOG_IN)) {
                 allowLogin();
             }
             // Sign up option
-            if (e.getActionCommand() == SIGN_UP) {
+            if (e.getActionCommand().equals(SIGN_UP)) {
                 create();
             }
             // Log in button
-            if (e.getActionCommand() == LOGGED_IN) {
+            if (e.getActionCommand().equals(LOGGED_IN)) {
                 // Get inputs
                 String usernameInput = username.getText();
                 String passwordInput = password.getText();
@@ -70,7 +70,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 // Send request and process response
                 try {
                     Object response = client.sendRequest(LOG_IN, usernameInput, passwordInput);
-                    if (response instanceof String message) {
+                    if (response instanceof String) {
+                        String message = (String) response;
                         if (message.equals(ERROR_MESSAGE)) {
                             JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -85,7 +86,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
             }
             // Create account button
-            if (e.getActionCommand() == ACCOUNT_CREATED) {
+            if (e.getActionCommand().equals(ACCOUNT_CREATED)) {
                 // Get inputs
                 String usernameInput = createUser.getText();
                 String passwordInput = createPass.getText();
@@ -100,7 +101,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 // Send request and process response
                 try {
                     Object response = client.sendRequest(SIGN_UP, usernameInput, passwordInput);
-                    if (response instanceof String message) {
+                    if (response instanceof String) {
+                        String message = (String) response;
                         if (message.equals(ERROR_MESSAGE)) {
                             JOptionPane.showMessageDialog(null, "Username already exists.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -143,16 +145,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Item Search
-            if (e.getActionCommand().equals(ITEM_SEARCH)) { // search by item name/description, price range, and seller username
-                searchItem();
+            if (e.getActionCommand().equals(ITEM_SEARCH)) {
+                searchItem(); // search by name/description, price range, and seller username
             }
             // Search button
             if (e.getActionCommand().equals(SEARCH)) {
                 // Get inputs
-                String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input from textfield
-                String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input from textfield
-                String highPriceQuery = "10.0"; // High-bound for price range // Replace with input from textfield
-                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID // Replace with actual input from textfield
+                String textQuery = "textQuery"; // Searches in Item.name and Item.description
+                String lowPriceQuery = "0.0"; // Low-bound for price range
+                String highPriceQuery = "10.0"; // High-bound for price range
+                String sellerQuery = "sellerQuery"; // Searches in Item.sellerID
 
                 // Validate inputs
                 try {
@@ -229,7 +231,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 if (confirm == 0) {
                     try {
                         Object response = client.sendRequest(DELETE_ACCOUNT);
-                        if (response instanceof String message) {
+                        if (response instanceof String) {
+                            String message = (String) response;
                             if (message.equals(SUCCESS_MESSAGE)) {
                                 JOptionPane.showMessageDialog(null,
                                         "Account deleted successfully.",
@@ -253,7 +256,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             if (e.getActionCommand().equals(LOG_OUT)) {
                 try {
                     Object response = client.sendRequest(LOG_OUT);
-                    if (response instanceof String message) {
+                    if (response instanceof String) {
+                        String message = (String) response;
                         if (message.equals(SUCCESS_MESSAGE)) {
                             JOptionPane.showMessageDialog(null,
                                     "Log-out successful.",
@@ -276,7 +280,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             if (e.getActionCommand().equals(DISPLAY_BALANCE)) {
                 try {
                     Object response = client.sendRequest(DELETE_ACCOUNT);
-                    if (response instanceof String balanceString) {
+                    if (response instanceof String) {
+                        String balanceString = (String) response;
                         double balance = Double.parseDouble(balanceString);
                         // use balance
                         showBalance();
@@ -385,8 +390,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         content.add(userAccount, BorderLayout.CENTER);
         content.revalidate();
     }
-
-    // Phase 3 TODO: implement GUI layout
 
     // Initial sign in screen
     public void initial() {

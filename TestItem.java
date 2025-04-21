@@ -50,7 +50,11 @@ public class TestItem {
         ItemInterface copyItem = new Item("itemB", 0.0, "description", "SellerB");
         assertTrue(item2.equals(copyItem));
         assertFalse(item1.equals(item2));
-        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s", "itemB", 20.00, "secondItem", "SellerB");
+        String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s",
+                "itemB",
+                20.00,
+                "secondItem",
+                "SellerB");
         assertEquals(expectedToString, item2.toString());
     }
 
