@@ -126,7 +126,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
                     if (response instanceof List) {
-                        List<ItemInterface> itemList = (ArrayList<ItemInterface>) response;
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
                         // use itemList
                         myItemListing(itemList);
                     } else {
@@ -189,7 +189,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             highPriceQuery,
                             sellerQuery);
                     if (response instanceof List) {
-                        List<ItemInterface> itemList = (ArrayList<ItemInterface>) response;
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
                         // use filtered itemList (display search result)
                         searchResult(itemList);
                     } else {
@@ -208,7 +208,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 try {
                     Object response = client.sendRequest(MESSAGES);
                     if (response instanceof List) {
-                        List<MessageInterface> messageList = (ArrayList<MessageInterface>) response;
+                        List<MessageInterface> messageList = (List<MessageInterface>) response;
                         // use messageList
                         messageListing(messageList);
                     } else {
