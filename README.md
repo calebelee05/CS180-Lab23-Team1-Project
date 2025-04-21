@@ -234,6 +234,9 @@ This phase covers the creation of the client-server connectivity and implements 
     - Communicator: Defines constants used for communication between the client and server
     - ServerInterface: Defines the methods that the `Server` class implements.
 
+## ServerInterface.java
+    -  Defines the methods that the `Server` class implements.
+
 ## Communicator.java
     Fields
     - String ERROR_MESSAGE: A constant `String` representing an error message for communication between the client and server.
