@@ -327,3 +327,10 @@ This phase covers the creation of the client-server connectivity and implements 
 ## Test Case Files
     - TestClient.java: Tests the functionality of the Client class.
     - TestServer.java: Tests the functionality of the Server class.
+
+## How to Run
+1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
+2. Initialize the server first with `java Server`, then run the client side with `java GUI`; this will start the GUI.
+3. When the GUI pops up, you can choose to either log in or create a new account.
+4. An error message will pop up if you enter incorrect login information, or if you try to create an account with a username that already exists.
+5. The GUI has not yet been fully implemented, so no functionality is visible in the GUI after loggin in. However, the Server class will print in the terminal which button has been chosen.
