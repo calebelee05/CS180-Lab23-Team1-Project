@@ -67,7 +67,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                     String mainMenuOption = reader.readLine();
                     if (mainMenuOption.equals(ITEM_LISTING)) {
                         oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
-                        while (true) { 
+                        while (true) {
                             String itemListingOption = reader.readLine();
                             if (itemListingOption.equals(ADD)) {
                                 try {

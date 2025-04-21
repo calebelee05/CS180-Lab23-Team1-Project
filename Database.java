@@ -80,19 +80,19 @@ public class Database implements DatabaseInterface {
         List<ItemInterface> filteredList = new ArrayList<>();
 
         for (ItemInterface item : itemList) {
-            if (item.getPrice() >= lowPriceQuery &&
-                item.getPrice() <= highPriceQuery) {
-                    if (item.getName().toLowerCase().contains(textQuery.toLowerCase()) ||
-                        item.getDescription().toLowerCase().contains(textQuery.toLowerCase())) {
-                            if (sellerQuery != null) {
-                                if (item.getSellerID().contains(sellerQuery)) { // no lowercase; case sensitive
-                                    filteredList.add(item);
-                                }
-                            } else {
-                                filteredList.add(item);
-                            }
+            if (item.getPrice() >= lowPriceQuery
+                    && item.getPrice() <= highPriceQuery) {
+                if (item.getName().toLowerCase().contains(textQuery.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(textQuery.toLowerCase())) {
+                    if (sellerQuery != null) {
+                        if (item.getSellerID().contains(sellerQuery)) { // no lowercase; case sensitive
+                            filteredList.add(item);
+                        }
+                    } else {
+                        filteredList.add(item);
                     }
                 }
+            }
         }
         return filteredList;
     }
