@@ -120,7 +120,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Item Listing
-            if (e.getActionCommand() == ITEM_LISTING) {
+            if (e.getActionCommand().equals(ITEM_LISTING)) {
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
                     if (response instanceof List) {
@@ -138,16 +138,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
             }
             // Add Item
-            if (e.getActionCommand() == ADD_ITEM) {
+            if (e.getActionCommand().equals(ADD_ITEM)) {
                 addItem();
             }
 
             // Item Search
-            if (e.getActionCommand() == ITEM_SEARCH) { // search by item name/description, price range, and seller username
+            if (e.getActionCommand().equals(ITEM_SEARCH)) { // search by item name/description, price range, and seller username
                 searchItem();
             }
             // Search button
-            if (e.getActionCommand() == SEARCH) {
+            if (e.getActionCommand().equals(SEARCH)) {
                 // Get inputs
                 String textQuery = "textQuery"; // Searches in Item.name and Item.description // Replace with actual input from textfield
                 String lowPriceQuery = "0.0"; // Low-bound for price range // Replace with input from textfield
@@ -202,7 +202,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
             
             // Message Listing
-            if (e.getActionCommand() == MESSAGES) {
+            if (e.getActionCommand().equals(MESSAGES)) {
                 try {
                     Object response = client.sendRequest(MESSAGES);
                     if (response instanceof List) {
@@ -221,7 +221,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Delete account
-            if (e.getActionCommand() == DELETE_ACCOUNT) {
+            if (e.getActionCommand().equals(DELETE_ACCOUNT)) {
                 int confirm = JOptionPane.showConfirmDialog(null,
                         "Are you sure you want to delete your account?",
                         "Delete account",
@@ -250,7 +250,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Logout
-            if (e.getActionCommand() == LOG_OUT) {
+            if (e.getActionCommand().equals(LOG_OUT)) {
                 try {
                     Object response = client.sendRequest(LOG_OUT);
                     if (response instanceof String message) {
@@ -273,7 +273,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Display Balance
-            if (e.getActionCommand() == DISPLAY_BALANCE) {
+            if (e.getActionCommand().equals(DISPLAY_BALANCE)) {
                 try {
                     Object response = client.sendRequest(DELETE_ACCOUNT);
                     if (response instanceof String balanceString) {
