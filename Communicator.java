@@ -24,15 +24,16 @@ public interface Communicator {
     String MESSAGES = "Messages";
     String LOG_OUT = "LogOut";
     String DELETE_ACCOUNT = "DeleteAccount";
-    String DISPLAY_BALANCE = "DisplayBalance";
+    String ACCOUNT_INFO = "AccountInfo";
 
     String MAIN_MENU = "MainMenu";
 
     // Item listing
     String ADD_ITEM = "AddItem";
-    String ADD = "Add";
-    String DELETE = "Delete";
     String ITEM_CREATED = "ItemCreated";
+    String DELETE_ITEM = "DeleteItem";
+
+    String CANCEL = "Cancel";
 
     // Item search
     String SEARCH = "Search";

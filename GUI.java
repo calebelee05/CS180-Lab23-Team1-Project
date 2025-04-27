@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.List;
 import java.util.*;
+import javax.swing.border.Border;
 
 /**
  * This is the GUI class.
@@ -21,39 +22,73 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private final int port = 8888;
 
     private JFrame frame;
-    private Container content;
+
+    // Switchable panels
+    private CardLayout cardLayout;
+    private JPanel cardPanel;
+    private JPanel initialPanel;
     private JPanel loginPanel;
+    private JPanel signupPanel;
+    private JPanel menuPanel;
+    private JPanel itemListPanel;
+    private JPanel itemListSubPanel;
+    private JPanel myItemInfo;
+    private JPanel itemSearchPanel;
+    private JPanel messagePanel;
+    private JPanel accountInfoPanel;
+
+    // Initial
     private JButton login;
     private JButton createAccount;
+
+    // Log in
+    private JTextField username;
+    private JTextField password;
     private JButton loginToAccount;
 
-    JTextField username;
-    JTextField password;
+    // Sign up
+    private JTextField createUser;
+    private JTextField createPass;
+    private JButton createAcc;
 
-    JTextField createUser;
-    JTextField createPass;
-    JButton createAcc;
-    JPanel userAndPass;
+    // Main Menu
+    private JButton itemSearch;
+    private JButton messages;
+    private JButton deleteAccount;
+    private JButton logout;
+    private JButton displayInfo;
 
-    JButton itemListing;
-    JButton itemSearch;
-    JButton messages;
-    JButton deleteAccount;
-    JButton logout;
-    JButton displayBalance;
-    JButton mainMenu;
-    JPanel userAccount;
+    private JButton mainMenu;
+
+    // Item Listing
+    private JPanel itemAddPanel;
+    private JButton itemListing;
+    private JButton addItem;
+    private JButton backToItems;
+    private JButton deleteItem;
+    private JButton createItem;
+    private JButton cancelCreate;
+    private JTextField itemName;
+    private JTextField itemPrice;
+    private JTextField itemDescription;
+    private JTextArea itemInfo;
 
     ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             // Log in option
             if (e.getActionCommand().equals(LOG_IN)) {
-                allowLogin();
+                username.setText("");
+                password.setText("");
+                cardLayout.show(cardPanel, "Login");
             }
+            
             // Sign up option
             if (e.getActionCommand().equals(SIGN_UP)) {
-                create();
+                createUser.setText("");
+                createPass.setText("");
+                cardLayout.show(cardPanel, "Signup");
             }
+            
             // Log in button
             if (e.getActionCommand().equals(LOGGED_IN)) {
                 // Get inputs
@@ -76,7 +111,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Username or password is incorrect.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(LOGGED_IN)) {
-                            loggedIn();
+                            cardLayout.show(cardPanel, "MainMenu");
                             JOptionPane.showMessageDialog(null, "Logged in successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -85,6 +120,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
+            
             // Create account button
             if (e.getActionCommand().equals(ACCOUNT_CREATED)) {
                 // Get inputs
@@ -107,7 +143,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Username already exists.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(LOGGED_IN)) {
-                            loggedIn();
+                            cardLayout.show(cardPanel, "MainMenu");
                             JOptionPane.showMessageDialog(null, "Account created successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
@@ -116,13 +152,28 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     System.out.println("Error sending request to server.");
                 }
             }
+            
             // Back to menu
-            if (e.getSource() == mainMenu) {
-                mainMenuScreen();
+            if (e.getActionCommand().equals(MAIN_MENU)) {
+                try {
+                    Object response = client.sendRequest(MAIN_MENU);
+                    if (response instanceof String) {
+                        String message = (String) response;
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Error occurred.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(SUCCESS_MESSAGE)) {
+                            cardLayout.show(cardPanel, "MainMenu");
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
             }
-
+            
             // Item Listing
             if (e.getActionCommand().equals(ITEM_LISTING)) {
+                System.out.println(e.getActionCommand());
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
                     if (response instanceof List) {
@@ -138,10 +189,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
                 }
-            }
-            // Add Item
-            if (e.getActionCommand().equals(ADD_ITEM)) {
-                addItem();
             }
 
             // Item Search
@@ -238,7 +285,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                         "Account deleted successfully.",
                                         "Success",
                                         JOptionPane.INFORMATION_MESSAGE);
-                                initial();
+                                cardLayout.show(cardPanel,"Initial");
                             } else {
                                 JOptionPane.showMessageDialog(null,
                                         "Failed to delete account.",
@@ -263,7 +310,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                     "Log-out successful.",
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            initial();
+                            cardLayout.show(cardPanel,"Initial");
                         } else {
                             JOptionPane.showMessageDialog(null,
                                     "Failed to log-out.",
@@ -277,14 +324,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
 
             // Display Balance
-            if (e.getActionCommand().equals(DISPLAY_BALANCE)) {
+            if (e.getActionCommand().equals(ACCOUNT_INFO)) {
                 try {
                     Object response = client.sendRequest(DELETE_ACCOUNT);
                     if (response instanceof String) {
                         String balanceString = (String) response;
                         double balance = Double.parseDouble(balanceString);
                         // use balance
-                        showBalance();
+                        showInfo();
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -293,6 +340,93 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     };
 
+    ActionListener itemListActionListener = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals(ADD_ITEM)) {
+                itemName.setText("");
+                itemPrice.setText("");
+                itemDescription.setText("");
+                cardLayout.show(cardPanel, "AddItem");
+            }
+            if (e.getActionCommand().equals(ITEM_CREATED)) {
+                // Get inputs
+                String itemNameInput = itemName.getText();
+                String itemPriceInput = itemPrice.getText();
+                String itemDescrptionInput = itemDescription.getText();
+
+                // Validate inputs
+                if (itemNameInput.isEmpty() || itemPriceInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter both an item name and price.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    double price = Double.parseDouble(itemPriceInput);
+                    if (price <= 0) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid number for the price.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Send request and process response
+                try {
+                    Object response = client.sendRequest(ITEM_CREATED, itemNameInput, itemPriceInput, itemDescrptionInput);
+                    if (response instanceof String) {
+                        String message = (String) response;
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Failed to create item.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(SUCCESS_MESSAGE)) {
+                            cardLayout.show(cardPanel, "ItemList");
+                            JOptionPane.showMessageDialog(null, "Item created successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+                try {
+                    Object response = client.sendRequest(ITEM_LISTING);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use itemList
+                        myItemListing(itemList);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getSource() == deleteItem) {
+                try {
+                    Object response = client.sendRequest(e.getActionCommand());
+                    if (response instanceof String) {
+                        String message = (String) response;
+                        if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Failed to create item.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(SUCCESS_MESSAGE)) {
+                            cardLayout.show(cardPanel, "ItemList");
+                            JOptionPane.showMessageDialog(null, "Item created successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            }
+            if (e.getActionCommand().equals(CANCEL)) {
+                cardLayout.show(cardPanel, "ItemList");
+            }
+        }
+    };
     public Client beginConnection() {
         try {
             System.out.println("Connected to server!");
@@ -303,13 +437,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
+    // Log in screen
     public void allowLogin() {
         username = new JTextField(50);
         JLabel usernameLabel = new JLabel("Enter Username:");
         password = new JTextField(50);
         JLabel passwordLabel = new JLabel("Enter Password:");
-        userAndPass = new JPanel();
-        userAndPass.setLayout(new BoxLayout(userAndPass, BoxLayout.Y_AXIS));
+        loginPanel = new JPanel();
+        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
         username.setAlignmentX(Component.CENTER_ALIGNMENT);
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         password.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -318,23 +453,22 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         loginToAccount.addActionListener(actionListener);
         loginToAccount.setActionCommand(LOGGED_IN);
         loginToAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userAndPass.add(usernameLabel);
-        userAndPass.add(username);
-        userAndPass.add(passwordLabel);
-        userAndPass.add(password);
-        userAndPass.add(loginToAccount);
-        content.remove(loginPanel);
-        content.add(userAndPass, BorderLayout.CENTER);
-        content.revalidate();
+        loginPanel.add(usernameLabel);
+        loginPanel.add(username);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(password);
+        loginPanel.add(loginToAccount);
+        cardPanel.add(loginPanel, "Login");
     }
 
+    // Create account screen
     public void create() {
         createUser = new JTextField(50);
         JLabel usernameLabel = new JLabel("Enter Username:");
         createPass = new JTextField(50);
         JLabel passwordLabel = new JLabel("Enter Password:");
-        userAndPass = new JPanel();
-        userAndPass.setLayout(new BoxLayout(userAndPass, BoxLayout.Y_AXIS));
+        signupPanel = new JPanel();
+        signupPanel.setLayout(new BoxLayout(signupPanel, BoxLayout.Y_AXIS));
         createUser.setAlignmentX(Component.CENTER_ALIGNMENT);
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         createPass.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -343,17 +477,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         createAcc.addActionListener(actionListener);
         createAcc.setActionCommand(ACCOUNT_CREATED);
         createAcc.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userAndPass.add(usernameLabel);
-        userAndPass.add(createUser);
-        userAndPass.add(passwordLabel);
-        userAndPass.add(createPass);
-        userAndPass.add(createAcc);
-        content.remove(loginPanel);
-        content.add(userAndPass, BorderLayout.CENTER);
-        content.revalidate();
+        signupPanel.add(usernameLabel);
+        signupPanel.add(createUser);
+        signupPanel.add(passwordLabel);
+        signupPanel.add(createPass);
+        signupPanel.add(createAcc);
+        cardPanel.add(signupPanel, "Signup");
     }
 
-    public void loggedIn() {
+    // Main menu screen
+    public void mainMenuScreen() {
         itemListing = new JButton("View Item List");
         itemListing.addActionListener(actionListener);
         itemListing.setActionCommand(ITEM_LISTING);
@@ -374,41 +507,133 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         logout.addActionListener(actionListener);
         logout.setActionCommand(LOG_OUT);
 
-        displayBalance = new JButton("View Balance");
-        displayBalance.addActionListener(actionListener);
-        displayBalance.setActionCommand(DISPLAY_BALANCE);
+        displayInfo = new JButton("Account Info");
+        displayInfo.addActionListener(actionListener);
+        displayInfo.setActionCommand(ACCOUNT_INFO);
 
-        userAccount = new JPanel();
-        userAccount.setLayout(new FlowLayout());
-        userAccount.add(itemListing);
-        userAccount.add(itemSearch);
-        userAccount.add(messages);
-        userAccount.add(deleteAccount);
-        userAccount.add(logout);
-        userAccount.add(displayBalance);
-        content.remove(userAndPass);
-        content.add(userAccount, BorderLayout.CENTER);
-        content.revalidate();
+        menuPanel = new JPanel();
+        menuPanel.setLayout(new FlowLayout());
+        menuPanel.add(itemListing);
+        menuPanel.add(itemSearch);
+        menuPanel.add(messages);
+        menuPanel.add(deleteAccount);
+        menuPanel.add(logout);
+        menuPanel.add(displayInfo);
+        cardPanel.add(menuPanel, "MainMenu");
     }
 
     // Initial sign in screen
     public void initial() {
+        login = new JButton("Login");
+        login.addActionListener(actionListener);
+        login.setActionCommand(LOG_IN);
+        createAccount = new JButton("Create Account");
+        createAccount.addActionListener(actionListener);
+        createAccount.setActionCommand(SIGN_UP);
 
-    }
-
-    // Main menu
-    public void mainMenuScreen() {
-
+        initialPanel = new JPanel();
+        initialPanel.setLayout(new BoxLayout(initialPanel, BoxLayout.Y_AXIS));
+        login.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
+        initialPanel.add(login);
+        initialPanel.add(createAccount);
+        cardPanel.add(initialPanel, "Initial");
     }
 
     // Item listing screen
-    public void myItemListing(List<ItemInterface> itemList) {
+    public void itemListSetup() {
+        itemListPanel = new JPanel();
+        JPanel addAndMenu = new JPanel(new FlowLayout());
+        mainMenu = new JButton("Back to Menu");
+        mainMenu.addActionListener(actionListener);
+        mainMenu.setActionCommand(MAIN_MENU);
+        addItem = new JButton("Add new item");
+        addItem.setActionCommand(ADD_ITEM);
+        addItem.addActionListener(itemListActionListener);
+        addAndMenu.add(addItem);
+        addAndMenu.add(mainMenu);
+        itemListSubPanel = new JPanel(new GridLayout(0, 1));
 
+        myItemInfo = new JPanel();
+        itemInfo = new JTextArea();
+        itemInfo.setEditable(false);
+        backToItems = new JButton("Back");
+        backToItems.addActionListener(actionListener);
+        backToItems.setActionCommand(ITEM_LISTING);
+        deleteItem = new JButton("Delete");
+        deleteItem.addActionListener(itemListActionListener);
+
+        JPanel backAndDelete = new JPanel(new FlowLayout());
+        backAndDelete.add(backToItems);
+        backAndDelete.add(deleteItem);
+        myItemInfo.add(itemInfo, BorderLayout.CENTER);
+        myItemInfo.add(backAndDelete, BorderLayout.SOUTH);
+
+        itemListPanel.add(itemListSubPanel);
+        itemListPanel.add(addAndMenu, BorderLayout.SOUTH);
+        cardPanel.add(itemListPanel, "ItemList");
+        cardPanel.add(myItemInfo, "ItemInfo");
+    }
+    public void myItemListing(List<ItemInterface> itemList) {
+        itemListSubPanel.removeAll();
+        if (itemList.isEmpty()) {
+            JTextArea noItem = new JTextArea("No Items");
+            noItem.setPreferredSize(new Dimension(500, 40));
+            noItem.setEditable(false);
+            itemListSubPanel.add(noItem);
+        }
+        for (ItemInterface item : itemList) {
+            JButton itemButton = new JButton(item.getName());
+            itemButton.setPreferredSize(new Dimension(350, 40));
+            itemButton.addActionListener(e -> {
+                itemInfo.setText("Item name: " + item.getName() + 
+                                        "\nPrice: " + item.getPrice() +
+                                        "\nDescription: " + item.getDescription());
+                deleteItem.setActionCommand(item.getName());
+                cardLayout.show(cardPanel, "ItemInfo");
+            });
+            itemListSubPanel.add(itemButton);
+        }
+        cardPanel.revalidate();
+        cardLayout.show(cardPanel, "ItemList");
     }
 
     // Add item screen
     public void addItem() {
+        itemName = new JTextField(50);
+        JLabel itemNameLabel = new JLabel("Enter Item Name:");
+        itemPrice = new JTextField(50);
+        JLabel itemPriceLabel = new JLabel("Enter Item Price:");
+        itemDescription = new JTextField(100);
+        JLabel itemDescriptionLabel = new JLabel("Enter Item Description:");
+        itemAddPanel = new JPanel();
+        itemAddPanel.setLayout(new BoxLayout(itemAddPanel, BoxLayout.Y_AXIS));
+        itemName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemPrice.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemPriceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemDescriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JPanel addAndCancel = new JPanel(new FlowLayout());
+        createItem = new JButton("Add");
+        createItem.addActionListener(itemListActionListener);
+        createItem.setActionCommand(ITEM_CREATED);
+        cancelCreate = new JButton("Cancel");
+        cancelCreate.addActionListener(itemListActionListener);
+        cancelCreate.setActionCommand(CANCEL);
+        addAndCancel.add(createItem);
+        addAndCancel.add(cancelCreate);
+
+        addAndCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemAddPanel.add(itemNameLabel);
+        itemAddPanel.add(itemName);
+        itemAddPanel.add(itemPriceLabel);
+        itemAddPanel.add(itemPrice);
+        itemAddPanel.add(itemDescriptionLabel);
+        itemAddPanel.add(itemDescription);
+        itemAddPanel.add(addAndCancel);
+        cardPanel.add(itemAddPanel, "AddItem");
     }
 
     // View My Item
@@ -442,7 +667,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     }
 
     // Show balance
-    public void showBalance() {
+    public void showInfo() {
 
     }
 
@@ -450,27 +675,21 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         client = beginConnection();
 
         frame = new JFrame("GUI");
-        content = frame.getContentPane();
-        content.setLayout(new BorderLayout());
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+        initial();
+        allowLogin();
+        create();
+        mainMenuScreen();
+        itemListSetup();
+        addItem();
 
-        login = new JButton("Login");
-        login.addActionListener(actionListener);
-        login.setActionCommand(LOG_IN);
-        createAccount = new JButton("Create Account");
-        createAccount.addActionListener(actionListener);
-        createAccount.setActionCommand(SIGN_UP);
-
-        loginPanel = new JPanel();
-        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
-        login.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginPanel.add(login);
-        loginPanel.add(createAccount);
-        content.add(loginPanel, BorderLayout.CENTER);
+        frame.add(cardPanel, BorderLayout.CENTER);
+        cardLayout.show(cardPanel,"Initial");
     }
 
     public static void main(String[] args) {

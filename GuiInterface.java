@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface GuiInterface {
 
+    /*
     Client beginConnection();
 
     void initial();
@@ -19,7 +20,7 @@ public interface GuiInterface {
 
     void create();
 
-    void loggedIn();
+    void mainMenuScreen();
 
     void myItemListing(List<ItemInterface> itemList);
 
@@ -31,5 +32,5 @@ public interface GuiInterface {
 
     void messageListing(List<MessageInterface> messageList);
 
-    void showBalance();
+    void showBalance(); */
 }

@@ -43,7 +43,7 @@ public class Database implements DatabaseInterface {
         }
         ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1");
         if (itemList.contains(item1)) {
-            System.out.println("true");
+            System.out.println(database.getItemList());
         }
         database.deleteItem(user1, item1);
         if (itemList.contains(item1)) {
@@ -224,6 +224,16 @@ public class Database implements DatabaseInterface {
             }
         }
         return false;
+    }
+
+    public static List<ItemInterface> getUserItems(UserInterface user) {
+        List<ItemInterface> userItems = new ArrayList<>();
+        for (ItemInterface item : itemList) {
+            if (item.getSellerID().equals(user.getUsername())) {
+                userItems.add(item);
+            }
+        }
+        return userItems;
     }
 
     public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {

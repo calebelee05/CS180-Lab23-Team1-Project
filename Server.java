@@ -67,23 +67,26 @@ public class Server implements Runnable, Communicator, ServerInterface {
                     String mainMenuOption = reader.readLine();
                     System.out.println(mainMenuOption);
                     if (mainMenuOption.equals(ITEM_LISTING)) {
-                        oos.writeObject(Database.getItemList()); // type of List<ItemInterface>
+                        oos.writeObject(Database.getUserItems(user)); // type of List<ItemInterface>
                         while (true) {
                             String itemListingOption = reader.readLine();
-                            if (itemListingOption.equals(ADD)) {
+                            if (itemListingOption.equals(ITEM_CREATED)) {
                                 try {
                                     String itemName = reader.readLine();
                                     double itemPrice = Double.parseDouble(reader.readLine());
                                     String itemDescription = reader.readLine();
                                     DATABASE.addItem(user, itemName, itemPrice, itemDescription);
-                                    oos.writeObject(ITEM_CREATED);
+                                    oos.writeObject(SUCCESS_MESSAGE);
                                 } catch (Exception e) {
                                     oos.writeObject(ERROR_MESSAGE);
                                 }
-                            } else if (itemListingOption.equals(DELETE)) {
+                            } else if (itemListingOption.equals(DELETE_ITEM)) {
                                 // read item and delete corresponding item
                             } else if (itemListingOption.equals(MAIN_MENU)) {
+                                oos.writeObject(SUCCESS_MESSAGE);
                                 break;
+                            } else if (itemListingOption.equals(ITEM_LISTING)) {
+                                oos.writeObject(Database.getUserItems(user));
                             }
                         }
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
@@ -100,13 +103,14 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         oos.writeObject(Database.getMessageList());
                     } else if (mainMenuOption.equals(LOG_OUT)) {
                         logout = true;
+                        oos.writeObject(SUCCESS_MESSAGE);
                         break;
                     } else if (mainMenuOption.equals(DELETE_ACCOUNT)) {
                         DATABASE.deleteAccount(user);
                         logout = true;
                         oos.writeObject(SUCCESS_MESSAGE);
                         break;
-                    } else if (mainMenuOption.equals(DISPLAY_BALANCE)) {
+                    } else if (mainMenuOption.equals(ACCOUNT_INFO)) {
                         oos.writeObject(user.getBalance());
                     }
                 }
