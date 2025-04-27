@@ -406,17 +406,32 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
             if (e.getSource() == deleteItem) {
                 try {
-                    Object response = client.sendRequest(e.getActionCommand());
+                    Object response = client.sendRequest(DELETE_ITEM, e.getActionCommand());
                     if (response instanceof String) {
                         String message = (String) response;
                         if (message.equals(ERROR_MESSAGE)) {
-                            JOptionPane.showMessageDialog(null, "Failed to create item.",
+                            JOptionPane.showMessageDialog(null, "Failed to delete item.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(SUCCESS_MESSAGE)) {
                             cardLayout.show(cardPanel, "ItemList");
-                            JOptionPane.showMessageDialog(null, "Item created successfully!",
+                            JOptionPane.showMessageDialog(null, "Item deleted successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+                try {
+                    Object response = client.sendRequest(ITEM_LISTING);
+                    if (response instanceof List) {
+                        List<ItemInterface> itemList = (List<ItemInterface>) response;
+                        // use itemList
+                        myItemListing(itemList);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve item list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
