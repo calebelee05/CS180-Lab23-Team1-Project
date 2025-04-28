@@ -50,7 +50,7 @@ public interface UserInterface extends Serializable {
     void setItem(ItemInterface item, String name, double price, String description); // Edit item with this name
 
     // Balance Tracking
-    void buyItem(ItemInterface item); // user bought item; decrease balance by item price
+    void buyItem(ItemInterface item) throws Exception; // user bought item; decrease balance by item price
 
     void sellItem(ItemInterface item); // user sold item; increase balance by item price
 

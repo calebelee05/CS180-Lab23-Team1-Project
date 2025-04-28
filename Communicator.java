@@ -37,5 +37,7 @@ public interface Communicator {
 
     // Item search
     String SEARCH = "Search";
+    String BUY = "Buy";
+    String WRONG_PW = "IncorrectPassword";
 
 }

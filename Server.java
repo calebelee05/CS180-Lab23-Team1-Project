@@ -127,6 +127,22 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                 break;
                             } else if (itemSearchOption.equals(ITEM_SEARCH)) {
                                 oos.writeObject(SUCCESS_MESSAGE);
+                            } else if (itemSearchOption.equals(BUY)) {
+                                String itemName = reader.readLine();
+                                String sellerName = reader.readLine();
+                                String paymentPW = reader.readLine();
+                                if (!paymentPW.equals(user.getPassword())) {
+                                    oos.writeObject(WRONG_PW);
+                                } else {
+                                    try {
+                                        ItemInterface item = Database.findItem(itemName, sellerName);
+                                        UserInterface seller = Database.findUser(sellerName);
+                                        DATABASE.transaction(user, seller, item);
+                                        oos.writeObject(SUCCESS_MESSAGE);
+                                    } catch (Exception e) {
+                                        oos.writeObject(ERROR_MESSAGE);
+                                    }
+                                }
                             }
                         }
                     } else if (mainMenuOption.equals(MESSAGES)) {

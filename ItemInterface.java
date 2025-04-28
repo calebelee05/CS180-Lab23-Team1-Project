@@ -20,7 +20,11 @@ public interface ItemInterface extends Serializable {
 
     String getSellerID();
 
+    String getBuyerID();
+
     void setSellerID(String sellerID);
+
+    void setBuyerID(String buyerID);
 
     void setPrice(double price);
 

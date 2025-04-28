@@ -12,6 +12,7 @@ public class Item implements ItemInterface {
     private double price;
     private String description;
     private String sellerID;
+    private String buyerID = "";
     public static final String FILEPATH = "ItemData.txt";
 
     public Item(String name, double price, String description, String sellerID) {
@@ -38,8 +39,16 @@ public class Item implements ItemInterface {
         return sellerID;
     }
 
+    public String getBuyerID() {
+        return buyerID;
+    }
+
     public void setSellerID(String sellerID) {
         this.sellerID = sellerID;
+    }
+
+    public void setBuyerID(String buyerID) {
+        this.buyerID = buyerID;
     }
 
     public void setPrice(double price) {

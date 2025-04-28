@@ -49,5 +49,5 @@ public interface DatabaseInterface {
 
     MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content);
 
-    void transaction(UserInterface buyer, UserInterface seller, ItemInterface item);
+    void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) throws Exception;
 }

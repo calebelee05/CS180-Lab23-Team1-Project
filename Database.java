@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class Database implements DatabaseInterface {
 
+    private static final double INITIAL_BALANCE = 1000.0;
     private String userFile;
     private String itemFile;
     private String messageFile;
@@ -197,7 +198,7 @@ public class Database implements DatabaseInterface {
     }
 
     public UserInterface createAccount(String username, String password) {
-        UserInterface newUser = new User(username, password, 0.0);
+        UserInterface newUser = new User(username, password, INITIAL_BALANCE);
         userList.add(newUser);
         update();
         return newUser;
@@ -206,6 +207,24 @@ public class Database implements DatabaseInterface {
     public void deleteAccount(UserInterface user) {
         user.deleteUser();
         update();
+    }
+
+    public static ItemInterface findItem(String itemName, String sellerName) throws ItemNotFoundException {
+        for (ItemInterface item : itemList) {
+            if (item.getName().equals(itemName) && item.getSellerID().equals(sellerName)) {
+                return item;
+            }
+        }
+        throw new ItemNotFoundException("Wrong username or password");
+    }
+
+    public static UserInterface findUser(String username) throws UserNotFoundException {
+        for (UserInterface user : userList) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        throw new UserNotFoundException("Wrong username or password");
     }
 
     public static UserInterface logIn(String username, String password) throws UserNotFoundException {
@@ -255,7 +274,7 @@ public class Database implements DatabaseInterface {
         return message;
     }
 
-    public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) {
+    public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) throws Exception {
         buyer.buyItem(item);
         seller.sellItem(item);
         update();

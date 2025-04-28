@@ -22,41 +22,40 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private final int port = 8888;
 
     private JFrame frame;
-
-    // Switchable panels
     private CardLayout cardLayout;
     private JPanel cardPanel;
-    private JPanel initialPanel;
-    private JPanel loginPanel;
-    private JPanel signupPanel;
-    private JPanel menuPanel;
+
     private JPanel messagePanel;
     private JPanel accountInfoPanel;
 
     // Initial
+    private JPanel initialPanel;
     private JButton login;
     private JButton createAccount;
 
     // Log in
+    private JPanel loginPanel;
     private JTextField username;
     private JTextField password;
     private JButton loginToAccount;
 
     // Sign up
+    private JPanel signupPanel;
     private JTextField createUser;
     private JTextField createPass;
     private JButton createAcc;
 
-    private JButton cancelSignIn;
+    private JButton cancelSignIn; // Return to initial screen
 
     // Main Menu
+    private JPanel menuPanel;
     private JButton itemSearch;
     private JButton messages;
     private JButton deleteAccount;
     private JButton logout;
     private JButton displayInfo;
 
-    private JButton mainMenu;
+    private JButton mainMenu; // Return to main menu
 
     // Item Listing
     private JPanel itemListPanel;
@@ -78,13 +77,18 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JPanel itemSearchPanel;
     private JPanel searchResultSubpanel;
     private JPanel itemInfoPanel;
+    private JPanel buyItemPanel;
     private JTextField itemNameQuery;
     private JTextField itemPriceLow;
     private JTextField itemPriceHigh;
     private JTextField itemSellerquery;
+    private JTextField paymentPW;
+    private JTextArea confirmItemInfo;
     private JTextArea itemInfo;
     private JButton search;
     private JButton buyItem;
+    private JButton purchase;
+    private JButton cancelPurchase;
     private JButton messageSeller;
     private JButton backToSearch;
 
@@ -218,6 +222,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Error occurred.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(SUCCESS_MESSAGE)) {
+                            itemNameQuery.setText("");
+                            itemSellerquery.setText("");
+                            itemPriceLow.setText("0");
+                            itemPriceHigh.setText("99999");
                             cardLayout.show(cardPanel, "ItemSearch");
                         }
                     }
@@ -477,9 +485,37 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     ActionListener itemSearchActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == buyItem) {
-
+                cardLayout.show(cardPanel, "ConfirmPurchase");
+            } else if (e.getSource() == purchase) {
+                try {
+                    Object response = client.sendRequest(BUY, e.getActionCommand().split(":")[0],
+                                                        e.getActionCommand().split(":")[1], paymentPW.getText());
+                    if (response instanceof String) {
+                        String message = (String) response;
+                        if (message.equals(WRONG_PW)) {
+                            JOptionPane.showMessageDialog(null, "Incorrect Password",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(ERROR_MESSAGE)) {
+                            JOptionPane.showMessageDialog(null, "Failed to process transaction",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        } else if (message.equals(SUCCESS_MESSAGE)) {
+                            cardLayout.show(cardPanel, "ItemInfo");
+                            JOptionPane.showMessageDialog(null, "Item purchased successfully!",
+                                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
             } else if (e.getActionCommand().equals(ITEM_SEARCH)) {
-                cardPanel.add(itemSearchPanel, "ItemSearch");
+                searchResultSubpanel.removeAll();
+                itemNameQuery.setText("");
+                itemSellerquery.setText("");
+                itemPriceLow.setText("0");
+                itemPriceHigh.setText("99999");
+                cardLayout.show(cardPanel, "ItemSearch");
+            } else if (e.getActionCommand().equals(CANCEL)) {
+                cardLayout.show(cardPanel, "ItemInfo");
             }
         }
     };
@@ -613,7 +649,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     // Item listing screen
     public void itemListSetup() {
         itemListPanel = new JPanel();
-        JPanel addAndMenu = new JPanel(new FlowLayout());
+        JPanel addAndMenu = new JPanel(new GridLayout(1, 2));
         mainMenu = new JButton("Back to Menu");
         mainMenu.addActionListener(actionListener);
         mainMenu.setActionCommand(MAIN_MENU);
@@ -633,7 +669,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         deleteItem = new JButton("Delete");
         deleteItem.addActionListener(itemListActionListener);
 
-        JPanel backAndDelete = new JPanel(new FlowLayout());
+        JPanel backAndDelete = new JPanel(new GridLayout(1, 2));
         backAndDelete.add(backToItems);
         backAndDelete.add(deleteItem);
         myItemInfoPanel.add(myItemInfo, BorderLayout.CENTER);
@@ -647,18 +683,25 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     public void myItemListing(List<ItemInterface> itemList) {
         itemListSubPanel.removeAll();
         if (itemList.isEmpty()) {
-            JTextArea noItem = new JTextArea("No Items");
-            noItem.setPreferredSize(new Dimension(350, 200));
-            noItem.setEditable(false);
+            JLabel noItem = new JLabel("No Items");
+            noItem.setPreferredSize(new Dimension(500, 40));
             itemListSubPanel.add(noItem);
         }
         for (ItemInterface item : itemList) {
             JButton itemButton = new JButton(item.getName());
             itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
-                myItemInfo.setText("Item name: " + item.getName() + 
-                                        "\nPrice: " + item.getPrice() +
+                if (item.getBuyerID() == null) {
+                    myItemInfo.setText("Item name: " + item.getName() + 
+                                        "\nPrice: $" + item.getPrice() +
                                         "\nDescription: " + item.getDescription());
+                } else {
+                    myItemInfo.setText("Item name: " + item.getName() + 
+                                        "\nPrice: $" + item.getPrice() +
+                                        "\nDescription: " + item.getDescription() +
+                                        "\nBought by: " + item.getBuyerID());
+                }
+                
                 deleteItem.setActionCommand(item.getName());
                 cardLayout.show(cardPanel, "MyItemInfo");
             });
@@ -685,7 +728,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         itemDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
         itemDescriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel addAndCancel = new JPanel(new FlowLayout());
+        JPanel addAndCancel = new JPanel(new GridLayout(1, 2));
         createItem = new JButton("Add");
         createItem.addActionListener(itemListActionListener);
         createItem.setActionCommand(ITEM_CREATED);
@@ -740,7 +783,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         mainMenu.addActionListener(actionListener);
         mainMenu.setActionCommand(MAIN_MENU);
 
-        searchResultSubpanel = new JPanel(new GridLayout(0, 2));
+        searchResultSubpanel = new JPanel(new GridLayout(0, 1));
 
         itemSearchPanel.add(searchAndEnter, BorderLayout.NORTH);
         itemSearchPanel.add(searchResultSubpanel, BorderLayout.EAST);
@@ -757,24 +800,50 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         backToSearch.addActionListener(actionListener);
         backToSearch.setActionCommand(ITEM_SEARCH);
 
-        JPanel buyAndMessage = new JPanel(new FlowLayout());
+        JPanel buyAndMessage = new JPanel(new GridLayout(1, 3));
         buyAndMessage.add(buyItem);
         buyAndMessage.add(messageSeller);
         buyAndMessage.add(backToSearch);
         itemInfoPanel.add(itemInfo, BorderLayout.CENTER);
         itemInfoPanel.add(buyAndMessage, BorderLayout.SOUTH);
 
+        buyItemPanel = new JPanel();
+        JLabel confirmPayment = new JLabel("Confirm payment");
+        confirmPayment.setPreferredSize(new Dimension(500, 20));
+        confirmItemInfo = new JTextArea();
+        confirmItemInfo.setPreferredSize(new Dimension(500, 60));
+        JPanel confirmPay = new JPanel(new GridLayout(2, 1));
+
+        purchase = new JButton("Pay");
+        purchase.addActionListener(itemSearchActionListener);
+        cancelPurchase = new JButton("Cancel");
+        cancelPurchase.addActionListener(itemSearchActionListener);
+        cancelPurchase.setActionCommand(CANCEL);
+        JPanel payAndCancel = new JPanel(new GridLayout(1,2));
+        payAndCancel.add(purchase);
+        payAndCancel.add(cancelPurchase);
+        paymentPW = new JTextField();
+        JLabel enterPW = new JLabel("Enter password:");
+        JPanel passwordInput = new JPanel(new GridLayout(2, 1));
+        passwordInput.add(enterPW);
+        passwordInput.add(paymentPW);
+        confirmPay.add(confirmItemInfo);
+        confirmPay.add(passwordInput);
+        buyItemPanel.add(confirmPayment, BorderLayout.NORTH);
+        buyItemPanel.add(confirmPay, BorderLayout.CENTER);
+        buyItemPanel.add(payAndCancel, BorderLayout.SOUTH);
+
         cardPanel.add(itemSearchPanel, "ItemSearch");
         cardPanel.add(itemInfoPanel, "ItemInfo");
+        cardPanel.add(buyItemPanel, "ConfirmPurchase");
     }
 
     // Item search result
     public void searchResult(List<ItemInterface> itemList) {
         searchResultSubpanel.removeAll();
         if (itemList.isEmpty()) {
-            JTextArea noItem = new JTextArea("No results found");
+            JLabel noItem = new JLabel("No results found");
             noItem.setPreferredSize(new Dimension(350, 200));
-            noItem.setEditable(false);
             searchResultSubpanel.add(noItem);
         }
         for (ItemInterface item : itemList) {
@@ -782,10 +851,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
                 itemInfo.setText("Item name: " + item.getName() + 
-                                        "\nPrice: " + item.getPrice() +
+                                        "\nPrice: $" + item.getPrice() +
                                         "\nDescription: " + item.getDescription() +
                                         "\nSeller: " + item.getSellerID());
-                buyItem.setActionCommand(item.getName() + "\n" + item.getSellerID());
+                buyItem.addActionListener(ev -> {
+                    pay(item);
+                });;
                 cardLayout.show(cardPanel, "ItemInfo");
             });
             searchResultSubpanel.add(itemButton, BorderLayout.CENTER);
@@ -795,7 +866,15 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     }
 
     // Buy Item
-    
+    public void pay(ItemInterface item) {
+        confirmItemInfo.setText("Name: " + item.getName() +
+                                "\nPrice: $" + item.getPrice() +
+                                "\nSeller: " + item.getSellerID());
+        paymentPW.setText("");
+        purchase.setActionCommand(item.getName() + ":" + item.getSellerID());
+        cardPanel.revalidate();
+        cardLayout.show(cardPanel, "ConfirmPurchase");
+    }
 
     // Message lists
     public void messageListing(List<MessageInterface> messageList) {

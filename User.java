@@ -121,8 +121,13 @@ public class User implements UserInterface {
     } // Edit item in the listing
 
     // Balance Tracking
-    public void buyItem(ItemInterface item) {
-        this.balance -= item.getPrice();
+    public void buyItem(ItemInterface item) throws Exception {
+        if (balance >= item.getPrice()) {
+            balance -= item.getPrice();
+            item.setBuyerID(username);
+        } else {
+            throw new Exception("Not enough balance!");
+        }
     } // user bought item; decrease balance by item price
 
     public void sellItem(ItemInterface item) {
