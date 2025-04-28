@@ -80,6 +80,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                 } catch (Exception e) {
                                     oos.writeObject(ERROR_MESSAGE);
                                 }
+                            // read item and delete corresponding item
                             } else if (itemListingOption.equals(DELETE_ITEM)) {
                                 boolean success = false;
                                 try {
@@ -99,7 +100,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                 } catch (Exception e) {
                                     oos.writeObject(ERROR_MESSAGE);
                                 }
-                                // read item and delete corresponding item
+                                
                             } else if (itemListingOption.equals(MAIN_MENU)) {
                                 oos.writeObject(SUCCESS_MESSAGE);
                                 break;
@@ -108,15 +109,26 @@ public class Server implements Runnable, Communicator, ServerInterface {
                             }
                         }
                     } else if (mainMenuOption.equals(ITEM_SEARCH)) {
-                        String textQuery = reader.readLine();
-                        double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
-                        double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
-                        String sellerQuery = reader.readLine();
-                        List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
-                                lowPriceQuery,
-                                highPriceQuery,
-                                sellerQuery);
-                        oos.writeObject(filteredItems);
+                        oos.writeObject(SUCCESS_MESSAGE);
+                        while (true) {
+                            String itemSearchOption = reader.readLine();
+                            if (itemSearchOption.equals(SEARCH)) {
+                                String textQuery = reader.readLine();
+                                double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                                double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                                String sellerQuery = reader.readLine();
+                                List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
+                                        lowPriceQuery,
+                                        highPriceQuery,
+                                        sellerQuery);
+                                oos.writeObject(filteredItems);
+                            } else if (itemSearchOption.equals(MAIN_MENU)) {
+                                oos.writeObject(SUCCESS_MESSAGE);
+                                break;
+                            } else if (itemSearchOption.equals(ITEM_SEARCH)) {
+                                oos.writeObject(SUCCESS_MESSAGE);
+                            }
+                        }
                     } else if (mainMenuOption.equals(MESSAGES)) {
                         oos.writeObject(Database.getMessageList());
                     } else if (mainMenuOption.equals(LOG_OUT)) {
@@ -132,12 +144,9 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         oos.writeObject(user.getBalance());
                     }
                 }
-                if (logout) {
-                    continue;
-                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Client Disconnected");
         }
     }
 
