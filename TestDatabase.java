@@ -65,7 +65,11 @@ public class TestDatabase {
         ItemInterface item = database.addItem(user1, "Item1", 20.0, "description");
         double balance1 = user1.getBalance();
         double balance2 = user2.getBalance();
-        database.transaction(user2, user1, item);
+        try {
+            database.transaction(user2, user1, item);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(balance1 - 20.0, user2.getBalance(), 0.001);
         assertEquals(balance2 + 20.0, user1.getBalance(), 0.001);
     }

@@ -53,7 +53,11 @@ public class TestUser {
         assertEquals(75.0, item1.getPrice(), 0.001);
         assertEquals("Description2", item1.getDescription());
         // buying and selling
-        user1.buyItem(item1);
+        try {
+            user1.buyItem(item1);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(1000.0 - 75.0, user1.getBalance(), 0.001);
         user1.sellItem(item1);
         assertEquals(1000.0, user1.getBalance(), 0.001);
