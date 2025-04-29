@@ -15,7 +15,7 @@ public class User implements UserInterface {
     private String password;
     private double balance;
     private ArrayList<ItemInterface> itemsList = new ArrayList<>();
-    private ArrayList<MessageInterface> messagesSent = new ArrayList<>();
+    private List<MessageInterface> messagesSent = Collections.synchronizedList(new ArrayList<>());
     private List<MessageInterface> messagesReceived = Collections.synchronizedList(new ArrayList<>());
     public static final String FILEPATH = "UserData.txt";
 
@@ -43,7 +43,7 @@ public class User implements UserInterface {
         return itemsList;
     }
 
-    public ArrayList<MessageInterface> getMessagesSent() {
+    public List<MessageInterface> getMessagesSent() {
         return messagesSent;
     }
 

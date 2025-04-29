@@ -21,7 +21,7 @@ public interface UserInterface extends Serializable {
 
     ArrayList<ItemInterface> getItemsList();
 
-    ArrayList<MessageInterface> getMessagesSent();
+    List<MessageInterface> getMessagesSent();
 
     List<MessageInterface> getMessagesReceived();
 

@@ -33,12 +33,13 @@ public class Server implements Runnable, Communicator, ServerInterface {
             oos.flush();
             while (true) {
                 // Log in/Sign up
-                String signInOption = reader.readLine();
+                String signInOption;
                 String username;
                 String password;
                 boolean logout = false;
-                if (signInOption.equals(LOG_IN)) {
-                    while (true) {
+                while (true) {
+                    signInOption = reader.readLine();
+                    if (signInOption.equals(LOG_IN)) {
                         username = reader.readLine();
                         password = reader.readLine();
                         try {
@@ -48,9 +49,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         } catch (UserNotFoundException e) {
                             oos.writeObject(ERROR_MESSAGE);
                         }
-                    }
-                } else if (signInOption.equals(SIGN_UP)) {
-                    while (true) {
+                    } else if (signInOption.equals(SIGN_UP)) {
                         username = reader.readLine();
                         password = reader.readLine();
                         if (Database.userExists(username)) {
