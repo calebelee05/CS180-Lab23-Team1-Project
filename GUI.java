@@ -1,4 +1,5 @@
 
+import com.sun.nio.sctp.MessageInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,14 +19,11 @@ import javax.swing.border.Border;
 public class GUI extends JComponent implements Runnable, Communicator, GuiInterface {
 
     private Client client;
-    private final String host = "localhost";
-    private final int port = 8888;
 
     private JFrame frame;
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    private JPanel messagePanel;
     private JPanel accountInfoPanel;
 
     // Initial
@@ -89,8 +87,24 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JButton buyItem;
     private JButton purchase;
     private JButton cancelPurchase;
-    private JButton messageSeller;
     private JButton backToSearch;
+
+    // Messaging
+    private JPanel messagePanel;
+    private JPanel messageListOptionPanel;
+    private JPanel messageListPanel;
+    private JPanel messageListSubPanel;
+    private JPanel viewMessagePanel;
+    private JTextField recipientName;
+    private JTextArea messageContent;
+    private JButton viewMessageSent;
+    private JButton viewMessageReceived;
+    private JButton backToMessageOption;
+    private JButton backToMessageList;
+    private JButton writeMessage;
+    private JButton sendMessage;
+    private JButton cancelMessage;
+    private String messageType;
 
     ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -147,8 +161,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 String passwordInput = createPass.getText();
 
                 // Validate inputs
-                if (usernameInput.isEmpty() || passwordInput.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter both a username and password.",
+                if (usernameInput.isBlank() || passwordInput.isBlank() ||
+                usernameInput.contains(" ") || passwordInput.contains(" ")) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid username and password.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -178,19 +193,15 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             // Back to menu
             if (e.getActionCommand().equals(MAIN_MENU)) {
                 try {
-                    Object response = client.sendRequest(MAIN_MENU);
-                    if (response instanceof String) {
-                        String message = (String) response;
-                        if (message.equals(ERROR_MESSAGE)) {
-                            JOptionPane.showMessageDialog(null, "Error occurred.",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                        } else if (message.equals(SUCCESS_MESSAGE)) {
-                            cardLayout.show(cardPanel, "MainMenu");
-                        }
-                    }
+                    client.sendRequest(MAIN_MENU);
+                    cardLayout.show(cardPanel, "MainMenu");
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                        "Failed to send request to the server.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 }
+                
             }
             
             // Item Listing
@@ -222,6 +233,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Error occurred.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else if (message.equals(SUCCESS_MESSAGE)) {
+                            searchResultSubpanel.removeAll();
                             itemNameQuery.setText("");
                             itemSellerquery.setText("");
                             itemPriceLow.setText("0");
@@ -290,22 +302,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
             
             // Message Listing
-            if (e.getActionCommand().equals(MESSAGES)) {
-                try {
-                    Object response = client.sendRequest(MESSAGES);
-                    if (response instanceof List) {
-                        List<MessageInterface> messageList = (List<MessageInterface>) response;
-                        // use messageList
-                        messageListing(messageList);
-                    } else {
-                        JOptionPane.showMessageDialog(null,
-                                "Failed to retrieve message list.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
-                }
+            if (e.getActionCommand().equals(MESSAGE_LIST)) {
+                cardLayout.show(cardPanel, "MessageOption");
             }
 
             // Delete account
@@ -484,9 +482,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     ActionListener itemSearchActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == buyItem) {
-                cardLayout.show(cardPanel, "ConfirmPurchase");
-            } else if (e.getSource() == purchase) {
+            if (e.getSource() == purchase) {
                 try {
                     Object response = client.sendRequest(BUY, e.getActionCommand().split(":")[0],
                                                         e.getActionCommand().split(":")[1], paymentPW.getText());
@@ -520,10 +516,86 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     };
 
+    ActionListener messageActionListener = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == sendMessage) {
+                if (!messageContent.getText().isBlank()) {
+                    try {
+                        Object response = client.sendRequest(SEND_MESSAGE, e.getActionCommand(), messageContent.getText(), END_MESSAGE);
+                        if (response instanceof String) {
+                            String message = (String) response;
+                            if (message.equals(ERROR_MESSAGE)) {
+                                JOptionPane.showMessageDialog(null, "Failed to send message.",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            } else if (message.equals(SUCCESS_MESSAGE)) {
+                                cardLayout.show(cardPanel, "MessageOption");
+                                JOptionPane.showMessageDialog(null, "Message sent",
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        }
+                    } catch (IOException ioe) {
+                        System.out.println("Error sending request to server.");
+                    }
+                }
+            } else if (e.getActionCommand().equals(MESSAGE_SENT)) {
+                try {
+                    Object response = client.sendRequest(MESSAGE_SENT);
+                    if (response instanceof List) {
+                        List<MessageInterface> messageList = (List<MessageInterface>) response;
+                        // use messageList
+                        messageListing(messageList);
+                        messageType = "Sent";
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve message list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            } else if (e.getActionCommand().equals(MESSAGE_RECEIVED)) {
+                try {
+                    Object response = client.sendRequest(MESSAGE_RECEIVED);
+                    if (response instanceof List) {
+                        List<MessageInterface> messageList = (List<MessageInterface>) response;
+                        // use messageList
+                        messageListing(messageList);
+                        messageType = "Received";
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to retrieve message list.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ioe) {
+                    System.out.println("Error sending request to server.");
+                }
+            } else if (e.getSource() == writeMessage) {
+                String recipient = null;
+                if (messageType.equals("Seller")) {
+                    recipient = e.getActionCommand();
+                } else if (messageType.equals("Sent")) {
+                    recipient = e.getActionCommand().split(":")[1];
+                } else if (messageType.equals("Received")) {
+                    recipient = e.getActionCommand().split(":")[0];
+                }
+                System.out.println(messageType);
+                newMessage(recipient);
+            } else if (e.getSource() == cancelMessage) {
+                if (messageType.equals("Seller")) {
+                    cardLayout.show(cardPanel, "ItemInfo");
+                } else {
+                    cardLayout.show(cardPanel, "MessageList");
+                }
+            }
+        }
+    };
+
     public Client beginConnection() {
         try {
             System.out.println("Connected to server!");
-            return (new Client(host, port));
+            return (new Client(HOST, PORT));
         } catch (IOException ioe) {
             System.out.println("Connection failed!");
             return null;
@@ -602,7 +674,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
         messages = new JButton("View Messages");
         messages.addActionListener(actionListener);
-        messages.setActionCommand(MESSAGES);
+        messages.setActionCommand(MESSAGE_LIST);
 
         deleteAccount = new JButton("Delete Account");
         deleteAccount.addActionListener(actionListener);
@@ -691,7 +763,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             JButton itemButton = new JButton(item.getName());
             itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
-                if (item.getBuyerID() == null) {
+                if (item.getBuyerID().isEmpty()) {
                     myItemInfo.setText("Item name: " + item.getName() + 
                                         "\nPrice: $" + item.getPrice() +
                                         "\nDescription: " + item.getDescription());
@@ -789,22 +861,60 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         itemSearchPanel.add(searchResultSubpanel, BorderLayout.EAST);
         itemSearchPanel.add(mainMenu, BorderLayout.SOUTH);
 
+        cardPanel.add(itemSearchPanel, "ItemSearch");
+    }
+
+    // Item search result
+    public void searchResult(List<ItemInterface> itemList) {
+        searchResultSubpanel.removeAll();
+        if (itemList.isEmpty()) {
+            JLabel noItem = new JLabel("No results found");
+            noItem.setPreferredSize(new Dimension(350, 200));
+            searchResultSubpanel.add(noItem);
+        }
+        for (ItemInterface item : itemList) {
+            JButton itemButton = new JButton(item.getName());
+            itemButton.setPreferredSize(new Dimension(500, 40));
+            itemButton.addActionListener(e -> {
+                viewItem(item);
+                cardLayout.show(cardPanel, "ItemInfo");
+            });
+            searchResultSubpanel.add(itemButton, BorderLayout.CENTER);
+        }
+        cardPanel.revalidate();
+        cardLayout.show(cardPanel, "ItemSearch");
+    }
+
+    public void viewItem(ItemInterface item) {
+
         itemInfoPanel = new JPanel();
         itemInfo = new JTextArea(2, 0);
+        itemInfo.setText("Item name: " + item.getName() + 
+                        "\nPrice: $" + item.getPrice() +
+                        "\nDescription: " + item.getDescription() +
+                        "\nSeller: " + item.getSellerID());
         itemInfo.setEditable(false);
+
         buyItem = new JButton("Buy");
         buyItem.addActionListener(itemSearchActionListener);
-        messageSeller = new JButton("Send message to seller");
-        messageSeller.addActionListener(itemSearchActionListener);
+        buyItem.addActionListener(e -> {
+            pay(item);
+        });
+
+        writeMessage = new JButton("Message seller");
+        writeMessage.addActionListener(messageActionListener);
+        writeMessage.setActionCommand(item.getSellerID());
+        messageType = "Seller";
+
         backToSearch = new JButton("Back");
         backToSearch.addActionListener(actionListener);
         backToSearch.setActionCommand(ITEM_SEARCH);
 
         JPanel buyAndMessage = new JPanel(new GridLayout(1, 3));
         buyAndMessage.add(buyItem);
-        buyAndMessage.add(messageSeller);
+        buyAndMessage.add(writeMessage);
         buyAndMessage.add(backToSearch);
-        itemInfoPanel.add(itemInfo, BorderLayout.CENTER);
+        itemInfoPanel.add(itemInfo, BorderLayout.NORTH);
         itemInfoPanel.add(buyAndMessage, BorderLayout.SOUTH);
 
         buyItemPanel = new JPanel();
@@ -833,36 +943,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         buyItemPanel.add(confirmPay, BorderLayout.CENTER);
         buyItemPanel.add(payAndCancel, BorderLayout.SOUTH);
 
-        cardPanel.add(itemSearchPanel, "ItemSearch");
         cardPanel.add(itemInfoPanel, "ItemInfo");
         cardPanel.add(buyItemPanel, "ConfirmPurchase");
-    }
-
-    // Item search result
-    public void searchResult(List<ItemInterface> itemList) {
-        searchResultSubpanel.removeAll();
-        if (itemList.isEmpty()) {
-            JLabel noItem = new JLabel("No results found");
-            noItem.setPreferredSize(new Dimension(350, 200));
-            searchResultSubpanel.add(noItem);
-        }
-        for (ItemInterface item : itemList) {
-            JButton itemButton = new JButton(item.getName());
-            itemButton.setPreferredSize(new Dimension(500, 40));
-            itemButton.addActionListener(e -> {
-                itemInfo.setText("Item name: " + item.getName() + 
-                                        "\nPrice: $" + item.getPrice() +
-                                        "\nDescription: " + item.getDescription() +
-                                        "\nSeller: " + item.getSellerID());
-                buyItem.addActionListener(ev -> {
-                    pay(item);
-                });;
-                cardLayout.show(cardPanel, "ItemInfo");
-            });
-            searchResultSubpanel.add(itemButton, BorderLayout.CENTER);
-        }
-        cardPanel.revalidate();
-        cardLayout.show(cardPanel, "ItemSearch");
     }
 
     // Buy Item
@@ -876,14 +958,118 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardLayout.show(cardPanel, "ConfirmPurchase");
     }
 
-    // Message lists
-    public void messageListing(List<MessageInterface> messageList) {
+    /* Message lists */
+    public void messageListSetup() {
+        messageListOptionPanel = new JPanel(new FlowLayout());
 
+        viewMessageSent = new JButton("Sent");
+        viewMessageSent.addActionListener(messageActionListener);
+        viewMessageSent.setActionCommand(MESSAGE_SENT);
+
+        viewMessageReceived = new JButton("Received");
+        viewMessageReceived.addActionListener(messageActionListener);
+        viewMessageReceived.setActionCommand(MESSAGE_RECEIVED);
+
+        mainMenu = new JButton("Back to Menu");
+        mainMenu.addActionListener(actionListener);
+        mainMenu.setActionCommand(MAIN_MENU);
+
+        messageListOptionPanel.add(viewMessageSent);
+        messageListOptionPanel.add(viewMessageReceived);
+        messageListOptionPanel.add(mainMenu);
+        
+        messageListPanel = new JPanel();
+        messageListSubPanel = new JPanel(new GridLayout(0, 1));
+        backToMessageOption = new JButton("Back");
+        backToMessageOption.addActionListener(actionListener);
+        backToMessageOption.setActionCommand(MESSAGE_LIST);
+        messageListPanel.add(backToMessageOption, BorderLayout.NORTH);
+        messageListPanel.add(messageListSubPanel, BorderLayout.CENTER);
+
+        cardPanel.add(messageListOptionPanel, "MessageOption");
+        cardPanel.add(messageListPanel, "MessageList");
+    }
+
+    
+    public void messageListing(List<MessageInterface> messageList) {
+        messageListSubPanel.removeAll();
+        if (messageList.isEmpty()) {
+            JLabel noMessage = new JLabel("No Messages");
+            noMessage.setPreferredSize(new Dimension(500, 40));
+            messageListSubPanel.add(noMessage);
+        }
+        for (MessageInterface message : messageList) {
+            JButton messageButton = new JButton("From: " + message.getSenderID() + 
+                                                " To: " + message.getRecipientID() +
+                                                " " + message.getTimestamp());
+            messageButton.setPreferredSize(new Dimension(250, 60));
+            messageButton.addActionListener(e -> {
+                viewMessage(message);
+                cardLayout.show(cardPanel, "ViewMessage");
+            });
+            messageListSubPanel.add(messageButton);
+        }
+        cardPanel.revalidate();
+        cardLayout.show(cardPanel, "MessageList");
+    }
+
+    public void viewMessage(MessageInterface message) {
+        viewMessagePanel = new JPanel();
+        JPanel replyAndBack = new JPanel(new GridLayout(1, 2));
+        JTextArea viewMessageContent = new JTextArea(message.getContents());
+        viewMessageContent.setPreferredSize(new Dimension(500, 200));
+        viewMessageContent.setEditable(false);
+        JTextArea messageInfo = new JTextArea("From: " + message.getSenderID() + 
+                                              "\nTo: " + message.getRecipientID() +
+                                              "\nTime: " + message.getTimestamp());
+        messageInfo.setPreferredSize(new Dimension(500, 60));
+        backToMessageList = new JButton("Back");
+        backToMessageList.addActionListener(actionListener);
+        backToMessageList.setActionCommand(MESSAGE_LIST);
+        writeMessage = new JButton("Reply");
+        writeMessage.addActionListener(messageActionListener);
+        writeMessage.setActionCommand(message.getSenderID() + ":" + message.getRecipientID());
+
+        replyAndBack.add(writeMessage);
+        replyAndBack.add(backToMessageList);
+        viewMessagePanel.add(messageInfo, BorderLayout.NORTH);
+        viewMessagePanel.add(viewMessageContent, BorderLayout.CENTER);
+        viewMessagePanel.add(replyAndBack, BorderLayout.SOUTH);
+        cardPanel.add(viewMessagePanel, "ViewMessage");
+    }
+
+    // Message UI
+    public void message() {
+        messagePanel = new JPanel();
+        JPanel enterRecipient = new JPanel(new GridLayout(1, 2));
+        JLabel recipientLabel = new JLabel("Recipient:");
+        recipientName = new JTextField();
+        recipientName.setPreferredSize(new Dimension(200, 20));
+        enterRecipient.add(recipientLabel);
+        enterRecipient.add(recipientName);
+        messageContent = new JTextArea();
+        messageContent.setPreferredSize(new Dimension(500, 200));
+        sendMessage = new JButton("Send");
+        sendMessage.setPreferredSize(new Dimension(100, 30));
+        cancelMessage = new JButton("Cancel");
+        JPanel sendAndCancel = new JPanel(new GridLayout(1, 2));
+        cancelMessage.addActionListener(messageActionListener);
+        sendAndCancel.add(sendMessage);
+        sendAndCancel.add(cancelMessage);
+        sendMessage.addActionListener(messageActionListener);
+        messagePanel.add(enterRecipient, BorderLayout.NORTH);
+        messagePanel.add(messageContent, BorderLayout.CENTER);
+        messagePanel.add(sendAndCancel, BorderLayout.SOUTH);
+        cardPanel.add(messagePanel, "WriteMessage");
     }
 
     // Write new message
-    public void newMessage(UserInterface recipient) {
-
+    public void newMessage(String recipientID) {
+        recipientName.setText(recipientID);
+        sendMessage.setActionCommand(recipientID);
+        messageContent.setText("");
+        cardPanel.revalidate();
+        cardLayout.show(cardPanel, "WriteMessage");
     }
 
     // Show Account Information
@@ -901,6 +1087,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+
         initial();
         allowLogin();
         create();
@@ -908,6 +1095,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         itemListSetup();
         addItem();
         searchItem();
+        message();
+        messageListSetup();
 
         frame.add(cardPanel, BorderLayout.CENTER);
         cardLayout.show(cardPanel,"Initial");

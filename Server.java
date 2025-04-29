@@ -112,6 +112,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         oos.writeObject(SUCCESS_MESSAGE);
                         while (true) {
                             String itemSearchOption = reader.readLine();
+                            System.out.println(itemSearchOption);
                             if (itemSearchOption.equals(SEARCH)) {
                                 String textQuery = reader.readLine();
                                 double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
@@ -143,10 +144,47 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                         oos.writeObject(ERROR_MESSAGE);
                                     }
                                 }
+                            } else if (itemSearchOption.equals(SEND_MESSAGE)) {
+                                try {
+                                    String recipientID = reader.readLine();
+                                    String messageContent = reader.readLine();
+                                    String messageInput;
+                                    while (true) {
+                                        messageInput = reader.readLine();
+                                        if (messageInput.equals(END_MESSAGE)) {
+                                            break;
+                                        }
+                                        messageContent = messageContent + "\n" + messageInput;
+                                    }
+                                    DATABASE.sendMessage(user, Database.findUser(recipientID), messageContent);
+                                    oos.writeObject(SUCCESS_MESSAGE);
+                                    break;
+                                } catch (UserNotFoundException e) {
+                                    oos.writeObject(ERROR_MESSAGE);
+                                }
                             }
                         }
-                    } else if (mainMenuOption.equals(MESSAGES)) {
-                        oos.writeObject(Database.getMessageList());
+                    } else if (mainMenuOption.equals(MESSAGE_RECEIVED)) {
+                        oos.writeObject(Database.getReceivedMessages(user));
+                    } else if (mainMenuOption.equals(MESSAGE_SENT)) {
+                        oos.writeObject(Database.getSentMessages(user));
+                    } else if (mainMenuOption.equals(SEND_MESSAGE)) {
+                        try {
+                            String recipientID = reader.readLine();
+                            String messageContent = reader.readLine();
+                            String messageInput;
+                            while (true) {
+                                messageInput = reader.readLine();
+                                if (messageInput.equals(END_MESSAGE)) {
+                                    break;
+                                }
+                                messageContent = messageContent + "\n" + messageInput;
+                            }
+                            DATABASE.sendMessage(user, Database.findUser(recipientID), messageContent);
+                            oos.writeObject(SUCCESS_MESSAGE);
+                        } catch (UserNotFoundException e) {
+                            oos.writeObject(ERROR_MESSAGE);
+                        }
                     } else if (mainMenuOption.equals(LOG_OUT)) {
                         logout = true;
                         oos.writeObject(SUCCESS_MESSAGE);
@@ -158,6 +196,8 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         break;
                     } else if (mainMenuOption.equals(ACCOUNT_INFO)) {
                         oos.writeObject(user.getBalance());
+                    } else if (mainMenuOption.equals(MAIN_MENU)) {
+                        oos.writeObject(SUCCESS_MESSAGE);
                     }
                 }
             }
@@ -167,12 +207,10 @@ public class Server implements Runnable, Communicator, ServerInterface {
     }
 
     public static void main(String[] args) {
-        int port = 8888;
         DATABASE.read();
 
-        try {
-            ServerSocket ss = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
+        try (ServerSocket ss = new ServerSocket(PORT);) {
+            System.out.println("Server started on port " + PORT);
             while (true) {
                 Socket s = ss.accept();
                 Thread t = new Thread(new Server(s));

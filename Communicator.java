@@ -8,6 +8,10 @@
  * @version April 16, 2025
  */
 public interface Communicator {
+    // ip address and port
+    String HOST = "localhost";
+    int PORT = 8888; 
+
     // Status
     String ERROR_MESSAGE = "Error";
     String SUCCESS_MESSAGE = "Success";
@@ -21,7 +25,7 @@ public interface Communicator {
     // Main menu
     String ITEM_LISTING = "ItemListing";
     String ITEM_SEARCH = "ItemSearch";
-    String MESSAGES = "Messages";
+    String MESSAGE_LIST = "MessageList";
     String LOG_OUT = "LogOut";
     String DELETE_ACCOUNT = "DeleteAccount";
     String ACCOUNT_INFO = "AccountInfo";
@@ -39,5 +43,12 @@ public interface Communicator {
     String SEARCH = "Search";
     String BUY = "Buy";
     String WRONG_PW = "IncorrectPassword";
+
+    // Message
+    String MESSAGE = "Message";
+    String SEND_MESSAGE = "SendMessage";
+    String MESSAGE_SENT = "MessageSent";
+    String MESSAGE_RECEIVED = "MessageReceived";
+    String END_MESSAGE = "/EndOfMessage/";
 
 }

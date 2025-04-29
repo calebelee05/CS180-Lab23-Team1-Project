@@ -1,4 +1,5 @@
 
+import com.sun.nio.sctp.MessageInfo;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -253,6 +254,26 @@ public class Database implements DatabaseInterface {
             }
         }
         return userItems;
+    }
+
+    public static List<MessageInterface> getReceivedMessages(UserInterface user) {
+        List<MessageInterface> receivedMessage = new ArrayList<>();
+        for (MessageInterface message : messageList) {
+            if (message.getRecipientID().equals(user.getUsername())) {
+                receivedMessage.add(message);
+            }
+        }
+        return receivedMessage;
+    }
+
+    public static List<MessageInterface> getSentMessages(UserInterface user) {
+        List<MessageInterface> sentMessage = new ArrayList<>();
+        for (MessageInterface message : messageList) {
+            if (message.getSenderID().equals(user.getUsername())) {
+                sentMessage.add(message);
+            }
+        }
+        return sentMessage;
     }
 
     public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {
