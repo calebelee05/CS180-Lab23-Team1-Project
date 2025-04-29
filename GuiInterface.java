@@ -11,16 +11,17 @@ import java.util.List;
  */
 public interface GuiInterface {
 
-    /*
     Client beginConnection();
 
-    void initial();
-
     void allowLogin();
+
+    void initial();
 
     void create();
 
     void mainMenuScreen();
+
+    void itemListSetup();
 
     void myItemListing(List<ItemInterface> itemList);
 
@@ -30,7 +31,19 @@ public interface GuiInterface {
 
     void searchResult(List<ItemInterface> itemList);
 
+    void viewItem(ItemInterface item);
+
+    void pay(ItemInterface item);
+
+    void messageListSetup();
+
     void messageListing(List<MessageInterface> messageList);
 
-    void showBalance(); */
+    void viewMessage(MessageInterface message);
+
+    void message();
+
+    void newMessage(String recipientID);
+
+    void showInfo();
 }

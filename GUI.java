@@ -604,6 +604,24 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
+    // Initial sign in screen
+    public void initial() {
+        login = new JButton("Login");
+        login.addActionListener(actionListener);
+        login.setActionCommand(LOG_IN);
+        createAccount = new JButton("Create Account");
+        createAccount.addActionListener(actionListener);
+        createAccount.setActionCommand(SIGN_UP);
+
+        initialPanel = new JPanel();
+        initialPanel.setLayout(new BoxLayout(initialPanel, BoxLayout.Y_AXIS));
+        login.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
+        initialPanel.add(login);
+        initialPanel.add(createAccount);
+        cardPanel.add(initialPanel, "Initial");
+    }
+
     // Log in screen
     public void allowLogin() {
         username = new JTextField(50);
@@ -699,24 +717,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         menuPanel.add(logout);
         menuPanel.add(displayInfo);
         cardPanel.add(menuPanel, "MainMenu");
-    }
-
-    // Initial sign in screen
-    public void initial() {
-        login = new JButton("Login");
-        login.addActionListener(actionListener);
-        login.setActionCommand(LOG_IN);
-        createAccount = new JButton("Create Account");
-        createAccount.addActionListener(actionListener);
-        createAccount.setActionCommand(SIGN_UP);
-
-        initialPanel = new JPanel();
-        initialPanel.setLayout(new BoxLayout(initialPanel, BoxLayout.Y_AXIS));
-        login.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
-        initialPanel.add(login);
-        initialPanel.add(createAccount);
-        cardPanel.add(initialPanel, "Initial");
     }
 
     /* Item List */
@@ -886,7 +886,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.revalidate();
         cardLayout.show(cardPanel, "ItemSearch");
     }
-
     public void viewItem(ItemInterface item) {
 
         itemInfoPanel = new JPanel();
@@ -991,8 +990,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.add(messageListOptionPanel, "MessageOption");
         cardPanel.add(messageListPanel, "MessageList");
     }
-
-    
     public void messageListing(List<MessageInterface> messageList) {
         messageListSubPanel.removeAll();
         if (messageList.isEmpty()) {
@@ -1014,7 +1011,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.revalidate();
         cardLayout.show(cardPanel, "MessageList");
     }
-
     public void viewMessage(MessageInterface message) {
         viewMessagePanel = new JPanel();
         JPanel replyAndBack = new JPanel(new GridLayout(1, 2));
