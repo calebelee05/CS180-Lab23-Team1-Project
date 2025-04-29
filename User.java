@@ -121,7 +121,7 @@ public class User implements UserInterface {
     } // Edit item in the listing
 
     // Balance Tracking
-    public void buyItem(ItemInterface item) throws Exception {
+    public synchronized void buyItem(ItemInterface item) throws Exception {
         if (balance >= item.getPrice()) {
             balance -= item.getPrice();
             item.setBuyerID(username);
@@ -130,8 +130,8 @@ public class User implements UserInterface {
         }
     } // user bought item; decrease balance by item price
 
-    public void sellItem(ItemInterface item) {
-        this.balance += item.getPrice();
+    public synchronized void sellItem(ItemInterface item) {
+        balance += item.getPrice();
     } // user sold item; increase balance by item price
 
     // Messaging

@@ -24,8 +24,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    private JPanel accountInfoPanel;
-
     // Initial
     private JPanel initialPanel;
     private JButton login;
@@ -105,6 +103,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JButton sendMessage;
     private JButton cancelMessage;
     private String messageType;
+
+    // Account information
+    private JPanel accountInfoPanel;
+    private JTextArea accountInfoText;
 
     ActionListener actionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -363,12 +365,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             // Display Balance
             if (e.getActionCommand().equals(ACCOUNT_INFO)) {
                 try {
-                    Object response = client.sendRequest(DELETE_ACCOUNT);
+                    Object response = client.sendRequest(ACCOUNT_INFO);
                     if (response instanceof String) {
-                        String balanceString = (String) response;
-                        double balance = Double.parseDouble(balanceString);
+                        String accountInfo = (String) response;
                         // use balance
-                        showInfo();
+                        accountInfoText.setText(accountInfo);
+                        cardLayout.show(cardPanel, "AccountInfo");
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error sending request to server.");
@@ -1074,7 +1076,17 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Show Account Information
     public void showInfo() {
+        accountInfoPanel = new JPanel();
+        accountInfoText = new JTextArea();
+        accountInfoText.setPreferredSize(new Dimension(500, 200));
 
+        mainMenu = new JButton("Back to Menu");
+        mainMenu.addActionListener(actionListener);
+        mainMenu.setActionCommand(MAIN_MENU);
+        accountInfoPanel.add(accountInfoText, BorderLayout.CENTER);
+        accountInfoPanel.add(mainMenu, BorderLayout.SOUTH);
+
+        cardPanel.add(accountInfoPanel, "AccountInfo");
     }
 
     public void run() {
@@ -1097,6 +1109,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         searchItem();
         message();
         messageListSetup();
+        showInfo();
 
         frame.add(cardPanel, BorderLayout.CENTER);
         cardLayout.show(cardPanel,"Initial");

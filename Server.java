@@ -195,7 +195,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                         oos.writeObject(SUCCESS_MESSAGE);
                         break;
                     } else if (mainMenuOption.equals(ACCOUNT_INFO)) {
-                        oos.writeObject(user.getBalance());
+                        oos.writeObject(user.toString());
                     } else if (mainMenuOption.equals(MAIN_MENU)) {
                         oos.writeObject(SUCCESS_MESSAGE);
                     }
