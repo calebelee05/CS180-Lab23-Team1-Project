@@ -47,7 +47,7 @@ public class Database implements DatabaseInterface {
         if (itemList.contains(item1)) {
             System.out.println(database.getItemList());
         }
-        database.deleteItem(user1, item1);
+        database.deleteItem(item1);
         if (itemList.contains(item1)) {
             System.out.println("false");
         }
@@ -283,8 +283,8 @@ public class Database implements DatabaseInterface {
         return item;
     }
 
-    public void deleteItem(UserInterface user, ItemInterface item) {
-        user.deleteItem(item);
+    public void deleteItem(ItemInterface item) {
+        itemList.remove(item);
         update();
     }
 

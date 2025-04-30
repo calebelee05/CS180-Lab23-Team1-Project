@@ -45,7 +45,7 @@ public interface DatabaseInterface {
 
     ItemInterface addItem(UserInterface user, String itemName, double price, String description);
 
-    void deleteItem(UserInterface user, ItemInterface item);
+    void deleteItem(ItemInterface item);
 
     MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content);
 

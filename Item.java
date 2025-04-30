@@ -64,6 +64,7 @@ public class Item implements ItemInterface {
     }
 
     public void deleteItem() {
+        System.out.println("test");
         Database.getItemList().remove(this);
     }
 
