@@ -67,7 +67,7 @@ public class User implements UserInterface {
         this.itemsList = itemsList;
     }
 
-    public void setMessagesSent(ArrayList<MessageInterface> messagesSent) {
+    public void setMessagesSent(List<MessageInterface> messagesSent) {
         this.messagesSent = messagesSent;
     }
 

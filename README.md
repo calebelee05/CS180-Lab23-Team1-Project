@@ -55,9 +55,8 @@ This phase covers the creation of the database for the market place. This includ
     - private String password: The password of the user.
     - private double balance: The current balance of the user.
     - private ArrayList<ItemInterface> itemsList: An ArrayList to store the items listed by the user.
-    - private ArrayList<MessageInterface> messagesSent: An ArrayList to store the messages sent by the user.
+    - private List<MessageInterface> messagesSent: A synchronized List to store the messages sent by the user.
     - private List<MessageInterface> messagesReceived: A synchronized List to store the messages received by the user.
-    - private static List<UserInterface> userList: A synchronized List to store all User objects.
     - private static final String FILEPATH: A constant String representing the file path for storing User objects ("UserData.txt").
 
     Constructors
@@ -68,15 +67,15 @@ This phase covers the creation of the database for the market place. This includ
     - public String getPassword(): Returns the password of the user.
     - public double getBalance(): Returns the current balance of the user.
     - public ArrayList<ItemInterface> getItems(): Returns the list of items listed by the user.
-    - public ArrayList<MessageInterface> getMessagesSent(): Returns the list of messages sent by the user.
+    - public List<MessageInterface> getMessagesSent(): Returns the list of messages sent by the user.
     - public List<MessageInterface> getMessagesReceived(): Returns the list of messages received by the user.
     - public void setUsername(String username): Sets the username of the user.
     - public void setPassword(String password): Sets the password of the user.
     - public void setBalance(double balance): Sets the balance of the user.
     - public void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
-    - public void setMessagesSent(ArrayList<MessageInterface> messagesSent): Sets the list of messages sent by the user.
+    - public void setMessagesSent(List<MessageInterface> messagesSent): Sets the list of messages sent by the user.
     - public void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
-    - public void deleteUser(): Removes the user from the `userList` and deletes all items listed by the user.
+    - public void deleteUser(): Removes the user from the `userList` of the Database and deletes all items listed by the user.
     - public void addItem(String name, double price, String description): Adds a new item to the user's item list.
     - public ItemInterface getItem(String name) throws ItemNotFoundException: Returns the item with the given name from the user's item list. Throws ItemNotFoundException if item with the name does not exist in the list.
     - public void deleteItem(ItemInterface item): Deletes an item from the user's item list.
@@ -87,9 +86,6 @@ This phase covers the creation of the database for the market place. This includ
     - public void receiveMessage(MessageInterface message): Receives a message sent.
     - public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException: Returns messages sent by the specified sender.
     - public MessageInterface getMessageToUser(String recipient) throws UserNotFoundException: Returns messages sent to the specified recipient.
-    - public static List<UserInterface> getList(): Returns the list of all User objects.
-    - public static synchronized void writeObject(): Writes the `userList` to the file.
-    - public static synchronized List<UserInterface> readObject(): Reads User objects from the file and returns them as a list.
     - public String toString(): Returns a String representation of the User object.
     - public boolean equals(Object object): Checks if this user is equal to another user based on the username.
 
@@ -128,7 +124,7 @@ This phase covers the creation of the database for the market place. This includ
     - private double price: The price of the item.
     - private String description: The description of the item.
     - private String sellerID: The ID of the seller of the item.
-    - private static List<ItemInterface> itemList: A synchronized List to store all Item objects.
+    private String buyerID: The ID of the user that bought the item.
     - private static final String FILEPATH: A constant String representing the file path for storing Item objects (ItemData.txt).
 
     Constructors
@@ -139,15 +135,14 @@ This phase covers the creation of the database for the market place. This includ
     - public double getPrice(): Returns the price of the item.
     - public String getDescription(): Returns the description of the item.
     - public String getSellerID(): Returns the seller ID of the item.
+    - public String getBuyerID(): Returns the buyer ID of the item.
     - public void setSellerID(String sellerID): Sets the seller ID of the item.
+    - public void setBuyerID(String buyerID): Sets the buyer ID of the item.
     - public void setPrice(double price): Sets the price of the item.
     - public void setDescription(String description): Sets the description of the item.
     - public void setName(String itemName): Sets the name of the item.
+    - public void deleteItem(): Removes the item from the `itemList` of the Database.
     - public boolean equals(ItemInterface item): Checks if this item is equal to another item based on the seller ID and name.
-    - public void deleteItem(): Removes the item from the `itemList`.
-    - public static List<ItemInterface> getList(): Returns the list of all Item objects.
-    - public static synchronized void writeObject(): Writes the `itemList` to the file.
-    - public static synchronized List<ItemInterface> readObject(): Reads Item objects from the file and returns them as a list.
     - public String toString(): Returns a String representation of the Item object.
 
     Interfaces Implemented
@@ -159,7 +154,9 @@ This phase covers the creation of the database for the market place. This includ
     - double getPrice(): Returns the price of the item.
     - String getDescription(): Returns the description of the item.
     - String getSellerID(): Returns the seller ID of the item.
+    - String getBuyerID(): Returns the buyer ID of the item.
     - void setSellerID(String sellerID): Sets the seller ID of the item.
+    - void setBuyerID(String buyerID): Sets the buyer ID of the item.
     - void setPrice(double price): Sets the price of the item.
     - void setDescription(String description): Sets the description of the item.
     - void setName(String itemName): Sets the name of the item.
@@ -239,6 +236,8 @@ This phase covers the creation of the client-server connectivity and implements 
 
 ## Communicator.java
     Fields
+    - String HOST: ip address of the server ("localhost")
+    - int PORT = 8888: port number of the server (8888)
     - String ERROR_MESSAGE: A constant `String` representing an error message for communication between the client and server.
     - String SUCCESS_MESSAGE: A constant `String` indicating a successful state.
     - String LOG_IN: A constant `String` for the client to request the login screen.
@@ -247,10 +246,23 @@ This phase covers the creation of the client-server connectivity and implements 
     - String ACCOUNT_CREATED: A constant `String` sent by the server to confirm successful account creation.
     - String ITEM_LISTING: A constant `String` for the client to request a list of items.
     - String ITEM_SEARCH: A constant `String` for the client to initiate a search for items.
-    - String MESSAGES: A constant `String` for the client to request their messages.
+    - String MESSAGE_LIST: A constant `String` used as action command for the "View Message" option in the GUI
     - String LOG_OUT: A constant `String` for the client to request to log out.
     - String DELETE_ACCOUNT: A constant `String` for the client to request the deletion of their account.
-    - String DISPLAY_BALANCE: A constant `String` for the client to request displaying their account balance.
+    - String ACCOUNT_INFO: A constant `String` for the client to request displaying their account information.
+    - String MAIN_MENU: A constant 'String' for the client to request displaying the main menu screen.
+    - String ADD_ITEM: A constant 'String' for the client to request opening the "Add new item" screen.
+    - String ITEM_CREATED: A constant 'String' for the client to confirm item is successfully added to listing.
+    - String DELETE_ITEM: A constant 'String' for the client to request item deletion.
+    - String CANCEL: A constant 'String' for the client to request cancelling a process.
+    - String SEARCH: A constant 'String' for the client to request the search result.
+    - String BUY: A constant 'String' for the client to request item purchase.
+    - String WRONG_PW: A constant 'String' for the server to notify the client that the password is incorrect.
+    - String SEND_MESSAGE: A constant 'String' for the client to request sending message.
+    - String MESSAGE_SENT: A constant 'String' for the client to request the list of messages that the client sent.
+    - String MESSAGE_RECEIVED: A constant 'String' for the client to request the list of messages that the client received.
+    - String END_MESSAGE: A constant 'String' that indicates the end of a message
+
 
 ## Database.java
     Fields
@@ -290,10 +302,15 @@ This phase covers the creation of the client-server connectivity and implements 
     - public synchronized void update(): Updates the files.
     - public UserInterface createAccount(String username, String password): Creates and returns a new `User` object with the given username and password.
     - public void deleteAccount(UserInterface user): Calls the `deleteUser()` method on the provided `UserInterface` object.
+    - public static ItemInterface findItem(String itemName, String sellerName): Returns the item with the name "itemName" that is on sale by the user with the name "sellerName".
+    - public static UserInterface findUser(String username): Returns the user with the name "username".
     - public static UserInterface logIn(String username, String password) throws UserNotFoundException: Searches the `userList` for a user with the matching username and password. If found, returns the `UserInterface` object, otherwise, throws a `UserNotFoundException`.
     - public static boolean userExists(String username): Checks if a user with the given username exists in the `userList`.
+    - public static List<ItemInterface> getUserItems(UserInterface user): Returns the item listing of the user with the given username.
+    - public static List<MessageInterface> getReceivedMessages(UserInterface user): Returns the messages received by the given user.
+    - public static List<MessageInterface> getSentMessages(UserInterface user): Returns the messages sent by the given user.
     - public ItemInterface addItem(UserInterface user, String itemName, double price, String description): Adds a new item for a specified user.
-    - public void deleteItem(UserInterface user, ItemInterface item): Removes an item for a specified user.
+    - public void deleteItem(ItemInterface item): Removes an item from itmeList.
     - public MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Create a new message and adds it to the `messageList`. Returns the newly created `MessageInterface` object.
     - public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Calls the `buyItem()` method on the `buyer` and the `sellItem()` method on the `seller` to conduct a transaction.
     
@@ -333,14 +350,52 @@ Phase 3: Building the GUI
 Designing and building the graphical user interface for the marketplace.
 
 ## GUI.java
-    -
+    Fields
+    - 
+    Methods
+    - public Client beginConnection(): Creates new Client object that connects to the server.
+    - public void initial(): Builds GUI for initial screen (before log in).
+    - public void allowLogin(): Builds GUI for Log in screen.
+    - public void create(): Builds GUI for Create Account screen.
+    - public void mainMenuScreen(): Builds GUI for Main Menu screen.
+    - public void itemListSetup(): Builds GUI for Item Listing screen.
+    - public void myItemListing(List<ItemInterface> itemList): Adds items from given itemList onto the Item Listing GUI and displays the screen.
+    - public void addItem(): Builds GUI for Add Item screen.
+    - public void searchItem(): Builds GUI for Item Search screen.
+    - public void searchResult(List<ItemInterface> itemList): Adds items found from the search in the given itemList onto the Item Search GUI and displays the screen.
+    - public void viewItem(ItemInterface item): Builds GUI for Item Information screen of given item.
+    - public void messageListSetup(): Builds GUI for View Message screen.
+    - public void messageListing(List<MessageInterface> messageList): Adds messages from the given messageList onto the View Message GUI and displays the screen.
+    - public void viewMessage(MessageInterface message): Builds GUI for viewing the given message.
+    - public void message(): Builds GUI for Write New Message screen.
+    - public void newMesage(String recipientID): Sets recipient of the message and displays the Write New Message screen.
+    - public void showInfo(): Builds GUI for Account Info screen.
+    - public void run(): Initilizes connection and GUI.
+    - public static void main(String[] args): Main method to start the program; runs GUI on EDT.
+
 
 ## GUIInterface.java
-    -
+    - Client beginConnection()
+    - void allowLogin()
+    - void initial()
+    - void create()
+    - void mainMenuScreen()
+    - void itemListSetup()
+    - void myItemListing(List<ItemInterface> itemList)
+    - void addItem()
+    - void searchItem()
+    - void searchResult(List<ItemInterface> itemList)
+    - void viewItem(ItemInterface item)
+    - void pay(ItemInterface item)
+    - void messageListSetup()
+    - void messageListing(List<MessageInterface> messageList)
+    - void viewMessage(MessageInterface message)
+    - void message()
+    - void newMessage(String recipientID)
+    - void showInfo()
 
 ## How to Run
 1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
 2. Initialize the server first with `java Server`, then run the client side with `java GUI`; this will start the GUI.
 3. When the GUI pops up, you can choose to either log in or create a new account.
-4. An error message will pop up if you enter incorrect login information, or if you try to create an account with a username that already exists.
-5. The GUI has not yet been fully implemented (this will be done in phase 3), so no functionality is visible in the GUI after loggin in.
+4. To quit, you can close the program tab.

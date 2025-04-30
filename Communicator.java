@@ -45,7 +45,6 @@ public interface Communicator {
     String WRONG_PW = "IncorrectPassword";
 
     // Message
-    String MESSAGE = "Message";
     String SEND_MESSAGE = "SendMessage";
     String MESSAGE_SENT = "MessageSent";
     String MESSAGE_RECEIVED = "MessageReceived";

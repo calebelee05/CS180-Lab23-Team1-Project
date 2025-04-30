@@ -33,7 +33,7 @@ public interface UserInterface extends Serializable {
 
     void setItemsList(ArrayList<ItemInterface> itemsList);
 
-    void setMessagesSent(ArrayList<MessageInterface> messagesSent);
+    void setMessagesSent(List<MessageInterface> messagesSent);
 
     void setMessagesReceived(List<MessageInterface> messagesReceived);
 

@@ -1,12 +1,9 @@
 
-import com.sun.nio.sctp.MessageInfo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
-import java.util.*;
-import javax.swing.border.Border;
 
 /**
  * This is the GUI class.
