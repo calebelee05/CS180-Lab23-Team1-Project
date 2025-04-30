@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * This is the GUI class.
  *
- * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 2
+ * Purdue University -- CS18000 -- Spring 2025 -- Team Project -- Phase 3
  *
  * @author Team 1 Lab 23
  * @version April 17, 2025

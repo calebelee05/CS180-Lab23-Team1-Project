@@ -8,5 +8,6 @@
  * @version March 31, 2025
  */
 public interface ServerInterface {
-
+    // The Server class has no public methods that are not from other interfaces
+    // This space is intentionally left blank
 }
