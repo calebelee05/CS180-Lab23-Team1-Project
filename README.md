@@ -327,6 +327,7 @@ This phase covers the creation of the client-server connectivity and implements 
 ## Test Case Files
     - TestClient.java: Tests the functionality of the Client class.
     - TestServer.java: Tests the functionality of the Server class.
+    - TestDatabase.java: Tests the functionality of the combined Database class.
 
 ## How to Run
 1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
