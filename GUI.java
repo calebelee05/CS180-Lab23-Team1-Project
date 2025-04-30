@@ -147,9 +147,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Logged in successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
             
@@ -180,9 +185,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Account created successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
             
@@ -218,7 +228,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -239,9 +252,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             itemPriceHigh.setText("99999");
                             cardLayout.show(cardPanel, "ItemSearch");
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
                  // search by name/description, price range, and seller username
             }
@@ -296,7 +314,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
             
@@ -328,9 +349,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                         "Error",
                                         JOptionPane.ERROR_MESSAGE);
                             }
+                        } else {
+                            throw new IOException();
                         }
                     } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
+                        JOptionPane.showMessageDialog(null,
+                                "Error sending request to server.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -353,9 +379,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -368,9 +399,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                         // use balance
                         accountInfoText.setText(accountInfo);
                         cardLayout.show(cardPanel, "AccountInfo");
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -398,7 +434,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 }
                 try {
                     double price = Double.parseDouble(itemPriceInput);
-                    if (price <= 0) {
+                    if (price < 0) {
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException nfe) {
@@ -420,9 +456,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Item created successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
@@ -435,9 +476,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 "Failed to retrieve item list.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
-                    }
+                    } 
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
             if (e.getSource() == deleteItem) {
@@ -453,9 +497,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Item deleted successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
                 try {
                     Object response = client.sendRequest(ITEM_LISTING);
@@ -470,7 +519,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
             if (e.getActionCommand().equals(CANCEL)) {
@@ -484,7 +536,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             if (e.getSource() == purchase) {
                 try {
                     Object response = client.sendRequest(BUY, e.getActionCommand().split(":")[0],
-                                                        e.getActionCommand().split(":")[1], paymentPW.getText());
+                            e.getActionCommand().split(":")[1], paymentPW.getText());
                     if (response instanceof String) {
                         String message = (String) response;
                         if (message.equals(WRONG_PW)) {
@@ -498,9 +550,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.showMessageDialog(null, "Item purchased successfully!",
                                     "Success", JOptionPane.INFORMATION_MESSAGE);
                         }
+                    } else {
+                        throw new IOException();
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else if (e.getActionCommand().equals(ITEM_SEARCH)) {
                 searchResultSubpanel.removeAll();
@@ -520,7 +577,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             if (e.getSource() == sendMessage) {
                 if (!messageContent.getText().isBlank()) {
                     try {
-                        Object response = client.sendRequest(SEND_MESSAGE, e.getActionCommand(), messageContent.getText(), END_MESSAGE);
+                        Object response = client.sendRequest(SEND_MESSAGE, e.getActionCommand(),
+                                messageContent.getText(), END_MESSAGE);
                         if (response instanceof String) {
                             String message = (String) response;
                             if (message.equals(ERROR_MESSAGE)) {
@@ -531,9 +589,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.showMessageDialog(null, "Message sent",
                                         "Success", JOptionPane.INFORMATION_MESSAGE);
                             }
+                        } else {
+                            throw new IOException();
                         }
                     } catch (IOException ioe) {
-                        System.out.println("Error sending request to server.");
+                        JOptionPane.showMessageDialog(null,
+                                "Error sending request to server.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else if (e.getActionCommand().equals(MESSAGE_SENT)) {
@@ -551,7 +614,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else if (e.getActionCommand().equals(MESSAGE_RECEIVED)) {
                 try {
@@ -568,7 +634,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (IOException ioe) {
-                    System.out.println("Error sending request to server.");
+                    JOptionPane.showMessageDialog(null,
+                            "Error sending request to server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else if (e.getSource() == writeMessage) {
                 String recipient = null;
@@ -579,7 +648,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 } else if (messageType.equals("Received")) {
                     recipient = e.getActionCommand().split(":")[0];
                 }
-                System.out.println(messageType);
                 newMessage(recipient);
             } else if (e.getSource() == cancelMessage) {
                 if (messageType.equals("Seller")) {
@@ -1105,7 +1173,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         showInfo();
 
         frame.add(cardPanel, BorderLayout.CENTER);
-        cardLayout.show(cardPanel,"Initial");
+        cardLayout.show(cardPanel, "Initial");
     }
 
     public static void main(String[] args) {
