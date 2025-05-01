@@ -275,6 +275,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             itemPriceLow.setText("0");
                             itemPriceHigh.setText("99999");
                             cardLayout.show(cardPanel, "ItemSearch");
+                            performSearch();
                         }
                     } else {
                         throw new IOException();
@@ -289,60 +290,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             }
             // Search button
             if (e.getActionCommand().equals(SEARCH)) {
-                // Get inputs
-                String textQuery = itemNameQuery.getText(); // Searches in Item.name and Item.description
-                String lowPriceQuery = itemPriceLow.getText(); // Low-bound for price range
-                String highPriceQuery = itemPriceHigh.getText(); // High-bound for price range
-                String sellerQuery = itemSellerquery.getText(); // Searches in Item.sellerID
-
-                // Validate inputs
-                try {
-                    double lowBound = Double.parseDouble(lowPriceQuery);
-                    double highBound = Double.parseDouble(highPriceQuery);
-                    if (lowBound < 0 || highBound < 0) {
-                        JOptionPane.showMessageDialog(null,
-                                "Price range must be non-negative.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    } else if (lowBound > highBound) {
-                        JOptionPane.showMessageDialog(null,
-                                "Price range is not valid.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(null,
-                            "Please enter valid numbers for price range.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Send request and process response
-                try {
-                    Object response = client.sendRequest(SEARCH,
-                            textQuery,
-                            lowPriceQuery,
-                            highPriceQuery,
-                            sellerQuery);
-                    if (response instanceof List) {
-                        List<ItemInterface> itemList = (List<ItemInterface>) response;
-                        // use filtered itemList (display search result)
-                        searchResult(itemList);
-                    } else {
-                        JOptionPane.showMessageDialog(null,
-                                "Failed to retrieve item list.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(null,
-                            "Error sending request to server.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+                performSearch();
             }
 
             // Message Listing
@@ -597,6 +545,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 itemPriceLow.setText("0");
                 itemPriceHigh.setText("99999");
                 cardLayout.show(cardPanel, "ItemSearch");
+                performSearch();
             } else if (e.getActionCommand().equals(CANCEL)) {
                 cardLayout.show(cardPanel, "ItemInfo");
             }
@@ -1519,6 +1468,63 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void performSearch() {
+        // Get inputs
+        String textQuery = itemNameQuery.getText(); // Searches in Item.name and Item.description
+        String lowPriceQuery = itemPriceLow.getText(); // Low-bound for price range
+        String highPriceQuery = itemPriceHigh.getText(); // High-bound for price range
+        String sellerQuery = itemSellerquery.getText(); // Searches in Item.sellerID
+    
+        // Validate inputs
+        try {
+            double lowBound = Double.parseDouble(lowPriceQuery);
+            double highBound = Double.parseDouble(highPriceQuery);
+            if (lowBound < 0 || highBound < 0) {
+                JOptionPane.showMessageDialog(null,
+                        "Price range must be non-negative.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (lowBound > highBound) {
+                JOptionPane.showMessageDialog(null,
+                        "Price range is not valid.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(null,
+                    "Please enter valid numbers for price range.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
+        // Send request and process response
+        try {
+            Object response = client.sendRequest(SEARCH,
+                    textQuery,
+                    lowPriceQuery,
+                    highPriceQuery,
+                    sellerQuery);
+            if (response instanceof List) {
+                List<ItemInterface> itemList = (List<ItemInterface>) response;
+                // Use filtered itemList (display search result)
+                searchResult(itemList);
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Failed to retrieve item list.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null,
+                    "Error sending request to server.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
