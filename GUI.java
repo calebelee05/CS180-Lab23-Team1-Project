@@ -812,30 +812,88 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Create account screen
     public void create() {
-        createUser = new JTextField(50);
+        // initlaize components
+        createUser = new JTextField();
+        createUser.setPreferredSize(new Dimension(200, 30));
+        createUser.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel usernameLabel = new JLabel("Enter Username:");
-        createPass = new JTextField(50);
+        usernameLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
+        createPass = new JPasswordField();
+        createPass.setPreferredSize(new Dimension(200, 30));
+        createPass.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel passwordLabel = new JLabel("Enter Password:");
-        signupPanel = new JPanel();
-        signupPanel.setLayout(new BoxLayout(signupPanel, BoxLayout.Y_AXIS));
-        createUser.setAlignmentX(Component.CENTER_ALIGNMENT);
-        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createPass.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
         createAcc = new JButton("Create Account");
         createAcc.addActionListener(actionListener);
         createAcc.setActionCommand(ACCOUNT_CREATED);
-        createAcc.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createAcc.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        createAcc.setBackground(Color.WHITE);
+        createAcc.setForeground(Color.BLACK);
+        createAcc.setMargin(new Insets(5, 10, 5, 10));
+        createAcc.setFocusPainted(false);
+
         cancelSignIn = new JButton("Cancel");
         cancelSignIn.addActionListener(actionListener);
         cancelSignIn.setActionCommand(CANCEL);
-        cancelSignIn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        signupPanel.add(usernameLabel);
-        signupPanel.add(createUser);
-        signupPanel.add(passwordLabel);
-        signupPanel.add(createPass);
-        signupPanel.add(createAcc);
-        signupPanel.add(cancelSignIn);
+        cancelSignIn.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        cancelSignIn.setBackground(boilermakerGold);
+        cancelSignIn.setForeground(Color.BLACK);
+        cancelSignIn.setMargin(new Insets(5, 10, 5, 10));
+        cancelSignIn.setFocusPainted(false);
+
+        signupPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // add to layout
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // add username label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        signupPanel.add(usernameLabel, gbc);
+
+        // add username field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        signupPanel.add(createUser, gbc);
+
+        // add password label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        signupPanel.add(passwordLabel, gbc);
+
+        // add password field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        signupPanel.add(createPass, gbc);
+
+        // add createAcc button
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        signupPanel.add(createAcc, gbc);
+
+        // add cancel button
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST; 
+        signupPanel.add(cancelSignIn, gbc);
+
+        // add login panel to card panel
         cardPanel.add(signupPanel, "Signup");
     }
 
