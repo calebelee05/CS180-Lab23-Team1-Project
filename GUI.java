@@ -18,6 +18,25 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     // Colors
     private Color boilermakerGold = new Color(207, 185, 145);
 
+    // Images
+    private ImageIcon browseIcon = new ImageIcon("assets/browse.png");
+    private ImageIcon browseIconSelected = new ImageIcon("assets/browseSelected.png");
+    private ImageIcon messageIcon = new ImageIcon("assets/message.png");
+    private ImageIcon messageIconSelected = new ImageIcon("assets/messageSelected.png");
+    private ImageIcon settingsIcon = new ImageIcon("assets/settings.png");
+    private ImageIcon settingsIconSelected = new ImageIcon("assets/settingsSelected.png");
+
+    private ImageIcon resizeIcon(ImageIcon icon, int size) {
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImg);
+    }
+
+    private int browseIconSize = 32;
+    private int messageIconSize = 40;
+    private int settingsIconSize = 44;
+
+    // Constants
     private Client client;
 
     private JFrame frame;
@@ -933,11 +952,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         menuPanel.add(displayInfo);
         // cardPanel.add(menuPanel, "MainMenu");
 
-        // bottom navigation bar
-        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
+        // TODO: create correct browsing view
+
+        // resize icons
+        browseIconSelected = resizeIcon(browseIconSelected, browseIconSize);
+        messageIcon = resizeIcon(messageIcon, messageIconSize);
+        settingsIcon = resizeIcon(settingsIcon, settingsIconSize);
 
         // nav bar buttons
-        JButton browseButton = new JButton("Items");
+        JButton browseButton = new JButton(browseIconSelected);
+        browseButton.setToolTipText("Browse items for sale");
         browseButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
         browseButton.setFocusPainted(false);
         browseButton.setBackground(new Color(0, 0, 0, 0));
@@ -947,7 +971,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         browseButton.setForeground(boilermakerGold);
         // browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
 
-        JButton messagesButton = new JButton("Messages");
+        JButton messagesButton = new JButton(messageIcon);
+        messagesButton.setToolTipText("Messages");
         messagesButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
         messagesButton.setFocusPainted(false);
         messagesButton.setBackground(new Color(0, 0, 0, 0));
@@ -957,7 +982,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         messagesButton.setForeground(Color.BLACK);
         // messagesButton.addActionListener(e -> cardLayout.show(cardPanel, "AccountInfo"));
 
-        JButton settingsButton = new JButton("Settings");
+        
+        JButton settingsButton = new JButton(settingsIcon);
+        settingsButton.setToolTipText("Settings");
         settingsButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
         settingsButton.setFocusPainted(false);
         settingsButton.setBackground(new Color(0, 0, 0, 0));
@@ -968,10 +995,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         // settingsButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Settings clicked!"));
 
         // add buttons
+        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
         bottomNavBar.add(browseButton);
         bottomNavBar.add(messagesButton);
         bottomNavBar.add(settingsButton);
         bottomNavBar.setBackground(Color.WHITE);
+        bottomNavBar.setPreferredSize(new Dimension(600, 60));
         bottomNavBar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
         // add to the main menu container
