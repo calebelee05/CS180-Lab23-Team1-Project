@@ -691,7 +691,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         createAccount.setFont(new Font("Acumin Pro", Font.BOLD, 16));
         createAccount.setBackground(boilermakerGold);
         createAccount.setForeground(Color.BLACK);
-        createAccount.setMargin(new Insets(5, 10, 5, 10)); 
+        createAccount.setMargin(new Insets(5, 10, 5, 10));
         createAccount.setFocusPainted(false);
 
         // initial panel layout
@@ -700,10 +700,10 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
         // add components to layout
         // BoilerMarketplace label
-        gbc.gridx = 0; 
-        gbc.gridy = 0; 
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 50, 10);
-        gbc.anchor = GridBagConstraints.CENTER; 
+        gbc.anchor = GridBagConstraints.CENTER;
         boilerMarketplaceLabel = new JLabel();
         boilerMarketplaceLabel.setFont(new Font("Acumin Pro", Font.BOLD, 30));
         boilerMarketplaceLabel.setText("<html><span style=\"color:#000;\">Boiler</span>"
@@ -725,36 +725,88 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Log in screen
     public void allowLogin() {
-        username = new JTextField(50);
+        // initlaize components
+        username = new JTextField();
+        username.setPreferredSize(new Dimension(200, 30));
+        username.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel usernameLabel = new JLabel("Enter Username:");
-        password = new JTextField(50);
+        usernameLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
+        password = new JPasswordField();
+        password.setPreferredSize(new Dimension(200, 30));
+        password.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel passwordLabel = new JLabel("Enter Password:");
+        passwordLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
 
-        loginPanel = new JPanel();
-        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
-
-        username.setAlignmentX(Component.CENTER_ALIGNMENT);
-        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        password.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
         loginToAccount = new JButton("Login");
         loginToAccount.addActionListener(actionListener);
         loginToAccount.setActionCommand(LOGGED_IN);
-        loginToAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginToAccount.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        loginToAccount.setBackground(Color.WHITE);
+        loginToAccount.setForeground(Color.BLACK);
+        loginToAccount.setMargin(new Insets(5, 10, 5, 10));
+        loginToAccount.setFocusPainted(false);
 
         cancelSignIn = new JButton("Cancel");
         cancelSignIn.addActionListener(actionListener);
         cancelSignIn.setActionCommand(CANCEL);
-        cancelSignIn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cancelSignIn.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        cancelSignIn.setBackground(boilermakerGold);
+        cancelSignIn.setForeground(Color.BLACK);
+        cancelSignIn.setMargin(new Insets(5, 10, 5, 10));
+        cancelSignIn.setFocusPainted(false);
 
-        loginPanel.add(usernameLabel);
-        loginPanel.add(username);
-        loginPanel.add(passwordLabel);
-        loginPanel.add(password);
-        loginPanel.add(loginToAccount);
-        loginPanel.add(cancelSignIn);
+        loginPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // add to layout
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // add username label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        loginPanel.add(usernameLabel, gbc);
+
+        // add username field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        loginPanel.add(username, gbc);
+
+        // add password label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        loginPanel.add(passwordLabel, gbc);
+
+        // add password field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        loginPanel.add(password, gbc);
+
+        // add login button
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        loginPanel.add(loginToAccount, gbc);
+
+        // add cancel button
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST; 
+        loginPanel.add(cancelSignIn, gbc);
+
+        // add login panel to card panel
         cardPanel.add(loginPanel, "Login");
     }
 
