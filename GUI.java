@@ -729,12 +729,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         JLabel usernameLabel = new JLabel("Enter Username:");
         password = new JTextField(50);
         JLabel passwordLabel = new JLabel("Enter Password:");
+
         loginPanel = new JPanel();
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
+
         username.setAlignmentX(Component.CENTER_ALIGNMENT);
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         password.setAlignmentX(Component.CENTER_ALIGNMENT);
         passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         loginToAccount = new JButton("Login");
         loginToAccount.addActionListener(actionListener);
         loginToAccount.setActionCommand(LOGGED_IN);
