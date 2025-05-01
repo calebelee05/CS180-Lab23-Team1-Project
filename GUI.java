@@ -34,6 +34,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private int messageIconSize = 40;
     private int settingsIconSize = 44;
     private int imagePickerSize = 200;
+    private int listingIconSize = 150;
 
     // Constants
     private Client client;
@@ -125,7 +126,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private String messageType;
 
     // Account information
-    private JPanel accountInfoPanel; 
+    private JPanel accountInfoPanel;
     private JTextArea accountInfoText;
 
     ActionListener actionListener = new ActionListener() {
@@ -1089,24 +1090,31 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     /* Item searching screen */
     public void searchItem() {
-        itemSearchPanel = new JPanel();
-        JPanel searchBoxes = new JPanel(new GridLayout(2, 4));
-        JPanel searchAndEnter = new JPanel();
-        itemNameQuery = new JTextField(2);
-        itemPriceLow = new JTextField("0", 2);
-        itemPriceHigh = new JTextField("99999", 2);
-        itemSellerquery = new JTextField(2);
-        JLabel itemNameSearchLabel = new JLabel("Name/Description");
-        JLabel minPriceLabel = new JLabel("Minimum Price");
-        JLabel maxPriceLabel = new JLabel("Maximum Price");
-        JLabel sellerSearchLabel = new JLabel("Seller Name");
+        itemSearchPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JPanel searchBoxes = new JPanel(new GridLayout(0, 1, 10, 2));
+        searchBoxes.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+
+        itemNameQuery = new JTextField(15);
+        itemPriceLow = new JTextField("0", 15);
+        itemPriceHigh = new JTextField("99999", 15);
+        itemSellerquery = new JTextField(15);
+
+        JLabel itemNameSearchLabel = new JLabel("Name/Description:");
+        JLabel minPriceLabel = new JLabel("Minimum Price:");
+        JLabel maxPriceLabel = new JLabel("Maximum Price:");
+        JLabel sellerSearchLabel = new JLabel("Seller Name:");
 
         searchBoxes.add(itemNameSearchLabel);
         searchBoxes.add(itemNameQuery);
+
         searchBoxes.add(sellerSearchLabel);
         searchBoxes.add(itemSellerquery);
+
         searchBoxes.add(minPriceLabel);
         searchBoxes.add(itemPriceLow);
+
         searchBoxes.add(maxPriceLabel);
         searchBoxes.add(itemPriceHigh);
 
@@ -1114,20 +1122,35 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         search.addActionListener(actionListener);
         search.setActionCommand(SEARCH);
 
-        searchAndEnter.add(searchBoxes, BorderLayout.CENTER);
-        searchAndEnter.add(search, BorderLayout.EAST);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(search);
+        searchBoxes.add(buttonPanel);
 
-        mainMenu = new JButton("Back to Menu");
-        mainMenu.addActionListener(actionListener);
-        mainMenu.setActionCommand(MAIN_MENU);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        itemSearchPanel.add(searchBoxes, gbc);
 
         searchResultSubpanel = new JPanel(new GridLayout(0, 1));
+        JScrollPane scrollPane = new JScrollPane(searchResultSubpanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        itemSearchPanel.add(searchAndEnter, BorderLayout.NORTH);
-        itemSearchPanel.add(searchResultSubpanel, BorderLayout.EAST);
-        itemSearchPanel.add(mainMenu, BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        itemSearchPanel.add(scrollPane, gbc);
 
-        cardPanel.add(itemSearchPanel, "ItemSearch");
+        JPanel bottomNavBar = createBottomNavPanel(browseIconSelected, messageIcon, settingsIcon);
+        
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(itemSearchPanel, BorderLayout.CENTER);
+        container.add(bottomNavBar, BorderLayout.SOUTH);
+
+        cardPanel.add(container, "ItemSearch");
     }
 
     // Item search result
@@ -1138,15 +1161,29 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             noItem.setPreferredSize(new Dimension(350, 200));
             searchResultSubpanel.add(noItem);
         }
+        boolean pairIsPopulated = false;
+        JPanel pairPanel = new JPanel(new GridLayout(0, 2));
         for (ItemInterface item : itemList) {
             ImageIcon itemImageIcon = blobStringToImageIcon(item.getImageString());
+            itemImageIcon = resizeIcon(itemImageIcon, listingIconSize);
             JButton itemButton = new JButton(itemImageIcon);
-            itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
                 viewItem(item);
                 cardLayout.show(cardPanel, "ItemInfo");
             });
-            searchResultSubpanel.add(itemButton, BorderLayout.CENTER);
+            if (pairIsPopulated) {
+                pairPanel.add(itemButton);
+                searchResultSubpanel.add(pairPanel);
+                pairIsPopulated = false;
+            } else {
+                pairPanel = new JPanel(new GridLayout(0, 2));
+                pairPanel.add(itemButton);
+                searchResultSubpanel.add(pairPanel);
+                pairIsPopulated = true;
+            }
+        }
+        if (pairIsPopulated) {
+            searchResultSubpanel.add(pairPanel);
         }
         cardPanel.revalidate();
         cardLayout.show(cardPanel, "ItemSearch");
@@ -1384,7 +1421,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         browseButton.setBorderPainted(false);
         browseButton.setContentAreaFilled(false);
         browseButton.setForeground(boilermakerGold);
-        // browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
+        browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
 
         JButton messagesButton = new JButton(messageIcon);
         messagesButton.setToolTipText("Messages");
