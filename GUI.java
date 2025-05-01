@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Base64;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -69,7 +70,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JButton logout;
     private JButton displayInfo;
 
-    private JButton mainMenu; // Return to main menu
+    private JButton mainMenu;
 
     // Item Listing
     private JPanel itemListPanel;
@@ -124,7 +125,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private String messageType;
 
     // Account information
-    private JPanel accountInfoPanel;
+    private JPanel accountInfoPanel; 
     private JTextArea accountInfoText;
 
     ActionListener actionListener = new ActionListener() {
@@ -437,6 +438,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     ActionListener itemListActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals(ADD_ITEM)) {
+                addImage.setIcon(noImageIcon);
                 itemName.setText("");
                 itemPrice.setText("");
                 itemDescription.setText("");
@@ -447,6 +449,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 String itemNameInput = itemName.getText();
                 String itemPriceInput = itemPrice.getText();
                 String itemDescrptionInput = itemDescription.getText();
+                String itemImageString = imageIconToBlobString((ImageIcon) addImage.getIcon());
 
                 // Validate inputs
                 if (itemNameInput.isEmpty() || itemPriceInput.isEmpty()) {
@@ -467,7 +470,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
                 // Send request and process response
                 try {
-                    Object response = client.sendRequest(ITEM_CREATED, itemNameInput, itemPriceInput, itemDescrptionInput);
+                    Object response = client.sendRequest(ITEM_CREATED,
+                            itemNameInput,
+                            itemPriceInput,
+                            itemDescrptionInput,
+                            itemImageString);
                     if (response instanceof String) {
                         String message = (String) response;
                         if (message.equals(ERROR_MESSAGE)) {
@@ -482,6 +489,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                         throw new IOException();
                     }
                 } catch (IOException ioe) {
+                    ioe.printStackTrace();
                     JOptionPane.showMessageDialog(null,
                             "Error sending request to server.",
                             "Error",
@@ -1035,6 +1043,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         // resize image
         noImageIcon = resizeIcon(noImageIcon, imagePickerSize);
 
+        // add image button
         addImage = new JButton(noImageIcon);
         addImage.addActionListener(e -> openFileChooser());
 
@@ -1064,7 +1073,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         addAndCancel.add(cancelCreate);
 
         addAndCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        itemAddPanel.add(addImage);
         itemAddPanel.add(itemNameLabel);
         itemAddPanel.add(itemName);
         itemAddPanel.add(itemPriceLabel);
@@ -1072,7 +1080,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         itemAddPanel.add(itemDescriptionLabel);
         itemAddPanel.add(itemDescription);
         itemAddPanel.add(addAndCancel);
-        cardPanel.add(itemAddPanel, "AddItem");
+
+        JPanel globalPanel = new JPanel(new GridLayout(1, 2));
+        globalPanel.add(addImage);
+        globalPanel.add(itemAddPanel);
+        cardPanel.add(globalPanel, "AddItem");
     }
 
     /* Item searching screen */
@@ -1127,7 +1139,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             searchResultSubpanel.add(noItem);
         }
         for (ItemInterface item : itemList) {
-            JButton itemButton = new JButton(item.getName());
+            ImageIcon itemImageIcon = blobStringToImageIcon(item.getImageString());
+            JButton itemButton = new JButton(itemImageIcon);
             itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
                 viewItem(item);
@@ -1412,7 +1425,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
         // only allow image files
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-            "Image Files", "jpg", "png", "jpeg"));
+                "Image Files", "jpg", "png", "jpeg"));
 
         // show dialog
         int result = fileChooser.showOpenDialog(null);
@@ -1430,12 +1443,45 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            // Optionally, display the selected file name in a label or text field
-            JOptionPane.showMessageDialog(null, "Image uploaded: " + selectedFile.getName(),
-                    "Upload Successful", JOptionPane.INFORMATION_MESSAGE);
         } else {
             System.out.println("No file selected.");
+        }
+    }
+
+    public static String imageIconToBlobString(ImageIcon icon) {
+        if (icon == null || icon.getImage() == null) {
+            throw new IllegalArgumentException("ImageIcon is null or invalid.");
+        }
+
+        try {
+            Image image = icon.getImage();
+            BufferedImage bufferedImage = new BufferedImage(
+                    image.getWidth(null),
+                    image.getHeight(null),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+            bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+
+            // Encode byte array to Base64 string
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ImageIcon blobStringToImageIcon(String blobString) {
+        try {
+            byte[] imageBytes = Base64.getDecoder().decode(blobString);
+
+            return new ImageIcon(imageBytes);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

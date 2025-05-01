@@ -41,7 +41,7 @@ public interface UserInterface extends Serializable {
     void deleteUser(); // Remove user from userList, delete all items user has listed
 
     // Item Listing
-    ItemInterface addItem(String name, double price, String description); // Block item creation with same name
+    ItemInterface addItem(String name, double price, String description, String imageString);
 
     ItemInterface getItem(String name) throws ItemNotFoundException; // Return item with this name
 

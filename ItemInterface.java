@@ -22,6 +22,8 @@ public interface ItemInterface extends Serializable {
 
     String getBuyerID();
 
+    String getImageString();
+
     void setSellerID(String sellerID);
 
     void setBuyerID(String buyerID);
@@ -31,6 +33,8 @@ public interface ItemInterface extends Serializable {
     void setDescription(String description);
 
     void setName(String itemName);
+
+    void setImageString(String imageString);
 
     void deleteItem(); // Remove item from itemList
 }

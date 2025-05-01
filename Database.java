@@ -28,32 +28,6 @@ public class Database implements DatabaseInterface {
         this.messageFile = messageFile;
     }
 
-    public static void main(String[] args) {
-        String username = "User1";
-        String password = "password";
-        Database database = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
-        UserInterface user1 = database.createAccount(username, password);
-        if (userList.contains(user1)) {
-            System.out.println("true");
-        }
-        try {
-            UserInterface user = Database.logIn("User1", "password");
-            System.out.printf("Successfully logged in: %s\n", user.getUsername());
-        } catch (UserNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1");
-        if (itemList.contains(item1)) {
-            System.out.println(database.getItemList());
-        }
-        database.deleteItem(item1);
-        if (itemList.contains(item1)) {
-            System.out.println("false");
-        }
-        UserInterface user2 = database.createAccount("User2", "password2");
-        database.sendMessage(user1, user2, "hi");
-    }
-
     public String getUserFile() {
         return userFile;
     }
@@ -275,8 +249,8 @@ public class Database implements DatabaseInterface {
         return sentMessage;
     }
 
-    public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {
-        ItemInterface item = user.addItem(itemName, price, description);
+    public ItemInterface addItem(UserInterface user, String itemName, double price, String description, String imageString) {
+        ItemInterface item = user.addItem(itemName, price, description, imageString);
         itemList.add(item);
         update();
         return item;

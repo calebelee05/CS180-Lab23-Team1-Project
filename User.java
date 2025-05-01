@@ -94,8 +94,8 @@ public class User implements UserInterface {
     } // Remove user from userList, delete all items user has listed
 
     // Item Listing
-    public ItemInterface addItem(String name, double price, String description) {
-        ItemInterface newItem = new Item(name, price, description, this.username);
+    public ItemInterface addItem(String name, double price, String description, String imageString) {
+        ItemInterface newItem = new Item(name, price, description, this.username, imageString);
         itemsList.add(newItem);
         return newItem;
     } // Shouldn't allow users to add more than one items with same name?

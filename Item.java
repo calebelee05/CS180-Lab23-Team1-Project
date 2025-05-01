@@ -13,13 +13,15 @@ public class Item implements ItemInterface {
     private String description;
     private String sellerID;
     private String buyerID = "";
+    private String imageString;
     public static final String FILEPATH = "ItemData.txt";
 
-    public Item(String name, double price, String description, String sellerID) {
+    public Item(String name, double price, String description, String sellerID, String imageString) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.sellerID = sellerID;
+        this.imageString = imageString;
     }
 
     // Implement Item interface
@@ -43,6 +45,10 @@ public class Item implements ItemInterface {
         return buyerID;
     }
 
+    public String getImageString() {
+        return imageString;
+    }
+
     public void setSellerID(String sellerID) {
         this.sellerID = sellerID;
     }
@@ -61,6 +67,10 @@ public class Item implements ItemInterface {
 
     public void setName(String itemName) {
         this.name = itemName;
+    }
+    
+    public void setImageString(String imageString) {
+        this.imageString = imageString;
     }
 
     public void deleteItem() {

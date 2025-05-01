@@ -43,7 +43,7 @@ public interface DatabaseInterface {
 
     void deleteAccount(UserInterface user);
 
-    ItemInterface addItem(UserInterface user, String itemName, double price, String description);
+    ItemInterface addItem(UserInterface user, String itemName, double price, String description, String imageString);
 
     void deleteItem(ItemInterface item);
 
