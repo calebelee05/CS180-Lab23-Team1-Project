@@ -2,8 +2,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  * This is the GUI class.
@@ -25,16 +27,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private ImageIcon messageIconSelected = new ImageIcon("assets/messageSelected.png");
     private ImageIcon settingsIcon = new ImageIcon("assets/settings.png");
     private ImageIcon settingsIconSelected = new ImageIcon("assets/settingsSelected.png");
-
-    private ImageIcon resizeIcon(ImageIcon icon, int size) {
-        Image img = icon.getImage();
-        Image resizedImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImg);
-    }
+    private ImageIcon noImageIcon = new ImageIcon("assets/noImage.png");
 
     private int browseIconSize = 32;
     private int messageIconSize = 40;
     private int settingsIconSize = 44;
+    private int imagePickerSize = 200;
 
     // Constants
     private Client client;
@@ -88,6 +86,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JTextField itemPrice;
     private JTextField itemDescription;
     private JTextArea myItemInfo;
+    private JButton addImage;
 
     // Item Searching
     private JPanel itemSearchPanel;
@@ -953,55 +952,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         // cardPanel.add(menuPanel, "MainMenu");
 
         // TODO: create correct browsing view
-
-        // resize icons
-        browseIconSelected = resizeIcon(browseIconSelected, browseIconSize);
-        messageIcon = resizeIcon(messageIcon, messageIconSize);
-        settingsIcon = resizeIcon(settingsIcon, settingsIconSize);
-
-        // nav bar buttons
-        JButton browseButton = new JButton(browseIconSelected);
-        browseButton.setToolTipText("Browse items for sale");
-        browseButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        browseButton.setFocusPainted(false);
-        browseButton.setBackground(new Color(0, 0, 0, 0));
-        browseButton.setBorder(BorderFactory.createEmptyBorder());
-        browseButton.setBorderPainted(false);
-        browseButton.setContentAreaFilled(false);
-        browseButton.setForeground(boilermakerGold);
-        // browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
-
-        JButton messagesButton = new JButton(messageIcon);
-        messagesButton.setToolTipText("Messages");
-        messagesButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        messagesButton.setFocusPainted(false);
-        messagesButton.setBackground(new Color(0, 0, 0, 0));
-        messagesButton.setBorder(BorderFactory.createEmptyBorder());
-        messagesButton.setBorderPainted(false);
-        messagesButton.setContentAreaFilled(false);
-        messagesButton.setForeground(Color.BLACK);
-        // messagesButton.addActionListener(e -> cardLayout.show(cardPanel, "AccountInfo"));
-
-        
-        JButton settingsButton = new JButton(settingsIcon);
-        settingsButton.setToolTipText("Settings");
-        settingsButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        settingsButton.setFocusPainted(false);
-        settingsButton.setBackground(new Color(0, 0, 0, 0));
-        settingsButton.setBorder(BorderFactory.createEmptyBorder());
-        settingsButton.setBorderPainted(false);
-        settingsButton.setContentAreaFilled(false);
-        settingsButton.setForeground(Color.BLACK);
-        // settingsButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Settings clicked!"));
-
-        // add buttons
-        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
-        bottomNavBar.add(browseButton);
-        bottomNavBar.add(messagesButton);
-        bottomNavBar.add(settingsButton);
-        bottomNavBar.setBackground(Color.WHITE);
-        bottomNavBar.setPreferredSize(new Dimension(600, 60));
-        bottomNavBar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        JPanel bottomNavBar = createBottomNavPanel(browseIconSelected, messageIcon, settingsIcon);
 
         // add to the main menu container
         JPanel mainMenuContainer = new JPanel(new BorderLayout());
@@ -1081,6 +1032,12 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Add item screen
     public void addItem() {
+        // resize image
+        noImageIcon = resizeIcon(noImageIcon, imagePickerSize);
+
+        addImage = new JButton(noImageIcon);
+        addImage.addActionListener(e -> openFileChooser());
+
         itemName = new JTextField(50);
         JLabel itemNameLabel = new JLabel("Enter Item Name:");
         itemPrice = new JTextField(50);
@@ -1107,6 +1064,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         addAndCancel.add(cancelCreate);
 
         addAndCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        itemAddPanel.add(addImage);
         itemAddPanel.add(itemNameLabel);
         itemAddPanel.add(itemName);
         itemAddPanel.add(itemPriceLabel);
@@ -1382,6 +1340,13 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.add(accountInfoPanel, "AccountInfo");
     }
 
+    // helpers
+    private ImageIcon resizeIcon(ImageIcon icon, int size) {
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImg);
+    }
+
     public void setGlobalFont(Font font) {
         UIManager.getDefaults().entrySet().forEach(entry -> {
             if (entry.getKey().toString().endsWith(".font")) {
@@ -1390,6 +1355,91 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         });
     }
 
+    public JPanel createBottomNavPanel(ImageIcon browseIcon, ImageIcon messageIcon, ImageIcon settingsIcon) {
+        // resize icons
+        browseIconSelected = resizeIcon(browseIconSelected, browseIconSize);
+        messageIcon = resizeIcon(messageIcon, messageIconSize);
+        settingsIcon = resizeIcon(settingsIcon, settingsIconSize);
+
+        // nav bar buttons
+        JButton browseButton = new JButton(browseIconSelected);
+        browseButton.setToolTipText("Browse items for sale");
+        browseButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        browseButton.setFocusPainted(false);
+        browseButton.setBackground(new Color(0, 0, 0, 0));
+        browseButton.setBorder(BorderFactory.createEmptyBorder());
+        browseButton.setBorderPainted(false);
+        browseButton.setContentAreaFilled(false);
+        browseButton.setForeground(boilermakerGold);
+        // browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
+
+        JButton messagesButton = new JButton(messageIcon);
+        messagesButton.setToolTipText("Messages");
+        messagesButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        messagesButton.setFocusPainted(false);
+        messagesButton.setBackground(new Color(0, 0, 0, 0));
+        messagesButton.setBorder(BorderFactory.createEmptyBorder());
+        messagesButton.setBorderPainted(false);
+        messagesButton.setContentAreaFilled(false);
+        messagesButton.setForeground(Color.BLACK);
+        // messagesButton.addActionListener(e -> cardLayout.show(cardPanel, "AccountInfo"));
+
+        JButton settingsButton = new JButton(settingsIcon);
+        settingsButton.setToolTipText("Settings");
+        settingsButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        settingsButton.setFocusPainted(false);
+        settingsButton.setBackground(new Color(0, 0, 0, 0));
+        settingsButton.setBorder(BorderFactory.createEmptyBorder());
+        settingsButton.setBorderPainted(false);
+        settingsButton.setContentAreaFilled(false);
+        settingsButton.setForeground(Color.BLACK);
+        // settingsButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Settings clicked!"));
+
+        // add buttons
+        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
+        bottomNavBar.add(browseButton);
+        bottomNavBar.add(messagesButton);
+        bottomNavBar.add(settingsButton);
+        bottomNavBar.setBackground(Color.WHITE);
+        bottomNavBar.setPreferredSize(new Dimension(600, 60));
+        bottomNavBar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        return bottomNavBar;
+    }
+
+    public void openFileChooser() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select an Image");
+
+        // only allow image files
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image Files", "jpg", "png", "jpeg"));
+
+        // show dialog
+        int result = fileChooser.showOpenDialog(null);
+
+        // verify selection
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+
+            try {
+                BufferedImage image = ImageIO.read(selectedFile);
+                ImageIcon imageIcon = new ImageIcon(image);
+
+                addImage.setIcon(resizeIcon(imageIcon, imagePickerSize));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Optionally, display the selected file name in a label or text field
+            JOptionPane.showMessageDialog(null, "Image uploaded: " + selectedFile.getName(),
+                    "Upload Successful", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            System.out.println("No file selected.");
+        }
+    }
+
+    // thread methods
     public void run() {
         client = beginConnection();
 
