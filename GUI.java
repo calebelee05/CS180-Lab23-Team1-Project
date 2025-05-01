@@ -803,7 +803,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST; 
+        gbc.anchor = GridBagConstraints.WEST;
         loginPanel.add(cancelSignIn, gbc);
 
         // add login panel to card panel
@@ -890,7 +890,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST; 
+        gbc.anchor = GridBagConstraints.WEST;
         signupPanel.add(cancelSignIn, gbc);
 
         // add login panel to card panel
@@ -931,7 +931,56 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         menuPanel.add(deleteAccount);
         menuPanel.add(logout);
         menuPanel.add(displayInfo);
-        cardPanel.add(menuPanel, "MainMenu");
+        // cardPanel.add(menuPanel, "MainMenu");
+
+        // bottom navigation bar
+        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
+
+        // nav bar buttons
+        JButton browseButton = new JButton("Items");
+        browseButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        browseButton.setFocusPainted(false);
+        browseButton.setBackground(new Color(0, 0, 0, 0));
+        browseButton.setBorder(BorderFactory.createEmptyBorder());
+        browseButton.setBorderPainted(false);
+        browseButton.setContentAreaFilled(false);
+        browseButton.setForeground(boilermakerGold);
+        // browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
+
+        JButton messagesButton = new JButton("Messages");
+        messagesButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        messagesButton.setFocusPainted(false);
+        messagesButton.setBackground(new Color(0, 0, 0, 0));
+        messagesButton.setBorder(BorderFactory.createEmptyBorder());
+        messagesButton.setBorderPainted(false);
+        messagesButton.setContentAreaFilled(false);
+        messagesButton.setForeground(Color.BLACK);
+        // messagesButton.addActionListener(e -> cardLayout.show(cardPanel, "AccountInfo"));
+
+        JButton settingsButton = new JButton("Settings");
+        settingsButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
+        settingsButton.setFocusPainted(false);
+        settingsButton.setBackground(new Color(0, 0, 0, 0));
+        settingsButton.setBorder(BorderFactory.createEmptyBorder());
+        settingsButton.setBorderPainted(false);
+        settingsButton.setContentAreaFilled(false);
+        settingsButton.setForeground(Color.BLACK);
+        // settingsButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Settings clicked!"));
+
+        // add buttons
+        bottomNavBar.add(browseButton);
+        bottomNavBar.add(messagesButton);
+        bottomNavBar.add(settingsButton);
+        bottomNavBar.setBackground(Color.WHITE);
+        bottomNavBar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+
+        // add to the main menu container
+        JPanel mainMenuContainer = new JPanel(new BorderLayout());
+        mainMenuContainer.add(menuPanel, BorderLayout.CENTER);
+        mainMenuContainer.add(bottomNavBar, BorderLayout.SOUTH);
+
+        // add container to card panel
+        cardPanel.add(mainMenuContainer, "MainMenu");
     }
 
     /* Item List */
