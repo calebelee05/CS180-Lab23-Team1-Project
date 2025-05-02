@@ -115,8 +115,8 @@ public class Server implements Runnable, Communicator, ServerInterface {
                             System.out.println(itemSearchOption);
                             if (itemSearchOption.equals(SEARCH)) {
                                 String textQuery = reader.readLine();
-                                double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
-                                double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                                double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI verifies double
+                                double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI verifies double
                                 String sellerQuery = reader.readLine();
                                 List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
                                         lowPriceQuery,
