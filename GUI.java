@@ -1081,7 +1081,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel searchBoxes = new JPanel(new GridLayout(0, 1, 10, 2));
-        searchBoxes.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        searchBoxes.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         itemNameQuery = new JTextField(15);
         itemPriceLow = new JTextField("0", 15);
@@ -1380,7 +1380,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     }
 
     // helpers
-    private ImageIcon resizeIcon(ImageIcon icon, int size) {
+    public ImageIcon resizeIcon(ImageIcon icon, int size) {
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImg);
@@ -1423,7 +1423,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
-    public static String imageIconToBlobString(ImageIcon icon) {
+    public String imageIconToBlobString(ImageIcon icon) {
         if (icon == null || icon.getImage() == null) {
             throw new IllegalArgumentException("ImageIcon is null or invalid.");
         }
@@ -1449,7 +1449,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         }
     }
 
-    public static ImageIcon blobStringToImageIcon(String blobString) {
+    public ImageIcon blobStringToImageIcon(String blobString) {
         try {
             byte[] imageBytes = Base64.getDecoder().decode(blobString);
 

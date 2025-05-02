@@ -1,5 +1,7 @@
 
+import java.awt.Font;
 import java.util.List;
+import javax.swing.ImageIcon;
 
 /**
  * A GuiInterface interface
@@ -46,4 +48,14 @@ public interface GuiInterface {
     void newMessage(String recipientID);
 
     void showInfo();
+
+    ImageIcon resizeIcon(ImageIcon icon, int size);
+
+    void setGlobalFont(Font font);
+
+    void openFileChooser();
+
+    String imageIconToBlobString(ImageIcon icon);
+
+    ImageIcon blobStringToImageIcon(String blobString);
 }
