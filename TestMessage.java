@@ -61,13 +61,4 @@ public class TestMessage {
                 message1.getRecipientID(), "Contents1");
         assertEquals(expectedMessage, message1.toString());
     }
-
-    // Testing the method of deleting a message
-    @Test
-    public void testDeleteMessage() {
-        message1.deleteMessage();
-        List<MessageInterface> list = Database.getMessageList();
-        assertFalse(list.contains(message1));
-        assertTrue(list.contains(message2));
-    }
 }

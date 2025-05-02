@@ -46,7 +46,7 @@ public class Database implements DatabaseInterface {
         if (itemList.contains(item1)) {
             System.out.println(database.getItemList());
         }
-        database.deleteItem(item1);
+        database.deleteItem(user1, item1);
         if (itemList.contains(item1)) {
             System.out.println("false");
         }
@@ -195,6 +195,13 @@ public class Database implements DatabaseInterface {
     public synchronized void update() {
         write();
         read();
+
+        for (int i = 0; i < userList.size(); i++) {
+            UserInterface user = userList.get(i);
+            user.setItemsList(getUserItems(user));
+            user.setMessagesReceived(getReceivedMessages(user));
+            user.setMessagesSent(getSentMessages(user));
+        }
     }
 
     public UserInterface createAccount(String username, String password) {
@@ -205,7 +212,32 @@ public class Database implements DatabaseInterface {
     }
 
     public void deleteAccount(UserInterface user) {
-        user.deleteUser();
+        for (int i = 0; i < user.getItemsList().size(); i++) {
+            itemList.remove(user.getItemsList().get(i));
+            // deleteItem(user, user.getItemsList().get(i));
+        }
+        for (int i = 0; i < user.getMessagesSent().size(); i++) {
+            MessageInterface deletingMessage = user.getMessagesSent().get(i);
+            messageList.remove(deletingMessage);
+            /*
+            try {
+                deleteMessage(user, findUser(deletingMessage.getRecipientID()), deletingMessage);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            } */
+        }
+        for (int i = 0; i < user.getMessagesReceived().size(); i++) {
+            System.out.println("Delete received message");
+            MessageInterface deletingMessage = user.getMessagesReceived().get(i);
+            messageList.remove(deletingMessage);
+            /*
+            try {
+                deleteMessage(findUser(deletingMessage.getSenderID()), user, deletingMessage);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            } */
+        }
+        userList.remove(user);
         update();
     }
 
@@ -282,7 +314,8 @@ public class Database implements DatabaseInterface {
         return item;
     }
 
-    public void deleteItem(ItemInterface item) {
+    public void deleteItem(UserInterface user, ItemInterface item) {
+        user.deleteItem(item);
         itemList.remove(item);
         update();
     }
@@ -292,6 +325,12 @@ public class Database implements DatabaseInterface {
         messageList.add(message);
         update();
         return message;
+    }
+    public void deleteMessage(UserInterface sender, UserInterface recipient, MessageInterface message) {
+        sender.deleteMessageSent(message);
+        recipient.deleteMessageReceived(message);
+        messageList.remove(message);
+        update();
     }
 
     public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) throws Exception {

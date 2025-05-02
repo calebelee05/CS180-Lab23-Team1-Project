@@ -31,6 +31,4 @@ public interface ItemInterface extends Serializable {
     void setDescription(String description);
 
     void setName(String itemName);
-
-    void deleteItem(); // Remove item from itemList
 }

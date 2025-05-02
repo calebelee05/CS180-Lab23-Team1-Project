@@ -86,7 +86,7 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                     String itemName = reader.readLine();
                                     for (ItemInterface item : Database.getUserItems(user)) {
                                         if (item.getName().equals(itemName)) {
-                                            DATABASE.deleteItem(item);
+                                            DATABASE.deleteItem(user, item);
                                             success = true;
                                             break;
                                         }

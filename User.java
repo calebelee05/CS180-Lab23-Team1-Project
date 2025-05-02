@@ -14,7 +14,7 @@ public class User implements UserInterface {
     private String username;
     private String password;
     private double balance;
-    private ArrayList<ItemInterface> itemsList = new ArrayList<>();
+    private List<ItemInterface> itemsList = new ArrayList<>();
     private List<MessageInterface> messagesSent = Collections.synchronizedList(new ArrayList<>());
     private List<MessageInterface> messagesReceived = Collections.synchronizedList(new ArrayList<>());
     public static final String FILEPATH = "UserData.txt";
@@ -39,7 +39,7 @@ public class User implements UserInterface {
         return balance;
     }
 
-    public ArrayList<ItemInterface> getItemsList() {
+    public List<ItemInterface> getItemsList() {
         return itemsList;
     }
 
@@ -63,7 +63,7 @@ public class User implements UserInterface {
         this.balance = balance;
     }
 
-    public void setItemsList(ArrayList<ItemInterface> itemsList) {
+    public void setItemsList(List<ItemInterface> itemsList) {
         this.itemsList = itemsList;
     }
 
@@ -75,28 +75,11 @@ public class User implements UserInterface {
         this.messagesReceived = messagesReceived;
     }
 
-    public void deleteUser() {
-
-        Database.getUserList().remove(this);
-
-        for (int i = 0; i < itemsList.size(); i++) {
-            itemsList.get(i).deleteItem();
-        }
-
-        for (int j = 0; j < messagesSent.size(); j++) {
-            messagesSent.get(j).deleteMessage();
-        }
-
-        for (int k = 0; k < messagesReceived.size(); k++) {
-            messagesReceived.get(k).deleteMessage();
-        }
-
-    } // Remove user from userList, delete all items user has listed
-
     // Item Listing
     public ItemInterface addItem(String name, double price, String description) {
         ItemInterface newItem = new Item(name, price, description, this.username);
         itemsList.add(newItem);
+        System.out.println(itemsList);
         return newItem;
     } // Shouldn't allow users to add more than one items with same name?
 
@@ -111,7 +94,6 @@ public class User implements UserInterface {
 
     public void deleteItem(ItemInterface item) {
         itemsList.remove(item);
-        item.deleteItem();
     } // Delete item from listing (and from database)
 
     public void setItem(ItemInterface item, String name, double price, String description) {
@@ -164,6 +146,14 @@ public class User implements UserInterface {
             }
         }
         return messagesToUser;
+    }
+
+    public void deleteMessageSent(MessageInterface message) {
+        messagesSent.remove(message);
+    }
+
+    public void deleteMessageReceived(MessageInterface message) {
+        messagesReceived.remove(message);
     }
 
     @Override

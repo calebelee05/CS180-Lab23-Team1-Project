@@ -58,10 +58,6 @@ public class Message implements MessageInterface {
         this.timestamp = timestamp;
     }
 
-    public void deleteMessage() {
-        Database.getMessageList().remove(this);
-    }
-
     @Override
     public boolean equals(Object object) {
         try {
