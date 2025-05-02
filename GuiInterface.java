@@ -58,4 +58,5 @@ public interface GuiInterface {
     String imageIconToBlobString(ImageIcon icon);
 
     ImageIcon blobStringToImageIcon(String blobString);
+    
 }
