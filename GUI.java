@@ -22,17 +22,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private Color boilermakerGold = new Color(207, 185, 145);
 
     // Images
-    private ImageIcon browseIcon = new ImageIcon("assets/browse.png");
-    private ImageIcon browseIconSelected = new ImageIcon("assets/browseSelected.png");
-    private ImageIcon messageIcon = new ImageIcon("assets/message.png");
-    private ImageIcon messageIconSelected = new ImageIcon("assets/messageSelected.png");
-    private ImageIcon settingsIcon = new ImageIcon("assets/settings.png");
-    private ImageIcon settingsIconSelected = new ImageIcon("assets/settingsSelected.png");
     private ImageIcon noImageIcon = new ImageIcon("assets/noImage.png");
 
-    private int browseIconSize = 32;
-    private int messageIconSize = 40;
-    private int settingsIconSize = 44;
     private int imagePickerSize = 200;
     private int listingIconSize = 150;
 
@@ -960,13 +951,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         menuPanel.add(displayInfo);
         // cardPanel.add(menuPanel, "MainMenu");
 
-        // TODO: create correct browsing view
-        JPanel bottomNavBar = createBottomNavPanel(browseIconSelected, messageIcon, settingsIcon);
-
         // add to the main menu container
         JPanel mainMenuContainer = new JPanel(new BorderLayout());
         mainMenuContainer.add(menuPanel, BorderLayout.CENTER);
-        mainMenuContainer.add(bottomNavBar, BorderLayout.SOUTH);
 
         // add container to card panel
         cardPanel.add(mainMenuContainer, "MainMenu");
@@ -1126,6 +1113,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         buttonPanel.add(search);
         searchBoxes.add(buttonPanel);
 
+        JButton mainMenuButton = new JButton("Main Menu");
+        mainMenuButton.addActionListener(actionListener);
+        mainMenuButton.setActionCommand(MAIN_MENU);
+        buttonPanel.add(mainMenuButton);
+
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTH;
@@ -1144,11 +1136,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         gbc.weighty = 1.0;
         itemSearchPanel.add(scrollPane, gbc);
 
-        JPanel bottomNavBar = createBottomNavPanel(browseIconSelected, messageIcon, settingsIcon);
-        
         JPanel container = new JPanel(new BorderLayout());
         container.add(itemSearchPanel, BorderLayout.CENTER);
-        container.add(bottomNavBar, BorderLayout.SOUTH);
 
         cardPanel.add(container, "ItemSearch");
     }
@@ -1403,57 +1392,6 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 UIManager.put(entry.getKey(), font);
             }
         });
-    }
-
-    public JPanel createBottomNavPanel(ImageIcon browseIcon, ImageIcon messageIcon, ImageIcon settingsIcon) {
-        // resize icons
-        browseIconSelected = resizeIcon(browseIconSelected, browseIconSize);
-        messageIcon = resizeIcon(messageIcon, messageIconSize);
-        settingsIcon = resizeIcon(settingsIcon, settingsIconSize);
-
-        // nav bar buttons
-        JButton browseButton = new JButton(browseIconSelected);
-        browseButton.setToolTipText("Browse items for sale");
-        browseButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        browseButton.setFocusPainted(false);
-        browseButton.setBackground(new Color(0, 0, 0, 0));
-        browseButton.setBorder(BorderFactory.createEmptyBorder());
-        browseButton.setBorderPainted(false);
-        browseButton.setContentAreaFilled(false);
-        browseButton.setForeground(boilermakerGold);
-        browseButton.addActionListener(e -> cardLayout.show(cardPanel, "MainMenu"));
-
-        JButton messagesButton = new JButton(messageIcon);
-        messagesButton.setToolTipText("Messages");
-        messagesButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        messagesButton.setFocusPainted(false);
-        messagesButton.setBackground(new Color(0, 0, 0, 0));
-        messagesButton.setBorder(BorderFactory.createEmptyBorder());
-        messagesButton.setBorderPainted(false);
-        messagesButton.setContentAreaFilled(false);
-        messagesButton.setForeground(Color.BLACK);
-        // messagesButton.addActionListener(e -> cardLayout.show(cardPanel, "AccountInfo"));
-
-        JButton settingsButton = new JButton(settingsIcon);
-        settingsButton.setToolTipText("Settings");
-        settingsButton.setFont(new Font("Acumin Pro", Font.BOLD, 14));
-        settingsButton.setFocusPainted(false);
-        settingsButton.setBackground(new Color(0, 0, 0, 0));
-        settingsButton.setBorder(BorderFactory.createEmptyBorder());
-        settingsButton.setBorderPainted(false);
-        settingsButton.setContentAreaFilled(false);
-        settingsButton.setForeground(Color.BLACK);
-        // settingsButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Settings clicked!"));
-
-        // add buttons
-        JPanel bottomNavBar = new JPanel(new GridLayout(1, 3));
-        bottomNavBar.add(browseButton);
-        bottomNavBar.add(messagesButton);
-        bottomNavBar.add(settingsButton);
-        bottomNavBar.setBackground(Color.WHITE);
-        bottomNavBar.setPreferredSize(new Dimension(600, 60));
-        bottomNavBar.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
-        return bottomNavBar;
     }
 
     public void openFileChooser() {
