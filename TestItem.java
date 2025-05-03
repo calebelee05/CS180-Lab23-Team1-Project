@@ -57,13 +57,4 @@ public class TestItem {
                 "SellerB");
         assertEquals(expectedToString, item2.toString());
     }
-
-    // Testing the method of deleting an item
-    @Test
-    public void testDeleteItem() {
-        item1.deleteItem();
-        List<ItemInterface> itemList = Database.getItemList();
-        assertFalse(itemList.contains(item1));
-        assertTrue(itemList.contains(item2));
-    }
 }

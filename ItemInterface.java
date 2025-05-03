@@ -37,4 +37,5 @@ public interface ItemInterface extends Serializable {
     void setImageString(String imageString);
 
     void deleteItem(); // Remove item from itemList
+
 }

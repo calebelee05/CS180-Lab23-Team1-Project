@@ -19,7 +19,7 @@ public interface UserInterface extends Serializable {
 
     double getBalance();
 
-    ArrayList<ItemInterface> getItemsList();
+    List<ItemInterface> getItemsList();
 
     List<MessageInterface> getMessagesSent();
 
@@ -31,14 +31,11 @@ public interface UserInterface extends Serializable {
 
     void setBalance(double balance);
 
-    void setItemsList(ArrayList<ItemInterface> itemsList);
+    void setItemsList(List<ItemInterface> itemsList);
 
     void setMessagesSent(List<MessageInterface> messagesSent);
 
     void setMessagesReceived(List<MessageInterface> messagesReceived);
-
-    // User Account
-    void deleteUser(); // Remove user from userList, delete all items user has listed
 
     // Item Listing
     ItemInterface addItem(String name, double price, String description, String imageString);
@@ -62,5 +59,9 @@ public interface UserInterface extends Serializable {
     ArrayList<MessageInterface> getMessageFromUser(String senderID); // Find message sent by username
 
     ArrayList<MessageInterface> getMessageToUser(String recipientID); // Find message sent to username
+
+    void deleteMessageSent(MessageInterface message);
+
+    void deleteMessageReceived(MessageInterface message);
 
 }

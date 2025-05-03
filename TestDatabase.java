@@ -55,13 +55,24 @@ public class TestDatabase {
 
     // tests message sending and transactions
     @Test
-    public void testMessageSendingAndTransactions() {
+    public void testMessageSendingAndDeleting() {
         UserInterface user1 = database.createAccount("User1", "Password1");
         UserInterface user2 = database.createAccount("User2", "Password2");
         MessageInterface message = database.sendMessage(user1, user2, "message");
         assertTrue(Database.getMessageList().contains(message));
         assertTrue(user1.getMessagesSent().contains(message));
         assertTrue(user2.getMessagesReceived().contains(message));
+        database.deleteMessage(user1, user2, message);
+        assertFalse(Database.getMessageList().contains(message));
+        assertFalse(user1.getMessagesSent().contains(message));
+        assertFalse(user2.getMessagesReceived().contains(message));
+    }
+
+    // tests message deletion
+    @Test
+    public void testTransaction() {
+        UserInterface user1 = database.createAccount("User1", "Password1");
+        UserInterface user2 = database.createAccount("User2", "Password2");
         ItemInterface item = database.addItem(user1, "Item1", 20.0, "description");
         double balance1 = user1.getBalance();
         double balance2 = user2.getBalance();

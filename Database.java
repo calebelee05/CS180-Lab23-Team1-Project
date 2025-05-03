@@ -28,6 +28,32 @@ public class Database implements DatabaseInterface {
         this.messageFile = messageFile;
     }
 
+    public static void main(String[] args) {
+        String username = "User1";
+        String password = "password";
+        Database database = new Database(User.FILEPATH, Item.FILEPATH, Message.FILEPATH);
+        UserInterface user1 = database.createAccount(username, password);
+        if (userList.contains(user1)) {
+            System.out.println("true");
+        }
+        try {
+            UserInterface user = Database.logIn("User1", "password");
+            System.out.printf("Successfully logged in: %s\n", user.getUsername());
+        } catch (UserNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1");
+        if (itemList.contains(item1)) {
+            System.out.println(database.getItemList());
+        }
+        database.deleteItem(user1, item1);
+        if (itemList.contains(item1)) {
+            System.out.println("false");
+        }
+        UserInterface user2 = database.createAccount("User2", "password2");
+        database.sendMessage(user1, user2, "hi");
+    }
+
     public String getUserFile() {
         return userFile;
     }
@@ -169,6 +195,13 @@ public class Database implements DatabaseInterface {
     public synchronized void update() {
         write();
         read();
+
+        for (int i = 0; i < userList.size(); i++) {
+            UserInterface user = userList.get(i);
+            user.setItemsList(getUserItems(user));
+            user.setMessagesReceived(getReceivedMessages(user));
+            user.setMessagesSent(getSentMessages(user));
+        }
     }
 
     public UserInterface createAccount(String username, String password) {
@@ -179,7 +212,32 @@ public class Database implements DatabaseInterface {
     }
 
     public void deleteAccount(UserInterface user) {
-        user.deleteUser();
+        for (int i = 0; i < user.getItemsList().size(); i++) {
+            itemList.remove(user.getItemsList().get(i));
+            // deleteItem(user, user.getItemsList().get(i));
+        }
+        for (int i = 0; i < user.getMessagesSent().size(); i++) {
+            MessageInterface deletingMessage = user.getMessagesSent().get(i);
+            messageList.remove(deletingMessage);
+            /*
+            try {
+                deleteMessage(user, findUser(deletingMessage.getRecipientID()), deletingMessage);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            } */
+        }
+        for (int i = 0; i < user.getMessagesReceived().size(); i++) {
+            System.out.println("Delete received message");
+            MessageInterface deletingMessage = user.getMessagesReceived().get(i);
+            messageList.remove(deletingMessage);
+            /*
+            try {
+                deleteMessage(findUser(deletingMessage.getSenderID()), user, deletingMessage);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            } */
+        }
+        userList.remove(user);
         update();
     }
 
@@ -256,7 +314,8 @@ public class Database implements DatabaseInterface {
         return item;
     }
 
-    public void deleteItem(ItemInterface item) {
+    public void deleteItem(UserInterface user, ItemInterface item) {
+        user.deleteItem(item);
         itemList.remove(item);
         update();
     }
@@ -266,6 +325,12 @@ public class Database implements DatabaseInterface {
         messageList.add(message);
         update();
         return message;
+    }
+    public void deleteMessage(UserInterface sender, UserInterface recipient, MessageInterface message) {
+        sender.deleteMessageSent(message);
+        recipient.deleteMessageReceived(message);
+        messageList.remove(message);
+        update();
     }
 
     public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item) throws Exception {

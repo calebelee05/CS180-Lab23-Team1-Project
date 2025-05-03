@@ -73,11 +73,6 @@ public class Item implements ItemInterface {
         this.imageString = imageString;
     }
 
-    public void deleteItem() {
-        System.out.println("test");
-        Database.getItemList().remove(this);
-    }
-
     @Override
     public boolean equals(Object object) {
         try {
