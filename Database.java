@@ -307,8 +307,8 @@ public class Database implements DatabaseInterface {
         return sentMessage;
     }
 
-    public ItemInterface addItem(UserInterface user, String itemName, double price, String description) {
-        ItemInterface item = user.addItem(itemName, price, description);
+    public ItemInterface addItem(UserInterface user, String itemName, double price, String description, String imageString) {
+        ItemInterface item = user.addItem(itemName, price, description, imageString);
         itemList.add(item);
         update();
         return item;

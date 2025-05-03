@@ -74,7 +74,8 @@ public class Server implements Runnable, Communicator, ServerInterface {
                                     String itemName = reader.readLine();
                                     double itemPrice = Double.parseDouble(reader.readLine());
                                     String itemDescription = reader.readLine();
-                                    DATABASE.addItem(user, itemName, itemPrice, itemDescription);
+                                    String itemImageString = reader.readLine();
+                                    DATABASE.addItem(user, itemName, itemPrice, itemDescription, itemImageString);
                                     oos.writeObject(SUCCESS_MESSAGE);
                                 } catch (Exception e) {
                                     oos.writeObject(ERROR_MESSAGE);
@@ -114,8 +115,8 @@ public class Server implements Runnable, Communicator, ServerInterface {
                             System.out.println(itemSearchOption);
                             if (itemSearchOption.equals(SEARCH)) {
                                 String textQuery = reader.readLine();
-                                double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
-                                double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI already verifies double
+                                double lowPriceQuery = Double.parseDouble(reader.readLine()); // GUI verifies double
+                                double highPriceQuery = Double.parseDouble(reader.readLine()); // GUI verifies double
                                 String sellerQuery = reader.readLine();
                                 List<ItemInterface> filteredItems = Database.searchItemList(textQuery,
                                         lowPriceQuery,

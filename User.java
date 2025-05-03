@@ -76,8 +76,8 @@ public class User implements UserInterface {
     }
 
     // Item Listing
-    public ItemInterface addItem(String name, double price, String description) {
-        ItemInterface newItem = new Item(name, price, description, this.username);
+    public ItemInterface addItem(String name, double price, String description, String imageString) {
+        ItemInterface newItem = new Item(name, price, description, this.username, imageString);
         itemsList.add(newItem);
         System.out.println(itemsList);
         return newItem;

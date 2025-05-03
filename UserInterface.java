@@ -38,7 +38,7 @@ public interface UserInterface extends Serializable {
     void setMessagesReceived(List<MessageInterface> messagesReceived);
 
     // Item Listing
-    ItemInterface addItem(String name, double price, String description); // Block item creation with same name
+    ItemInterface addItem(String name, double price, String description, String imageString);
 
     ItemInterface getItem(String name) throws ItemNotFoundException; // Return item with this name
 

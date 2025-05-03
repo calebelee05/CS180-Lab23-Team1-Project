@@ -2,8 +2,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Base64;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  * This is the GUI class.
@@ -15,6 +18,16 @@ import java.util.List;
  */
 public class GUI extends JComponent implements Runnable, Communicator, GuiInterface {
 
+    // Colors
+    private Color boilermakerGold = new Color(207, 185, 145);
+
+    // Images
+    private ImageIcon noImageIcon = new ImageIcon("assets/noImage.png");
+
+    private int imagePickerSize = 200;
+    private int listingIconSize = 150;
+
+    // Constants
     private Client client;
 
     private JFrame frame;
@@ -25,6 +38,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JPanel initialPanel;
     private JButton login;
     private JButton createAccount;
+    private JLabel boilerMarketplaceLabel;
 
     // Log in
     private JPanel loginPanel;
@@ -48,7 +62,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JButton logout;
     private JButton displayInfo;
 
-    private JButton mainMenu; // Return to main menu
+    private JButton mainMenu;
 
     // Item Listing
     private JPanel itemListPanel;
@@ -65,6 +79,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     private JTextField itemPrice;
     private JTextField itemDescription;
     private JTextArea myItemInfo;
+    private JButton addImage;
 
     // Item Searching
     private JPanel itemSearchPanel;
@@ -113,14 +128,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 password.setText("");
                 cardLayout.show(cardPanel, "Login");
             }
-            
+
             // Sign up option
             if (e.getActionCommand().equals(SIGN_UP)) {
                 createUser.setText("");
                 createPass.setText("");
                 cardLayout.show(cardPanel, "Signup");
             }
-            
+
             // Log in button
             if (e.getActionCommand().equals(LOGGED_IN)) {
                 // Get inputs
@@ -157,7 +172,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-            
+
             // Create account button
             if (e.getActionCommand().equals(ACCOUNT_CREATED)) {
                 // Get inputs
@@ -165,8 +180,8 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 String passwordInput = createPass.getText();
 
                 // Validate inputs
-                if (usernameInput.isBlank() || passwordInput.isBlank() ||
-                usernameInput.contains(" ") || passwordInput.contains(" ")) {
+                if (usernameInput.isBlank() || passwordInput.isBlank()
+                        || usernameInput.contains(" ") || passwordInput.contains(" ")) {
                     JOptionPane.showMessageDialog(null, "Please enter a valid username and password.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -195,7 +210,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-            
+
             if (e.getActionCommand().equals(CANCEL)) {
                 cardLayout.show(cardPanel, "Initial");
             }
@@ -206,13 +221,13 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                     cardLayout.show(cardPanel, "MainMenu");
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null,
-                        "Failed to send request to the server.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Failed to send request to the server.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-                
+
             }
-            
+
             // Item Listing
             if (e.getActionCommand().equals(ITEM_LISTING)) {
                 try {
@@ -261,7 +276,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
-                 // search by name/description, price range, and seller username
+                // search by name/description, price range, and seller username
             }
             // Search button
             if (e.getActionCommand().equals(SEARCH)) {
@@ -320,7 +335,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-            
+
             // Message Listing
             if (e.getActionCommand().equals(MESSAGE_LIST)) {
                 cardLayout.show(cardPanel, "MessageOption");
@@ -342,7 +357,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                         "Account deleted successfully.",
                                         "Success",
                                         JOptionPane.INFORMATION_MESSAGE);
-                                cardLayout.show(cardPanel,"Initial");
+                                cardLayout.show(cardPanel, "Initial");
                             } else {
                                 JOptionPane.showMessageDialog(null,
                                         "Failed to delete account.",
@@ -372,7 +387,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                     "Log-out successful.",
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            cardLayout.show(cardPanel,"Initial");
+                            cardLayout.show(cardPanel, "Initial");
                         } else {
                             JOptionPane.showMessageDialog(null,
                                     "Failed to log-out.",
@@ -415,6 +430,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
     ActionListener itemListActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals(ADD_ITEM)) {
+                addImage.setIcon(noImageIcon);
                 itemName.setText("");
                 itemPrice.setText("");
                 itemDescription.setText("");
@@ -425,6 +441,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                 String itemNameInput = itemName.getText();
                 String itemPriceInput = itemPrice.getText();
                 String itemDescrptionInput = itemDescription.getText();
+                String itemImageString = imageIconToBlobString((ImageIcon) addImage.getIcon());
 
                 // Validate inputs
                 if (itemNameInput.isEmpty() || itemPriceInput.isEmpty()) {
@@ -445,7 +462,11 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
                 // Send request and process response
                 try {
-                    Object response = client.sendRequest(ITEM_CREATED, itemNameInput, itemPriceInput, itemDescrptionInput);
+                    Object response = client.sendRequest(ITEM_CREATED,
+                            itemNameInput,
+                            itemPriceInput,
+                            itemDescrptionInput,
+                            itemImageString);
                     if (response instanceof String) {
                         String message = (String) response;
                         if (message.equals(ERROR_MESSAGE)) {
@@ -460,6 +481,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                         throw new IOException();
                     }
                 } catch (IOException ioe) {
+                    ioe.printStackTrace();
                     JOptionPane.showMessageDialog(null,
                             "Error sending request to server.",
                             "Error",
@@ -476,7 +498,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
                                 "Failed to retrieve item list.",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
-                    } 
+                    }
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null,
                             "Error sending request to server.",
@@ -671,79 +693,225 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Initial sign in screen
     public void initial() {
+        // buttons
         login = new JButton("Login");
         login.addActionListener(actionListener);
         login.setActionCommand(LOG_IN);
+        login.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        login.setBackground(Color.WHITE);
+        login.setForeground(Color.BLACK);
+        login.setMargin(new Insets(5, 10, 5, 10));
+        login.setFocusPainted(false);
+
         createAccount = new JButton("Create Account");
         createAccount.addActionListener(actionListener);
         createAccount.setActionCommand(SIGN_UP);
+        createAccount.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        createAccount.setBackground(boilermakerGold);
+        createAccount.setForeground(Color.BLACK);
+        createAccount.setMargin(new Insets(5, 10, 5, 10));
+        createAccount.setFocusPainted(false);
 
-        initialPanel = new JPanel();
-        initialPanel.setLayout(new BoxLayout(initialPanel, BoxLayout.Y_AXIS));
-        login.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
-        initialPanel.add(login);
-        initialPanel.add(createAccount);
+        // initial panel layout
+        initialPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // add components to layout
+        // BoilerMarketplace label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 50, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        boilerMarketplaceLabel = new JLabel();
+        boilerMarketplaceLabel.setFont(new Font("Acumin Pro", Font.BOLD, 30));
+        boilerMarketplaceLabel.setText("<html><span style=\"color:#000;\">Boiler</span>"
+                + "<span style=\"color:#CFB991;\">Marketplace</span></html>");
+        initialPanel.add(boilerMarketplaceLabel, gbc);
+
+        // Login button
+        gbc.gridy = 1;
+        gbc.insets = new Insets(10, 10, 5, 10);
+        initialPanel.add(login, gbc);
+
+        // Create Account button
+        gbc.gridy = 2;
+        initialPanel.add(createAccount, gbc);
+
+        // Add the initial panel to the card panel
         cardPanel.add(initialPanel, "Initial");
     }
 
     // Log in screen
     public void allowLogin() {
-        username = new JTextField(50);
+        // initlaize components
+        username = new JTextField();
+        username.setPreferredSize(new Dimension(200, 30));
+        username.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel usernameLabel = new JLabel("Enter Username:");
-        password = new JTextField(50);
+        usernameLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
+        password = new JPasswordField();
+        password.setPreferredSize(new Dimension(200, 30));
+        password.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel passwordLabel = new JLabel("Enter Password:");
-        loginPanel = new JPanel();
-        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
-        username.setAlignmentX(Component.CENTER_ALIGNMENT);
-        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        password.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
         loginToAccount = new JButton("Login");
         loginToAccount.addActionListener(actionListener);
         loginToAccount.setActionCommand(LOGGED_IN);
-        loginToAccount.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginToAccount.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        loginToAccount.setBackground(Color.WHITE);
+        loginToAccount.setForeground(Color.BLACK);
+        loginToAccount.setMargin(new Insets(5, 10, 5, 10));
+        loginToAccount.setFocusPainted(false);
 
         cancelSignIn = new JButton("Cancel");
         cancelSignIn.addActionListener(actionListener);
         cancelSignIn.setActionCommand(CANCEL);
-        cancelSignIn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cancelSignIn.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        cancelSignIn.setBackground(boilermakerGold);
+        cancelSignIn.setForeground(Color.BLACK);
+        cancelSignIn.setMargin(new Insets(5, 10, 5, 10));
+        cancelSignIn.setFocusPainted(false);
 
-        loginPanel.add(usernameLabel);
-        loginPanel.add(username);
-        loginPanel.add(passwordLabel);
-        loginPanel.add(password);
-        loginPanel.add(loginToAccount);
-        loginPanel.add(cancelSignIn);
+        loginPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // add to layout
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // add username label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        loginPanel.add(usernameLabel, gbc);
+
+        // add username field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        loginPanel.add(username, gbc);
+
+        // add password label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        loginPanel.add(passwordLabel, gbc);
+
+        // add password field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        loginPanel.add(password, gbc);
+
+        // add login button
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        loginPanel.add(loginToAccount, gbc);
+
+        // add cancel button
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        loginPanel.add(cancelSignIn, gbc);
+
+        // add login panel to card panel
         cardPanel.add(loginPanel, "Login");
     }
 
     // Create account screen
     public void create() {
-        createUser = new JTextField(50);
+        // initlaize components
+        createUser = new JTextField();
+        createUser.setPreferredSize(new Dimension(200, 30));
+        createUser.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel usernameLabel = new JLabel("Enter Username:");
-        createPass = new JTextField(50);
+        usernameLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
+        createPass = new JPasswordField();
+        createPass.setPreferredSize(new Dimension(200, 30));
+        createPass.setFont(new Font("Acumin Pro", Font.PLAIN, 16));
+
         JLabel passwordLabel = new JLabel("Enter Password:");
-        signupPanel = new JPanel();
-        signupPanel.setLayout(new BoxLayout(signupPanel, BoxLayout.Y_AXIS));
-        createUser.setAlignmentX(Component.CENTER_ALIGNMENT);
-        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createPass.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passwordLabel.setFont(new Font("Acumin Pro", Font.BOLD, 18));
+
         createAcc = new JButton("Create Account");
         createAcc.addActionListener(actionListener);
         createAcc.setActionCommand(ACCOUNT_CREATED);
-        createAcc.setAlignmentX(Component.CENTER_ALIGNMENT);
+        createAcc.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        createAcc.setBackground(Color.WHITE);
+        createAcc.setForeground(Color.BLACK);
+        createAcc.setMargin(new Insets(5, 10, 5, 10));
+        createAcc.setFocusPainted(false);
+
         cancelSignIn = new JButton("Cancel");
         cancelSignIn.addActionListener(actionListener);
         cancelSignIn.setActionCommand(CANCEL);
-        cancelSignIn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        signupPanel.add(usernameLabel);
-        signupPanel.add(createUser);
-        signupPanel.add(passwordLabel);
-        signupPanel.add(createPass);
-        signupPanel.add(createAcc);
-        signupPanel.add(cancelSignIn);
+        cancelSignIn.setFont(new Font("Acumin Pro", Font.BOLD, 16));
+        cancelSignIn.setBackground(boilermakerGold);
+        cancelSignIn.setForeground(Color.BLACK);
+        cancelSignIn.setMargin(new Insets(5, 10, 5, 10));
+        cancelSignIn.setFocusPainted(false);
+
+        signupPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // add to layout
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // add username label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        signupPanel.add(usernameLabel, gbc);
+
+        // add username field
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        signupPanel.add(createUser, gbc);
+
+        // add password label
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        signupPanel.add(passwordLabel, gbc);
+
+        // add password field
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        signupPanel.add(createPass, gbc);
+
+        // add createAcc button
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        signupPanel.add(createAcc, gbc);
+
+        // add cancel button
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        signupPanel.add(cancelSignIn, gbc);
+
+        // add login panel to card panel
         cardPanel.add(signupPanel, "Signup");
     }
 
@@ -781,7 +949,14 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         menuPanel.add(deleteAccount);
         menuPanel.add(logout);
         menuPanel.add(displayInfo);
-        cardPanel.add(menuPanel, "MainMenu");
+        // cardPanel.add(menuPanel, "MainMenu");
+
+        // add to the main menu container
+        JPanel mainMenuContainer = new JPanel(new BorderLayout());
+        mainMenuContainer.add(menuPanel, BorderLayout.CENTER);
+
+        // add container to card panel
+        cardPanel.add(mainMenuContainer, "MainMenu");
     }
 
     /* Item List */
@@ -819,6 +994,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.add(itemListPanel, "ItemList");
         cardPanel.add(myItemInfoPanel, "MyItemInfo");
     }
+
     public void myItemListing(List<ItemInterface> itemList) {
         itemListSubPanel.removeAll();
         if (itemList.isEmpty()) {
@@ -831,16 +1007,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             itemButton.setPreferredSize(new Dimension(500, 40));
             itemButton.addActionListener(e -> {
                 if (item.getBuyerID().isEmpty()) {
-                    myItemInfo.setText("Item name: " + item.getName() + 
-                                        "\nPrice: $" + item.getPrice() +
-                                        "\nDescription: " + item.getDescription());
+                    myItemInfo.setText("Item name: " + item.getName()
+                            + "\nPrice: $" + item.getPrice()
+                            + "\nDescription: " + item.getDescription());
                 } else {
-                    myItemInfo.setText("Item name: " + item.getName() + 
-                                        "\nPrice: $" + item.getPrice() +
-                                        "\nDescription: " + item.getDescription() +
-                                        "\nBought by: " + item.getBuyerID());
+                    myItemInfo.setText("Item name: " + item.getName()
+                            + "\nPrice: $" + item.getPrice()
+                            + "\nDescription: " + item.getDescription()
+                            + "\nBought by: " + item.getBuyerID());
                 }
-                
+
                 deleteItem.setActionCommand(item.getName());
                 cardLayout.show(cardPanel, "MyItemInfo");
             });
@@ -852,6 +1028,13 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Add item screen
     public void addItem() {
+        // resize image
+        noImageIcon = resizeIcon(noImageIcon, imagePickerSize);
+
+        // add image button
+        addImage = new JButton(noImageIcon);
+        addImage.addActionListener(e -> openFileChooser());
+
         itemName = new JTextField(50);
         JLabel itemNameLabel = new JLabel("Enter Item Name:");
         itemPrice = new JTextField(50);
@@ -885,29 +1068,40 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         itemAddPanel.add(itemDescriptionLabel);
         itemAddPanel.add(itemDescription);
         itemAddPanel.add(addAndCancel);
-        cardPanel.add(itemAddPanel, "AddItem");
+
+        JPanel globalPanel = new JPanel(new GridLayout(1, 2));
+        globalPanel.add(addImage);
+        globalPanel.add(itemAddPanel);
+        cardPanel.add(globalPanel, "AddItem");
     }
 
     /* Item searching screen */
     public void searchItem() {
-        itemSearchPanel = new JPanel();
-        JPanel searchBoxes = new JPanel(new GridLayout(2, 4));
-        JPanel searchAndEnter = new JPanel();
-        itemNameQuery = new JTextField(2);
-        itemPriceLow = new JTextField("0", 2);
-        itemPriceHigh = new JTextField("99999", 2);
-        itemSellerquery = new JTextField(2);
-        JLabel itemNameSearchLabel = new JLabel("Name/Description");
-        JLabel minPriceLabel = new JLabel("Minimum Price");
-        JLabel maxPriceLabel = new JLabel("Maximum Price");
-        JLabel sellerSearchLabel = new JLabel("Seller Name");
+        itemSearchPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JPanel searchBoxes = new JPanel(new GridLayout(0, 1, 10, 2));
+        searchBoxes.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        itemNameQuery = new JTextField(15);
+        itemPriceLow = new JTextField("0", 15);
+        itemPriceHigh = new JTextField("99999", 15);
+        itemSellerquery = new JTextField(15);
+
+        JLabel itemNameSearchLabel = new JLabel("Name/Description:");
+        JLabel minPriceLabel = new JLabel("Minimum Price:");
+        JLabel maxPriceLabel = new JLabel("Maximum Price:");
+        JLabel sellerSearchLabel = new JLabel("Seller Name:");
 
         searchBoxes.add(itemNameSearchLabel);
         searchBoxes.add(itemNameQuery);
+
         searchBoxes.add(sellerSearchLabel);
         searchBoxes.add(itemSellerquery);
+
         searchBoxes.add(minPriceLabel);
         searchBoxes.add(itemPriceLow);
+
         searchBoxes.add(maxPriceLabel);
         searchBoxes.add(itemPriceHigh);
 
@@ -915,20 +1109,37 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         search.addActionListener(actionListener);
         search.setActionCommand(SEARCH);
 
-        searchAndEnter.add(searchBoxes, BorderLayout.CENTER);
-        searchAndEnter.add(search, BorderLayout.EAST);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(search);
+        searchBoxes.add(buttonPanel);
 
-        mainMenu = new JButton("Back to Menu");
-        mainMenu.addActionListener(actionListener);
-        mainMenu.setActionCommand(MAIN_MENU);
+        JButton mainMenuButton = new JButton("Main Menu");
+        mainMenuButton.addActionListener(actionListener);
+        mainMenuButton.setActionCommand(MAIN_MENU);
+        buttonPanel.add(mainMenuButton);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        itemSearchPanel.add(searchBoxes, gbc);
 
         searchResultSubpanel = new JPanel(new GridLayout(0, 1));
+        JScrollPane scrollPane = new JScrollPane(searchResultSubpanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        itemSearchPanel.add(searchAndEnter, BorderLayout.NORTH);
-        itemSearchPanel.add(searchResultSubpanel, BorderLayout.EAST);
-        itemSearchPanel.add(mainMenu, BorderLayout.SOUTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        itemSearchPanel.add(scrollPane, gbc);
 
-        cardPanel.add(itemSearchPanel, "ItemSearch");
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(itemSearchPanel, BorderLayout.CENTER);
+
+        cardPanel.add(container, "ItemSearch");
     }
 
     // Item search result
@@ -939,26 +1150,42 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             noItem.setPreferredSize(new Dimension(350, 200));
             searchResultSubpanel.add(noItem);
         }
+        boolean pairIsPopulated = false;
+        JPanel pairPanel = new JPanel(new GridLayout(0, 2));
         for (ItemInterface item : itemList) {
-            JButton itemButton = new JButton(item.getName());
-            itemButton.setPreferredSize(new Dimension(500, 40));
+            ImageIcon itemImageIcon = blobStringToImageIcon(item.getImageString());
+            itemImageIcon = resizeIcon(itemImageIcon, listingIconSize);
+            JButton itemButton = new JButton(itemImageIcon);
             itemButton.addActionListener(e -> {
                 viewItem(item);
                 cardLayout.show(cardPanel, "ItemInfo");
             });
-            searchResultSubpanel.add(itemButton, BorderLayout.CENTER);
+            if (pairIsPopulated) {
+                pairPanel.add(itemButton);
+                searchResultSubpanel.add(pairPanel);
+                pairIsPopulated = false;
+            } else {
+                pairPanel = new JPanel(new GridLayout(0, 2));
+                pairPanel.add(itemButton);
+                searchResultSubpanel.add(pairPanel);
+                pairIsPopulated = true;
+            }
+        }
+        if (pairIsPopulated) {
+            searchResultSubpanel.add(pairPanel);
         }
         cardPanel.revalidate();
         cardLayout.show(cardPanel, "ItemSearch");
     }
+
     public void viewItem(ItemInterface item) {
 
         itemInfoPanel = new JPanel();
         itemInfo = new JTextArea(2, 0);
-        itemInfo.setText("Item name: " + item.getName() + 
-                        "\nPrice: $" + item.getPrice() +
-                        "\nDescription: " + item.getDescription() +
-                        "\nSeller: " + item.getSellerID());
+        itemInfo.setText("Item name: " + item.getName()
+                + "\nPrice: $" + item.getPrice()
+                + "\nDescription: " + item.getDescription()
+                + "\nSeller: " + item.getSellerID());
         itemInfo.setEditable(false);
 
         buyItem = new JButton("Buy");
@@ -995,7 +1222,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cancelPurchase = new JButton("Cancel");
         cancelPurchase.addActionListener(itemSearchActionListener);
         cancelPurchase.setActionCommand(CANCEL);
-        JPanel payAndCancel = new JPanel(new GridLayout(1,2));
+        JPanel payAndCancel = new JPanel(new GridLayout(1, 2));
         payAndCancel.add(purchase);
         payAndCancel.add(cancelPurchase);
         paymentPW = new JTextField();
@@ -1015,9 +1242,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
 
     // Buy Item
     public void pay(ItemInterface item) {
-        confirmItemInfo.setText("Name: " + item.getName() +
-                                "\nPrice: $" + item.getPrice() +
-                                "\nSeller: " + item.getSellerID());
+        confirmItemInfo.setText("Name: " + item.getName()
+                + "\nPrice: $" + item.getPrice()
+                + "\nSeller: " + item.getSellerID());
         paymentPW.setText("");
         purchase.setActionCommand(item.getName() + ":" + item.getSellerID());
         cardPanel.revalidate();
@@ -1043,7 +1270,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         messageListOptionPanel.add(viewMessageSent);
         messageListOptionPanel.add(viewMessageReceived);
         messageListOptionPanel.add(mainMenu);
-        
+
         messageListPanel = new JPanel();
         messageListSubPanel = new JPanel(new GridLayout(0, 1));
         backToMessageOption = new JButton("Back");
@@ -1055,6 +1282,7 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.add(messageListOptionPanel, "MessageOption");
         cardPanel.add(messageListPanel, "MessageList");
     }
+
     public void messageListing(List<MessageInterface> messageList) {
         messageListSubPanel.removeAll();
         if (messageList.isEmpty()) {
@@ -1063,9 +1291,9 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
             messageListSubPanel.add(noMessage);
         }
         for (MessageInterface message : messageList) {
-            JButton messageButton = new JButton("From: " + message.getSenderID() + 
-                                                " To: " + message.getRecipientID() +
-                                                " " + message.getTimestamp());
+            JButton messageButton = new JButton("From: " + message.getSenderID()
+                    + " To: " + message.getRecipientID()
+                    + " " + message.getTimestamp());
             messageButton.setPreferredSize(new Dimension(250, 60));
             messageButton.addActionListener(e -> {
                 viewMessage(message);
@@ -1076,15 +1304,16 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.revalidate();
         cardLayout.show(cardPanel, "MessageList");
     }
+
     public void viewMessage(MessageInterface message) {
         viewMessagePanel = new JPanel();
         JPanel replyAndBack = new JPanel(new GridLayout(1, 2));
         JTextArea viewMessageContent = new JTextArea(message.getContents());
         viewMessageContent.setPreferredSize(new Dimension(500, 200));
         viewMessageContent.setEditable(false);
-        JTextArea messageInfo = new JTextArea("From: " + message.getSenderID() + 
-                                              "\nTo: " + message.getRecipientID() +
-                                              "\nTime: " + message.getTimestamp());
+        JTextArea messageInfo = new JTextArea("From: " + message.getSenderID()
+                + "\nTo: " + message.getRecipientID()
+                + "\nTime: " + message.getTimestamp());
         messageInfo.setPreferredSize(new Dimension(500, 60));
         backToMessageList = new JButton("Back");
         backToMessageList.addActionListener(actionListener);
@@ -1150,8 +1379,92 @@ public class GUI extends JComponent implements Runnable, Communicator, GuiInterf
         cardPanel.add(accountInfoPanel, "AccountInfo");
     }
 
+    // helpers
+    public ImageIcon resizeIcon(ImageIcon icon, int size) {
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImg);
+    }
+
+    public void setGlobalFont(Font font) {
+        UIManager.getDefaults().entrySet().forEach(entry -> {
+            if (entry.getKey().toString().endsWith(".font")) {
+                UIManager.put(entry.getKey(), font);
+            }
+        });
+    }
+
+    public void openFileChooser() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select an Image");
+
+        // only allow image files
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                "Image Files", "jpg", "png", "jpeg"));
+
+        // show dialog
+        int result = fileChooser.showOpenDialog(null);
+
+        // verify selection
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+
+            try {
+                BufferedImage image = ImageIO.read(selectedFile);
+                ImageIcon imageIcon = new ImageIcon(image);
+
+                addImage.setIcon(resizeIcon(imageIcon, imagePickerSize));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("No file selected.");
+        }
+    }
+
+    public String imageIconToBlobString(ImageIcon icon) {
+        if (icon == null || icon.getImage() == null) {
+            throw new IllegalArgumentException("ImageIcon is null or invalid.");
+        }
+
+        try {
+            Image image = icon.getImage();
+            BufferedImage bufferedImage = new BufferedImage(
+                    image.getWidth(null),
+                    image.getHeight(null),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+            bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+
+            // Encode byte array to Base64 string
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public ImageIcon blobStringToImageIcon(String blobString) {
+        try {
+            byte[] imageBytes = Base64.getDecoder().decode(blobString);
+
+            return new ImageIcon(imageBytes);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // thread methods
     public void run() {
         client = beginConnection();
+
+        setGlobalFont(new Font("Acumin Pro", Font.PLAIN, 14));
 
         frame = new JFrame("GUI");
         cardLayout = new CardLayout();
