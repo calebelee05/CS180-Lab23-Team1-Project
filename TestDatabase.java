@@ -45,7 +45,7 @@ public class TestDatabase {
     @Test
     public void testItemAdditionDeletion() throws ItemNotFoundException {
         UserInterface seller = database.createAccount("Seller", "Password");
-        ItemInterface item = database.addItem(seller, "Item1", 5.0, "description");
+        ItemInterface item = database.addItem(seller, "Item1", 5.0, "description", "noImage.png");
         assertTrue(Database.getItemList().contains(item));
         assertTrue(seller.getItemsList().contains(item));
         database.deleteItem(seller, item);
@@ -73,7 +73,7 @@ public class TestDatabase {
     public void testTransaction() {
         UserInterface user1 = database.createAccount("User1", "Password1");
         UserInterface user2 = database.createAccount("User2", "Password2");
-        ItemInterface item = database.addItem(user1, "Item1", 20.0, "description");
+        ItemInterface item = database.addItem(user1, "Item1", 20.0, "description", "noImage.png");
         double balance1 = user1.getBalance();
         double balance2 = user2.getBalance();
         try {
@@ -89,8 +89,8 @@ public class TestDatabase {
     @Test
     public void testSearchItemList() {
         UserInterface user = database.createAccount("User", "Password");
-        database.addItem(user, "pencil", 1.0, "grey");
-        database.addItem(user, "book", 2.0, "black");
+        database.addItem(user, "pencil", 1.0, "grey", "noImage.png");
+        database.addItem(user, "book", 2.0, "black", "noImage.png");
         List<ItemInterface> results = Database.searchItemList("pen", 0.5, 1.5, null);
         assertEquals(1, results.size());
         assertEquals("pencil", results.get(0).getName());

@@ -21,8 +21,8 @@ public class TestItem {
     @Before
     public void setUp() {
         Database.getItemList().clear();
-        item1 = new Item("itemA", 10.0, "firstItem", "SellerA");
-        item2 = new Item("itemB", 20.0, "secondItem", "SellerB");
+        item1 = new Item("itemA", 10.0, "firstItem", "SellerA", "noImage.png");
+        item2 = new Item("itemB", 20.0, "secondItem", "SellerB", "noImage.png");
         Database.getItemList().add(item1);
         Database.getItemList().add(item2);
     }
@@ -47,7 +47,7 @@ public class TestItem {
     // Testing equals and toString methods
     @Test
     public void testEqualsAndToString() {
-        ItemInterface copyItem = new Item("itemB", 0.0, "description", "SellerB");
+        ItemInterface copyItem = new Item("itemB", 0.0, "description", "SellerB", "noImage.png");
         assertTrue(item2.equals(copyItem));
         assertFalse(item1.equals(item2));
         String expectedToString = String.format("Name: %s\nPrice: %.2f\nDescription: %s\nSeller: %s",

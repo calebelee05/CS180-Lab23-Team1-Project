@@ -45,7 +45,7 @@ public class TestUser {
     @Test
     public void testItemManipulation() throws ItemNotFoundException {
         // adding and getting
-        ItemInterface item1 = user1.addItem("Item1", 50.0, "Description1");
+        ItemInterface item1 = user1.addItem("Item1", 50.0, "Description1", "noImage.png");
         assertEquals(item1, user1.getItem("Item1"));
         // modification
         user1.setItem(item1, "ItemG", 75.0, "Description2");

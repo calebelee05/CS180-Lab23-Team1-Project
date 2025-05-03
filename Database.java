@@ -42,7 +42,7 @@ public class Database implements DatabaseInterface {
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());
         }
-        ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1");
+        ItemInterface item1 = database.addItem(user1, "Item1", 10.0, "Test item 1", "noImage.png");
         if (itemList.contains(item1)) {
             System.out.println(database.getItemList());
         }
