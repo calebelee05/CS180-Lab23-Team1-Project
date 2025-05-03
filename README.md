@@ -38,14 +38,17 @@ This phase covers the creation of the database for the market place. This includ
 
 ## MessageInterface.java
     Methods:
-    - String getSenderID(): Returns the senderID.
-    - void setSenderID(String senderID): Sets the senderID.
-    - String getRecipientID(): Returns the recipientID.
-    - void setRecipientID(String recipientID): Sets the recipientID.
-    - String getContents(): Returns the contents.
-    - void setContents(String contents): Sets the contents.
-    - ZonedDateTime getTimestamp(): Returns the timestamp.
-    - void setTimeStamp(ZonedDateTime timestamp): Sets the timestamp.
+    - String getSenderID();
+    - void setSenderID(String senderID);
+    - String getRecipientID();
+    - void setRecipientID(String recipientID);
+    - String getContents();
+    - void setContents(String contents);
+    - ZonedDateTime getTimestamp();
+    - void setTimeStamp(ZonedDateTime timestamp);
+    - static ArrayList<Message> getList();
+    - synchronized void writeObject(ArrayList<Message> list);
+    - synchronized ArrayList<Message> readObject();
 
     Extends Serializable interface: Serializes instances of MessageInterface.
     
@@ -54,7 +57,7 @@ This phase covers the creation of the database for the market place. This includ
     - private String username: The username of the user.
     - private String password: The password of the user.
     - private double balance: The current balance of the user.
-    - private ArrayList<ItemInterface> itemsList: An ArrayList to store the items listed by the user.
+    - private List<ItemInterface> itemsList: An synchronized to store the items listed by the user.
     - private List<MessageInterface> messagesSent: A synchronized List to store the messages sent by the user.
     - private List<MessageInterface> messagesReceived: A synchronized List to store the messages received by the user.
     - private static final String FILEPATH: A constant String representing the file path for storing User objects ("UserData.txt").
@@ -66,13 +69,13 @@ This phase covers the creation of the database for the market place. This includ
     - public String getUsername(): Returns the username of the user.
     - public String getPassword(): Returns the password of the user.
     - public double getBalance(): Returns the current balance of the user.
-    - public ArrayList<ItemInterface> getItems(): Returns the list of items listed by the user.
+    - public List<ItemInterface> getItems(): Returns the list of items listed by the user.
     - public List<MessageInterface> getMessagesSent(): Returns the list of messages sent by the user.
     - public List<MessageInterface> getMessagesReceived(): Returns the list of messages received by the user.
     - public void setUsername(String username): Sets the username of the user.
     - public void setPassword(String password): Sets the password of the user.
     - public void setBalance(double balance): Sets the balance of the user.
-    - public void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
+    - public void setItems(List<ItemInterface> itemsList): Sets the list of items listed by the user.
     - public void setMessagesSent(List<MessageInterface> messagesSent): Sets the list of messages sent by the user.
     - public void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
     - public void deleteUser(): Removes the user from the `userList` of the Database and deletes all items listed by the user.
@@ -86,6 +89,8 @@ This phase covers the creation of the database for the market place. This includ
     - public void receiveMessage(MessageInterface message): Receives a message sent.
     - public MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException: Returns messages sent by the specified sender.
     - public MessageInterface getMessageToUser(String recipient) throws UserNotFoundException: Returns messages sent to the specified recipient.
+    - public void deleteMessageSent(MessageInterface message): Deletes the message from messagesSent.
+    - public void deleteMessageReceived(MessageInterface message): Deletes the message from messagesReceived.
     - public String toString(): Returns a String representation of the User object.
     - public boolean equals(Object object): Checks if this user is equal to another user based on the username.
 
@@ -94,27 +99,31 @@ This phase covers the creation of the database for the market place. This includ
 
 ## UserInterface.java
     Methods
-    - String getUsername(): Returns the username of the user.
-    - String getPassword(): Returns the password of the user.
-    - double getBalance(): Returns the current balance of the user.
-    - ArrayList<ItemInterface> getItems(): Returns the list of items listed by the user.
-    - ArrayList<MessageInterface> getMessagesSent(): Returns the list of messages sent by the user.
-    - List<MessageInterface> getMessagesReceived(): Returns the list of messages received by the user.
-    - void setUsername(String username): Sets the username of the user.
-    - void setPassword(String password): Sets the password of the user.
-    - void setBalance(double balance): Sets the balance of the user.
-    - void setItems(ArrayList<ItemInterface> itemsList): Sets the list of items listed by the user.
-    - void setMessagesSent(ArrayList<MessageInterface> messagesSent): Sets the list of messages sent by the user.
-    - void setMessagesReceived(List<MessageInterface> messagesReceived): Sets the list of messages received by the user.
-    - boolean equals(UserInterface user): Checks if this user is equal to another user based on the username.
-    - void deleteUser(): Removes the user from the userList and deletes all items listed by the user.
-    - void addItem(String name, double price, String description): Adds a new item to the user's item list.
-    - ItemInterface getItem(String name): Returns the item with the given name from the user's item list.
-    - void deleteItem(ItemInterface item): Deletes an item from the user's item list.
-    - void setItem(ItemInterface item, String name, double price, String description): Edits an item in the user's item list.
-    - void buyItem(ItemInterface item): Decreases the user's balance by the item's price.
-    - void sellItem(ItemInterface item): Increases the user's balance by the item's price.
-    - void sendMessage(UserInterface recipient, String content): Sends a message to the specified recipient.
+    - String getUsername();
+    - String getPassword();
+    - double getBalance();
+    - List<ItemInterface> getItems();
+    - List<MessageInterface> getMessagesSent();
+    - List<MessageInterface> getMessagesReceived();
+    - void setUsername(String username);
+    - void setPassword(String password);
+    - void setBalance(double balance);
+    - void setItems(List<ItemInterface> itemsList);
+    - void setMessagesSent(List<MessageInterface> messagesSent);
+    - void setMessagesReceived(List<MessageInterface> messagesReceived);
+    - void deleteUser();
+    - void addItem(String name, double price, String description);
+    - ItemInterface getItem(String name) throws ItemNotFoundException;
+    - void deleteItem(ItemInterface item);
+    - void setItem(ItemInterface item, String name, double price, String description);
+    - void buyItem(ItemInterface item);
+    - void sellItem(ItemInterface item);
+    - void sendMessage(UserInterface recipient, String content);
+    - void receiveMessage(MessageInterface message);
+    - MessageInterface getMessageFromUser(String senderID) throws UserNotFoundException;
+    - MessageInterface getMessageToUser(String recipient) throws UserNotFoundException;
+    - void deleteMessageSent(MessageInterface message);
+    - void deleteMessageReceived(MessageInterface message);
 
     Extends Serializable interface: Serializes instances of UserInterface.
 
@@ -124,11 +133,12 @@ This phase covers the creation of the database for the market place. This includ
     - private double price: The price of the item.
     - private String description: The description of the item.
     - private String sellerID: The ID of the seller of the item.
-    private String buyerID: The ID of the user that bought the item.
+    - private String buyerID: The ID of the user that bought the item.
+    - private String imageString: the String representation of the image data added to the item.
     - private static final String FILEPATH: A constant String representing the file path for storing Item objects (ItemData.txt).
 
     Constructors
-    - public Item(String name, double price, String description, String sellerID): Initializes a new Item object with the provided name, price, description, and seller ID. It also creates a new file if it doesn't exist and adds the newly instantiated Item object to the `itemList`.
+    - public Item(String name, double price, String description, String sellerID, String imageString): Initializes a new Item object with the provided name, price, description, and seller ID. It also creates a new file if it doesn't exist and adds the newly instantiated Item object to the `itemList`.
 
     Methods
     - public String getName(): Returns the name of the item.
@@ -136,12 +146,13 @@ This phase covers the creation of the database for the market place. This includ
     - public String getDescription(): Returns the description of the item.
     - public String getSellerID(): Returns the seller ID of the item.
     - public String getBuyerID(): Returns the buyer ID of the item.
+    public String getImageString(): Returns the image String of the item.
     - public void setSellerID(String sellerID): Sets the seller ID of the item.
     - public void setBuyerID(String buyerID): Sets the buyer ID of the item.
     - public void setPrice(double price): Sets the price of the item.
     - public void setDescription(String description): Sets the description of the item.
     - public void setName(String itemName): Sets the name of the item.
-    - public void deleteItem(): Removes the item from the `itemList` of the Database.
+    - public void setImageString(String imageString): Sets the image String of the item
     - public boolean equals(ItemInterface item): Checks if this item is equal to another item based on the seller ID and name.
     - public String toString(): Returns a String representation of the Item object.
 
@@ -150,18 +161,18 @@ This phase covers the creation of the database for the market place. This includ
 
 ## ItemInterface.java
     Methods
-    - String getName(): Returns the name of the item.
-    - double getPrice(): Returns the price of the item.
-    - String getDescription(): Returns the description of the item.
-    - String getSellerID(): Returns the seller ID of the item.
-    - String getBuyerID(): Returns the buyer ID of the item.
-    - void setSellerID(String sellerID): Sets the seller ID of the item.
-    - void setBuyerID(String buyerID): Sets the buyer ID of the item.
-    - void setPrice(double price): Sets the price of the item.
-    - void setDescription(String description): Sets the description of the item.
-    - void setName(String itemName): Sets the name of the item.
-    - boolean equals(ItemInterface item): Checks if this item is equal to another item.
-    - void deleteItem(): Removes the item from the itemList.
+    - String getName();
+    - double getPrice();
+    - String getDescription();
+    - String getSellerID();
+    - String getBuyerID();
+    - String getImageString();
+    - void setSellerID(String sellerID);
+    - void setBuyerID(String buyerID);
+    - void setPrice(double price);
+    - void setDescription(String description);
+    - void setName(String itemName);
+    - void setImageString(String imageString);
 
     Interfaces Implemented
     - Serializable: Serializes instances of ItemInterface.
@@ -232,7 +243,7 @@ This phase covers the creation of the client-server connectivity and implements 
     - ServerInterface: Defines the methods that the `Server` class implements.
 
 ## ServerInterface.java
-    -  Defines the methods that the `Server` class implements.
+    -  Defines the methods that the `Server` class implements; 'Server' class has no public non-static methods that are not inherited from other interfaces, so this interface is intentionally left empty.
 
 ## Communicator.java
     Fields
@@ -312,6 +323,7 @@ This phase covers the creation of the client-server connectivity and implements 
     - public ItemInterface addItem(UserInterface user, String itemName, double price, String description): Adds a new item for a specified user.
     - public void deleteItem(ItemInterface item): Removes an item from itmeList.
     - public MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Create a new message and adds it to the `messageList`. Returns the newly created `MessageInterface` object.
+    - public void deleteMessage(UserInterface sender, UserInterface recipient, MessageInterface message): Deletes the message sent from sender to recipient.
     - public void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Calls the `buyItem()` method on the `buyer` and the `sellItem()` method on the `seller` to conduct a transaction.
     
     Interfaces Implemented
@@ -319,27 +331,28 @@ This phase covers the creation of the client-server connectivity and implements 
 
 ## DatabaseInterface.java
     Methods
-    - String getUserFile(): Retrieves the file path used for storing user data.
-    - String getItemFile(): Retrieves the file path used for storing item data.
-    - String getMessageFile(): Retrieves the file path used for storing message data.
-    - void setUserFile(String userFile): Sets the file path used for storing user data.
-    - void setItemFile(String itemFile): Sets the file path used for storing item data.
-    - void setmessageFile(String messageFile): sets the file path used for storing message data.
-    - void writeUser(): Writes user data to the storage file.
-    - void writeItem(): Writes item data to the storage file.
-    - void writeMessage(): Writes message data to the storage file.
-    - void readUser(): Reads user data from the storage file.
-    - void readItem(): Reads item data from the storage file.
-    - void readMessage(): Reads message data from the storage file.
-    - void write(): Writes all data (user, item, message) to their respective storage files.
-    - void read(): Reads all data (user, item, message) from their respective storage files.
-    - void update(): Updates the stored data.
-    - UserInterface createAccount(String username, String password): Creates a new user account with the given username and password.
-    - void deleteAccount(UserInterface user): Deletes an existing user account.
-    - ItemInterface addItem(UserInterface user, String itemName, double price, String description): Adds a new item to the system, associated with a specific user.
-    - void deleteItem(UserInterface user, ItemInterface item): Deletes an existing item from the system.
-    - MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content): Sends a message from one user to another with the given content.
-    - void transaction(UserInterface buyer, UserInterface seller, ItemInterface item): Processes a transaction between a buyer and a seller for a specific item.
+    - String getUserFile();
+    - String getItemFile();
+    - String getMessageFile();
+    - void setUserFile(String userFile);
+    - void setItemFile(String itemFile);
+    - void setmessageFile(String messageFile);
+    - void writeUser();
+    - void writeItem();
+    - void writeMessage();
+    - void readUser();
+    - void readItem();
+    - void readMessage();
+    - void write();
+    - void read();
+    - synchronized void update();
+    - UserInterface createAccount(String username, String password);
+    - void deleteAccount(UserInterface user);
+    - ItemInterface addItem(UserInterface user, String itemName, double price, String description);
+    - void deleteItem(ItemInterface item);
+    - MessageInterface sendMessage(UserInterface sender, UserInterface recipient, String content);
+    - void deleteMessage(UserInterface sender, UserInterface recipient, MessageInterface message);
+    - void transaction(UserInterface buyer, UserInterface seller, ItemInterface item);
 
 ## Test Case Files
     - TestClient.java: Tests the functionality of the Client class.
@@ -351,7 +364,10 @@ Designing and building the graphical user interface for the marketplace.
 
 ## GUI.java
     Fields
-    - 
+    - ActionListener actionListener: ActionListener for handling general actionevents on the GUI
+    - ActionListener itemListActionListener: ActionListener for handling actionevents in item listing option on the GUI
+    - ActionListener itemSearchActionListener: ActionListener for handling actionevents in item search option on the GUI
+    - ActionListener messageActionListener: ActionListener for handling actionevents in message option on the GUI
     Methods
     - public Client beginConnection(): Creates new Client object that connects to the server.
     - public void initial(): Builds GUI for initial screen (before log in).
@@ -370,29 +386,39 @@ Designing and building the graphical user interface for the marketplace.
     - public void message(): Builds GUI for Write New Message screen.
     - public void newMesage(String recipientID): Sets recipient of the message and displays the Write New Message screen.
     - public void showInfo(): Builds GUI for Account Info screen.
+    - public ImageIcon resizeIcon(ImageIcon icon, int size): Resize the icon image by the given size.
+    - public void setGlobalFont(Font font): Sets the global font of the GUI.
+    - public void openFileChooser(): Creates and opens a JFileChooser pop-up for selecting item image.
+    - public String imageIconToBlobString(ImageIcon icon): Converts image into Blob String representation.
+    - public ImageIcon blobStringToImageIcon(String blobString): Converts Blob String to image.
+    - private void performSearch(): Sends request to the server to search item according to the input query.
     - public void run(): Initilizes connection and GUI.
     - public static void main(String[] args): Main method to start the program; runs GUI on EDT.
 
 
 ## GUIInterface.java
-    - Client beginConnection()
-    - void allowLogin()
-    - void initial()
-    - void create()
-    - void mainMenuScreen()
-    - void itemListSetup()
-    - void myItemListing(List<ItemInterface> itemList)
-    - void addItem()
-    - void searchItem()
-    - void searchResult(List<ItemInterface> itemList)
-    - void viewItem(ItemInterface item)
-    - void pay(ItemInterface item)
-    - void messageListSetup()
-    - void messageListing(List<MessageInterface> messageList)
-    - void viewMessage(MessageInterface message)
-    - void message()
-    - void newMessage(String recipientID)
-    - void showInfo()
+    - Client beginConnection();
+    - void initial();
+    - void allowLogin();
+    - void create();
+    - void mainMenuScreen();
+    - void itemListSetup();
+    - void myItemListing(List<ItemInterface> itemList);
+    - void addItem();
+    - void searchItem();
+    - void searchResult(List<ItemInterface> itemList);
+    - void viewItem(ItemInterface item);
+    - void messageListSetup();
+    - void messageListing(List<MessageInterface> messageList);
+    - void viewMessage(MessageInterface message);
+    - void message();
+    - void newMesage(String recipientID);
+    - void showInfo();
+    - ImageIcon resizeIcon(ImageIcon icon, int size);
+    - void setGlobalFont(Font font);
+    - void openFileChooser();
+    - String imageIconToBlobString(ImageIcon icon);
+    - ImageIcon blobStringToImageIcon(String blobString);
 
 ## How to Run
 1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
