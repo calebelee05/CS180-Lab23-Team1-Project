@@ -14,6 +14,7 @@ This phase covers the creation of the database for the market place. This includ
 
 ## Message.java
 The Message class forms the structure of how messages exchanged between users are represented in the database.
+
     Fields
     - private String senderID: The ID of the message sender.
     - private String recipientID: The ID of the message recipient.
@@ -61,6 +62,7 @@ The Message class forms the structure of how messages exchanged between users ar
     
 ## User.java
 The User class forms the structure of how user accounts are represented in the database.
+
     Fields
     - private String username: The username of the user.
     - private String password: The password of the user.
@@ -137,6 +139,7 @@ The User class forms the structure of how user accounts are represented in the d
 
 ## Item.java
 The Item class forms the structure of how items are represented in the database.
+
     Fields
     - private String name: The name of the item.
     - private double price: The price of the item.
@@ -205,6 +208,7 @@ This phase covers the creation of the client-server connectivity and implements 
 
 ## Client.java
 The Client class directly communicates with the server through network I/O to receive the data from and send data to the database.
+
     Fields
     - private final Socket socket: The socket connection to the server.
     - private final PrintWriter writer: Used to send text-based requests to the server.
@@ -227,6 +231,7 @@ The Client class directly communicates with the server through network I/O to re
 
 ## Server.java
 The server class directly interacts with the database and handles users that connect to the server with Threads.
+
     Fields
     - private static final DatabaseInterface DATABASE: An instance of the `Database` class. Gives access to the database operations.
     - private Socket socket: The socket connection established with a client.
@@ -254,10 +259,11 @@ The server class directly interacts with the database and handles users that con
     - ServerInterface: Defines the methods that the `Server` class implements.
 
 ## ServerInterface.java
-    -  Defines the methods that the `Server` class implements; 'Server' class has no public non-static methods that are not inherited from other interfaces, so this interface is intentionally left empty.
+Defines the methods that the `Server` class implements; 'Server' class has no public non-static methods that are not inherited from other interfaces, so this interface is intentionally left empty.
 
 ## Communicator.java
-An interface to store message strings used for communication between Server and GUI.
+The Communicator interface stores message strings used for communication between Server and GUI.
+
     Fields
     - String HOST: ip address of the server ("localhost")
     - int PORT = 8888: port number of the server (8888)
@@ -289,6 +295,7 @@ An interface to store message strings used for communication between Server and 
 
 ## Database.java
 The Database class handles all operations on User, Item, and Message objects, and stores the data into text files.
+
     Fields
     - private String userFile: The file path for storing user data.
     - private String itemFile: The file path for storing item data.
@@ -377,6 +384,7 @@ Designing and building the graphical user interface for the marketplace.
 
 ## GUI.java
 The GUI class starts the main program, displaying the GUI to the user and interacts with the server through the Client object.
+
     Fields
     - ActionListener actionListener: ActionListener for handling general actionevents on the GUI
     - ActionListener itemListActionListener: ActionListener for handling actionevents in item listing option on the GUI
