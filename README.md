@@ -7,7 +7,8 @@ Topic: A Market Place
 1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
 2. Initialize the server first with `java Server`, then run the client side with `java GUI`; this will start the GUI.
 3. When the GUI pops up, you can choose to either log in or create a new account.
-4. To quit, you can close the program tab.
+4. After you log in, you can navigate to whatever option you want: View Item List, Search Item, View Messages, Delete Account, Logout, or Account Info.
+5. To quit, you can close the program tab.
 
 Phase 1: Building the database, interfaces and test cases
 This phase covers the creation of the database for the market place. This includes creating and deleting the user and retailer accounts. It also involves adding, deleting and searching for items. 
