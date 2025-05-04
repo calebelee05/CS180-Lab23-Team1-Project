@@ -445,6 +445,5 @@ The GUI class starts the main program, displaying the GUI to the user and intera
     - ImageIcon blobStringToImageIcon(String blobString);
 
 ## Assignment Submission
-- Anishka Rao - Submitted Report and Video Presentation on Brightspace
-- Zaid Awartani - 
+- Zaid Awartani - Submitted Report and Video Presentation on Brightspace
 - Caleb Lee - Submitted Vocareum workspace
