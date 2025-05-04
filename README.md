@@ -3,10 +3,17 @@ Spring 25' CS180 Lab section 23 Team 1 Project repository
 
 Topic: A Market Place
 
+## Instructions on How to Run
+1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
+2. Initialize the server first with `java Server`, then run the client side with `java GUI`; this will start the GUI.
+3. When the GUI pops up, you can choose to either log in or create a new account.
+4. To quit, you can close the program tab.
+
 Phase 1: Building the database, interfaces and test cases
 This phase covers the creation of the database for the market place. This includes creating and deleting the user and retailer accounts. It also involves adding, deleting and searching for items. 
 
 ## Message.java
+The Message class forms the structure of how messages exchanged between users are represented in the database.
     Fields
     - private String senderID: The ID of the message sender.
     - private String recipientID: The ID of the message recipient.
@@ -53,6 +60,7 @@ This phase covers the creation of the database for the market place. This includ
     Extends Serializable interface: Serializes instances of MessageInterface.
     
 ## User.java
+The User class forms the structure of how user accounts are represented in the database.
     Fields
     - private String username: The username of the user.
     - private String password: The password of the user.
@@ -128,6 +136,7 @@ This phase covers the creation of the database for the market place. This includ
     Extends Serializable interface: Serializes instances of UserInterface.
 
 ## Item.java
+The Item class forms the structure of how items are represented in the database.
     Fields
     - private String name: The name of the item.
     - private double price: The price of the item.
@@ -195,6 +204,7 @@ Phase 2: Building the Network I/O
 This phase covers the creation of the client-server connectivity and implements Network I/O.
 
 ## Client.java
+The Client class directly communicates with the server through network I/O to receive the data from and send data to the database.
     Fields
     - private final Socket socket: The socket connection to the server.
     - private final PrintWriter writer: Used to send text-based requests to the server.
@@ -216,6 +226,7 @@ This phase covers the creation of the client-server connectivity and implements 
     - void close() throws IOException: Defines the method signature for closing the connection to the server. Throws an `IOException` if an error occurs during the closing process.
 
 ## Server.java
+The server class directly interacts with the database and handles users that connect to the server with Threads.
     Fields
     - private static final DatabaseInterface DATABASE: An instance of the `Database` class. Gives access to the database operations.
     - private Socket socket: The socket connection established with a client.
@@ -246,6 +257,7 @@ This phase covers the creation of the client-server connectivity and implements 
     -  Defines the methods that the `Server` class implements; 'Server' class has no public non-static methods that are not inherited from other interfaces, so this interface is intentionally left empty.
 
 ## Communicator.java
+An interface to store message strings used for communication between Server and GUI.
     Fields
     - String HOST: ip address of the server ("localhost")
     - int PORT = 8888: port number of the server (8888)
@@ -276,6 +288,7 @@ This phase covers the creation of the client-server connectivity and implements 
 
 
 ## Database.java
+The Database class handles all operations on User, Item, and Message objects, and stores the data into text files.
     Fields
     - private String userFile: The file path for storing user data.
     - private String itemFile: The file path for storing item data.
@@ -363,6 +376,7 @@ Phase 3: Building the GUI
 Designing and building the graphical user interface for the marketplace.
 
 ## GUI.java
+The GUI class starts the main program, displaying the GUI to the user and interacts with the server through the Client object.
     Fields
     - ActionListener actionListener: ActionListener for handling general actionevents on the GUI
     - ActionListener itemListActionListener: ActionListener for handling actionevents in item listing option on the GUI
@@ -395,7 +409,6 @@ Designing and building the graphical user interface for the marketplace.
     - public void run(): Initilizes connection and GUI.
     - public static void main(String[] args): Main method to start the program; runs GUI on EDT.
 
-
 ## GUIInterface.java
     - Client beginConnection();
     - void initial();
@@ -420,8 +433,7 @@ Designing and building the graphical user interface for the marketplace.
     - String imageIconToBlobString(ImageIcon icon);
     - ImageIcon blobStringToImageIcon(String blobString);
 
-## How to Run
-1. Compile Server.java and GUI.java classes with `javac Server.java` and `javac GUI.java`.
-2. Initialize the server first with `java Server`, then run the client side with `java GUI`; this will start the GUI.
-3. When the GUI pops up, you can choose to either log in or create a new account.
-4. To quit, you can close the program tab.
+## Assignment Submission
+- Anishka Rao - Submitted Report on Brightspace
+- Zaid Awartani - Submitted Video Presentation on Brightspace
+- Caleb Lee - Submitted Vocareum workspace
